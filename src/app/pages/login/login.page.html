@@ -1,29 +1,25 @@
-<ion-header>
-  <!-- <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar> -->
-</ion-header>
-
 <ion-content class="ion-padding" color="secondary">
   <ion-grid style="height: 100%;">
-    <ion-row>
-      <ion-col>
-        <ion-img class="ion-padding-bottom" src="../../../assets/Logotipo/logo-login.png"></ion-img>
-        <ion-label class="ion-margin-vertical">Ingrese con su cuenta</ion-label>
-        <br><br>
-        <ion-item class="ion-margin-vertical">
-          <ion-icon slot="start" name="mail-outline"></ion-icon>
-          <ion-label position="floating">Email</ion-label>
-          <ion-input type="text"></ion-input>
-        </ion-item>
-        <ion-item class="ion-margin-vertical">
-          <ion-icon slot="start" name="lock-open-outline"></ion-icon>
-          <ion-label position="floating">Contraseña</ion-label>
-          <ion-input type="password"></ion-input>
-        </ion-item>
-        <ion-button class="ion-margin-vertical" expand="block" routerLink="/home">Ingresar</ion-button>
-      </ion-col>
-    </ion-row>
+    <form [formGroup]="loginForm" (ngSubmit)="login()" ngNativeValidate>
+      <ion-row>
+        <ion-col>
+          <ion-img class="ion-padding-bottom" src="../../../assets/Logotipo/logo-login.png"></ion-img>
+          <ion-label class="ion-margin-vertical">Ingrese con su cuenta</ion-label>
+          <br>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="mail-outline"></ion-icon>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input formControlName="email" type="email" required></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="lock-open-outline"></ion-icon>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input formControlName="password" type="password" required></ion-input>
+          </ion-item>
+          <ion-button type="submit" class="ion-margin-vertical" expand="block">Ingresar</ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
     <br><br><br>
     <ion-row>
       <ion-col class="ion-text-center">
@@ -42,9 +38,11 @@
         </ion-button>
       </ion-col>
     </ion-row>
-    <ion-row class="ion-align-self-end">
+    <br><br><br>
+    <ion-row>
       <ion-col class="ion-text-center">
-        <ion-text>¿No tiene cuenta? <strong>Cree una aquí</strong></ion-text>
+        <ion-text>¿No tiene cuenta? </ion-text>
+        <a color="primary" routerLink="/create-account"><strong>Cree una aquí</strong></a>
       </ion-col>
     </ion-row>
   </ion-grid>

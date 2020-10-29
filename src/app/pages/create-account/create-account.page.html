@@ -1,0 +1,68 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>
+      Cree una nueva cuenta
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-bottom ion-padding-horizontal" color="light">
+  <ion-grid style="height: 100%;">
+    <form [formGroup]="createAccountForm" (ngSubmit)="createAccount()" ngNativeValidate>
+      <ion-row>
+        <ion-col>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input formControlName="name" type="text" required></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="mail-outline"></ion-icon>
+            <ion-label position="floating">Edad</ion-label>
+            <ion-input formControlName="age" type="number" required min="18" max="99"></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="call-outline"></ion-icon>
+            <ion-label position="floating">Teléfono</ion-label>
+            <ion-input formControlName="phone" type="number" required></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="male-female-outline"></ion-icon>
+            <ion-label position="floating">Género</ion-label>
+            <ion-input formControlName="gender" type="text" required></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="lock-open-outline"></ion-icon>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input formControlName="password" type="password" required (keyup)="onPasswordChange()"></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-vertical">
+            <ion-icon slot="start" name="lock-open-outline"></ion-icon>
+            <ion-label position="floating">Verifique Contraseña</ion-label>
+            <ion-input formControlName="checkPassword" type="password" required (keyup)="onPasswordChange()" [ngClass]="{ invalid: passConfirmationWrong, valid: !passConfirmationWrong }"></ion-input>
+          </ion-item>
+          <span *ngIf="confirm_password.hasError('mismatch')" class="pass-not-match red-text"><strong>Las contraseñas deben coincidir.</strong></span>
+          <ion-button type="submit" class="ion-margin-vertical" expand="block">Crear Cuenta</ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+    
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-text class="ion-margin-bottom">- O cree una con -</ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block">
+          <ion-icon name="logo-facebook"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block">
+          <ion-icon name="logo-google"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

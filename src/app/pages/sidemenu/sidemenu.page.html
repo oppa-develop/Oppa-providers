@@ -1,0 +1,28 @@
+
+    <ion-menu contentId="content">
+      <ion-header>
+        <ion-toolbar color="secondary">
+          <ion-title>Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+  
+      <ion-content>
+        <ion-list>
+          <ion-menu-toggle auto-hide="false" *ngFor="let page of pages">
+            <ion-item [routerLink]="page.url" routerDirection="root" [class.active-item]="selectedPath === page.url">
+              <ion-icon slot="start" [name]="page.icon"></ion-icon>
+              {{ page.title }}
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+
+      <ion-footer>
+        <ion-item color="primary" routerLink="/login" routerDirection="root">
+          <ion-icon slot="start" name="exit-outline"></ion-icon>
+          Salir
+        </ion-item>
+      </ion-footer>
+    </ion-menu>
+  
+    <ion-router-outlet id="content" main></ion-router-outlet>
