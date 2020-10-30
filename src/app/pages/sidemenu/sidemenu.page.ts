@@ -18,6 +18,7 @@ export class SidemenuPage implements OnInit {
   ]
 
   selectedPath = ''
+  darkMode = false
 
   constructor(
     private router: Router
@@ -28,7 +29,34 @@ export class SidemenuPage implements OnInit {
   }
 
   ngOnInit() {
-    
+    if (localStorage.getItem('darkMode') === 'on') {
+      document.body.setAttribute('data-theme', 'dark');
+      this.darkMode = true
+    } else {
+      document.body.setAttribute('data-theme', 'light');
+      this.darkMode = false
+    }
+  }
+
+  onClick(event){
+    let systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+    systemDark.addListener(this.colorTest);
+    if(event.detail.checked){
+      document.body.setAttribute('data-theme', 'dark');
+      localStorage.setItem('darkMode', 'on');
+    }
+    else{
+      document.body.setAttribute('data-theme', 'light');
+      localStorage.setItem('darkMode', 'off');
+    }
+  }
+
+  colorTest(systemInitiatedDark) {
+    if (systemInitiatedDark.matches || localStorage.getItem('darkMode') === 'on') {
+      document.body.setAttribute('data-theme', 'dark');
+    } else {
+      document.body.setAttribute('data-theme', 'light');
+    }
   }
 
 }
