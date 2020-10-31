@@ -7,5 +7,6 @@ export interface User {
   role: string
   avatar: string
   credit: number
+  accountType: string
   
 }

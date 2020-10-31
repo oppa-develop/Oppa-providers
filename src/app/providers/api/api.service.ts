@@ -21,7 +21,8 @@ export class ApiService {
       email: faker.internet.exampleEmail(),
       avatar: faker.image.avatar(),
       role: 'apoderado',
-      credit: parseInt(faker.finance.amount()) * 10
+      credit: parseInt(faker.finance.amount()) * 10,
+      accountType: 'companion'
     })
   }
 

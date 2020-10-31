@@ -10,6 +10,7 @@ export class CreateAccountPage implements OnInit {
 
   public createAccountForm: FormGroup
   public passConfirmationWrong = null
+  public accountType = 'elder'
 
   constructor(
     private formBuilder: FormBuilder
@@ -32,6 +33,7 @@ export class CreateAccountPage implements OnInit {
       email: ['', [Validators.email, Validators.required]],
       password: ['', Validators.required],
       checkPassword: ['', Validators.required],
+      accountType: [''],
       grandparents: this.formBuilder.array([])
     })
   }
@@ -48,7 +50,6 @@ export class CreateAccountPage implements OnInit {
     })
 
     this.grandparents.push(grandparent)
-
   }
 
   removeGrandparent(index: number) {
