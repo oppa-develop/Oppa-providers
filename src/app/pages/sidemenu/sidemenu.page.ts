@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as faker from 'faker/locale/es_MX'
-import { Observable } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 
@@ -21,13 +19,13 @@ export class SidemenuPage implements OnInit {
   ]
 
   selectedPath = ''
-  darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches || false;
 
   user: User
 
   constructor(
-    private auth: AuthService
-  ) {  }
+    private auth: AuthService,
+  ) { }
   
   ngOnInit() {
     this.user = this.auth.userData()
@@ -50,8 +48,6 @@ export class SidemenuPage implements OnInit {
   }
 
   onClick(event){
-    let systemDark = window.matchMedia("(prefers-color-scheme: dark)");
-    systemDark.addListener(this.colorTest);
     if(event.detail.checked){
       document.body.setAttribute('data-theme', 'dark');
       localStorage.setItem('darkMode', 'on');
@@ -59,14 +55,6 @@ export class SidemenuPage implements OnInit {
     else{
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
-    }
-  }
-
-  colorTest(systemInitiatedDark) {
-    if (systemInitiatedDark.matches || localStorage.getItem('darkMode') === 'on') {
-      document.body.setAttribute('data-theme', 'dark');
-    } else {
-      document.body.setAttribute('data-theme', 'light');
     }
   }
 
