@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import * as faker from 'faker/locale/es_MX'
+import { AuthService } from 'src/app/providers/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private auth: AuthService
   ) { }
 
   ngOnInit() {
@@ -29,14 +30,13 @@ export class LoginPage implements OnInit {
   }
 
   login() {
-    console.log(this.loginForm.value)
-    this.router.navigate(['/sidemenu/home'])
+    this.auth.login(this.loginForm.value)
   }
 
   createLoginForm() {
     return this.formBuilder.group({
-      email: ['a@a', [Validators.required, Validators.email]],
-      password: ['aaaaaaa', Validators.required]
+      email: [faker.internet.email(), [Validators.required, Validators.email]],
+      password: [faker.internet.password(), Validators.required]
     })
   }
 

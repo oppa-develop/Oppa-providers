@@ -3,31 +3,21 @@
       <ion-header>
         <ion-toolbar color="secondary">
           <ion-grid>
-            <!-- <ion-row>
-              <ion-col class="ion-text-center">
-                <br>
-                <ion-avatar>
-                  <ion-icon  style="font-size: 88px" name="person-circle-outline"></ion-icon>
-                </ion-avatar>
-                <ion-label>Nombre de Usuario</ion-label><br>
-                <ion-label>correo@ejemplo.com</ion-label>
-                <br><br><br>
-              </ion-col>
-            </ion-row> -->
             <ion-row class="ion-padding-bottom">
               <ion-col size="4" offset="4">
                 <ion-avatar>
                   <!-- <ion-icon style="font-size: 88px" name="person-circle-outline"></ion-icon> -->
-                  <ion-img style="height: 88px; width: 88px;" src="https://scontent.fscl22-1.fna.fbcdn.net/v/t1.0-9/38405256_10216876815736448_8341270219083218944_o.jpg?_nc_cat=108&ccb=2&_nc_sid=09cbfe&_nc_ohc=45exptLskNEAX8poSHv&_nc_ht=scontent.fscl22-1.fna&oh=f5850ed12c34adadff2618e056af5f39&oe=5FC1AA4F"></ion-img>
+                  <ion-img style="height: 88px; width: 88px;" [src]="user.avatar"></ion-img>
                 </ion-avatar>
+                <br>
               </ion-col>
             </ion-row>
             <ion-row class="ion-padding-bottom">
               <ion-col size="12" class="ion-text-center">
-                <ion-label>Nombre de Usuario</ion-label>
+                <ion-label>{{ user.fullname }}</ion-label>
               </ion-col>
               <ion-col size="12" class="ion-text-center">
-                <ion-label>correo@ejemplo.com</ion-label>
+                <ion-label>{{ user.email }}</ion-label>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -53,7 +43,7 @@
       </ion-content>
 
       <ion-footer>
-        <ion-item color="primary" routerLink="/login" routerDirection="root">
+        <ion-item color="primary" (click)="logout()">
           <ion-icon slot="start" name="exit-outline"></ion-icon>
           Salir
         </ion-item>

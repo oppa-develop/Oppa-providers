@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterEvent } from '@angular/router';
+import * as faker from 'faker/locale/es_MX'
+import { Observable } from 'rxjs';
+import { User } from 'src/app/models/user';
+import { AuthService } from 'src/app/providers/auth/auth.service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -18,17 +21,16 @@ export class SidemenuPage implements OnInit {
   ]
 
   selectedPath = ''
-  darkMode = false
+  darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  user: User
 
   constructor(
-    private router: Router
-  ) {
-    this.router.events.subscribe((event: RouterEvent) => {
-      this.selectedPath = event.url
-    })
-  }
-
+    private auth: AuthService
+  ) {  }
+  
   ngOnInit() {
+    this.user = this.auth.userData()
     if (localStorage.getItem('darkMode') === 'on') {
       document.body.setAttribute('data-theme', 'dark');
       this.darkMode = true
@@ -36,6 +38,15 @@ export class SidemenuPage implements OnInit {
       document.body.setAttribute('data-theme', 'light');
       this.darkMode = false
     }
+  }
+  
+  ionViewWillEnter() {
+    this.user = this.auth.userData()
+    console.log('hola');
+  }
+
+  logout() {
+    this.auth.logout()
   }
 
   onClick(event){

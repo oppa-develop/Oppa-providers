@@ -1,9 +1,9 @@
 <ion-content class="ion-padding" color="secondary">
-  <ion-grid style="height: 90vh;">
+  <ion-grid>
     <form [formGroup]="loginForm" (ngSubmit)="login()" ngNativeValidate>
       <ion-row>
         <ion-col>
-          <ion-img class="ion-padding-bottom" src="../../../assets/Logotipo/logo-login.png"></ion-img>
+          <ion-img class="ion-padding-vertical ion-margin-vertical" src="../../../assets/Logotipo/logo-login.png"></ion-img>
           <ion-label class="ion-margin-vertical">Ingrese con su cuenta</ion-label>
           <br>
           <ion-item class="ion-margin-vertical">
@@ -20,34 +20,14 @@
         </ion-col>
       </ion-row>
     </form>
-    <br><br><br>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-text class="ion-margin-bottom">- O ingrese con -</ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block">
-          <ion-icon name="logo-facebook"></ion-icon>
-        </ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block">
-          <ion-icon name="logo-google"></ion-icon>
-        </ion-button>
+  </ion-grid>
+
+  <ion-grid class="ion-padding-vertical ion-margin-vertical">
+    <ion-row class="ion-padding-vertical ion-margin-vertical">
+      <ion-col class="ion-padding-vertical ion-margin-vertical ion-text-center">
+        <ion-text>¿No tiene cuenta? </ion-text>
+        <a color="primary" routerLink="/create-account"><strong>Cree una aquí</strong></a>
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <ion-footer>
-    <ion-grid>
-      <ion-row>
-        <ion-col class="ion-text-center">
-          <ion-text>¿No tiene cuenta? </ion-text>
-          <a color="primary" routerLink="/create-account"><strong>Cree una aquí</strong></a>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-footer>
 </ion-content>
