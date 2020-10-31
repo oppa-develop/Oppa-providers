@@ -13,8 +13,8 @@ export class SidemenuPage implements OnInit {
     { title: 'Servicios',             icon: 'construct-outline',        url: '/sidemenu/services'},
     { title: 'Mensajes',              icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages'},
     { title: 'Valoraciones',          icon: 'star-outline',             url: '/sidemenu/ratings'},
-    { title: 'Configuración y Pagos', icon: 'settings-outline',         url: '/sidemenu/preferences'},
-    { title: 'Facturas',              icon: 'receipt-outline',          url: '/sidemenu/invoices'},
+    { title: 'Configuración',         icon: 'settings-outline',         url: '/sidemenu/preferences'},
+    { title: 'Pagos y Recargas',      icon: 'wallet-outline',           url: '/sidemenu/invoices'},
     { title: 'Ayuda',                 icon: 'help-circle-outline',      url: '/sidemenu/help'},
   ]
 
@@ -40,7 +40,6 @@ export class SidemenuPage implements OnInit {
   
   ionViewWillEnter() {
     this.user = this.auth.userData()
-    console.log('hola');
   }
 
   logout() {

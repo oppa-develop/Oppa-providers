@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-create-account',
@@ -8,7 +8,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 })
 export class CreateAccountPage implements OnInit {
 
-  createAccountForm: FormGroup
+  public createAccountForm: FormGroup
   public passConfirmationWrong = null
 
   constructor(
@@ -25,14 +25,34 @@ export class CreateAccountPage implements OnInit {
 
   createCreateAccountForm() {
     return this.formBuilder.group({
-      name: ['', Validators.required],
-      age: ['', Validators.required],
+      fullname: ['', Validators.required],
+      birthdate: ['', Validators.required],
       phone: ['', Validators.required],
       gender: ['', Validators.required],
       email: ['', [Validators.email, Validators.required]],
       password: ['', Validators.required],
-      checkPassword: ['', Validators.required]
+      checkPassword: ['', Validators.required],
+      grandparents: this.formBuilder.array([])
     })
+  }
+
+  get grandparents(): FormArray {
+    return this.createAccountForm.get('grandparents') as FormArray
+  }
+
+  addGrandparent() {
+    const grandparent = this.formBuilder.group({
+      fullname : ['', Validators.required],
+      birthdate: ['', Validators.required],
+      gender: ['', Validators.required]
+    })
+
+    this.grandparents.push(grandparent)
+
+  }
+
+  removeGrandparent(index: number) {
+    this.grandparents.removeAt(index)
   }
 
   // confirm new password validator

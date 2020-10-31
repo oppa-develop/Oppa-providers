@@ -20,7 +20,8 @@ export class ApiService {
       age: faker.random.number(99),
       email: faker.internet.exampleEmail(),
       avatar: faker.image.avatar(),
-      role: 'apoderado'
+      role: 'apoderado',
+      credit: parseInt(faker.finance.amount()) * 10
     })
   }
 

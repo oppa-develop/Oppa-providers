@@ -4,6 +4,20 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Servicios</ion-title>
+    <!-- se necesitan categorias de servicios -->
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-chip class="ion-margin-start">
+      <ion-icon color="dark" class="ion-no-margin" name="options-outline"></ion-icon>
+    </ion-chip>
+    <ion-chip>
+      <ion-text>Ordenar</ion-text>
+      <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
+    </ion-chip>
+    <ion-chip>
+      <ion-text>Rango de precios</ion-text>
+      <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
+    </ion-chip>
   </ion-toolbar>
 </ion-header>
 
@@ -53,3 +67,12 @@
   </ion-grid>
 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Crédito: ${{ user.credit | currency:'CLP' }}</ion-title>
+    <ion-button color="primary" slot="end" class="ion-margin-end">
+      <ion-icon name="cart-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

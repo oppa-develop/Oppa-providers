@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { User } from 'src/app/models/user';
 import { ApiService } from '../api/api.service';
 
@@ -14,13 +15,14 @@ export class AuthService {
     private api: ApiService,
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     public router: Router, // para enviar al usuario a otra vista
+    private navController: NavController
   ) { }
 
   login(userCredentials){
     this.api.login(userCredentials.email, userCredentials.password)
       .subscribe(
         (userData: User) => {
-          console.log(userData)
+          console.table(userData)
           localStorage.setItem('user', JSON.stringify(userData));
           this.ngZone.run(() => {
             this.router.navigate(['/sidemenu/services']);
@@ -34,7 +36,7 @@ export class AuthService {
   logout(){
     localStorage.removeItem('user');
     this.ngZone.run(() => {
-      this.router.navigate(['login']);
+      this.navController.navigateRoot(['login'])
     });
   }
 

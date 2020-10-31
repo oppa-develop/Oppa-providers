@@ -6,5 +6,6 @@ export interface User {
   password?: string
   role: string
   avatar: string
+  credit: number
   
 }
