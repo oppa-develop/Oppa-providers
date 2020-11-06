@@ -9,7 +9,7 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let message of $messages | async">
+    <ion-item button *ngFor="let message of $messages | async">
       <ion-avatar size="large" slot="start">
         <ion-img [src]="message.img"></ion-img>
       </ion-avatar>

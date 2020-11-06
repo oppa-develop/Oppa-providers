@@ -5,7 +5,7 @@
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
-    "start": "ionic serve --lab -c --host 0.0.0.0 --devapp",
+    "start": "ionic serve --lab --consolelogs --external --devapp --no-open",
     "build": "ionic capacitor build android",
     "test": "ng test",
     "lint": "ng lint",

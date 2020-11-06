@@ -1,0 +1,17 @@
+ion-card > ion-img {
+  object-fit: cover;
+  height: 210px;
+}
+
+ion-avatar {
+  position: absolute;
+  top: 165px;
+  left: 30px;
+  width: 90px;
+  height: 90px;
+}
+
+ion-icon[slot="start"] {
+  margin-right: unset;
+  margin-inline-end: 12px;
+}
