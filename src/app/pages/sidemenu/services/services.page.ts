@@ -26,7 +26,7 @@ export class ServicesPage implements OnInit {
 
   ngOnInit() {
     this.user = this.auth.userData()
-    this.$services = this.api.getServices()
+    this.$services = this.api.getProvidedServices()
   }
 
   ionViewWillEnter() {

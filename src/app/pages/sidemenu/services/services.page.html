@@ -3,20 +3,20 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Servicios</ion-title>
+    <ion-title>Servicios Ofrecidos</ion-title>
     <!-- se necesitan categorias de servicios -->
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar hidden>
     <ion-chip class="ion-margin-start">
-      <ion-icon color="dark" class="ion-no-margin" name="options-outline"></ion-icon>
+      <ion-icon size="large" class="ion-padding-end" color="dark" class="ion-no-margin" name="options-outline"></ion-icon>
     </ion-chip>
     <ion-chip (click)="presentActionSheetOrderBy()">
       <ion-text>Ordenar</ion-text>
-      <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
+      <ion-icon size="large" class="ion-padding-end" color="dark" name="chevron-down-outline"></ion-icon>
     </ion-chip>
     <ion-chip (click)="presentActionSheetPriceRange()">
       <ion-text>Rango de precios</ion-text>
-      <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
+      <ion-icon size="large" class="ion-padding-end" color="dark" name="chevron-down-outline"></ion-icon>
     </ion-chip>
   </ion-toolbar>
 </ion-header>
@@ -38,20 +38,44 @@
       </ion-col>
 
       <!-- services on lists of cards -->
-      <ion-col *ngFor="let service of $services | async" size="12">
+      <ion-col *ngFor="let providedService of $services | async" size="12">
         <ion-card>
-          <ion-img [src]="service.img"></ion-img>
-          <ion-card-header>
+          <ion-img [src]="providedService.service.img_url"></ion-img>
+          <ion-grid>
+            <ion-row class="elder-data">
+              <ion-col class="ion-text-center">
+                <ion-avatar>
+                  <ion-img [src]="providedService.elder.img_url"></ion-img>
+                </ion-avatar>
+                <ion-text color="light">
+                  <strong>{{ providedService.elder.firstname + ' ' + providedService.elder.lastname | titlecase }}</strong>
+                </ion-text>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-card-header class="ion-no-padding ion-padding-start ion-padding-end">
             <ion-grid class="ion-no-padding">
+              <ion-row class="ion-no-padding ion-margin-bottom">
+                <ion-col>
+                  <h2 class="ion-no-margin" color="dark">
+                    <strong>{{ providedService.service.name | titlecase }}</strong>
+                  </h2>
+                </ion-col>
+              </ion-row>
               <ion-row class="ion-no-padding">
                 <ion-col>
-                  <ion-text color="dark">
-                    <p class="ion-no-margin"><strong>{{ service.name | titlecase }}</strong></p>
-                  </ion-text>
-                  <p class="ion-no-margin">Costo: ${{ service.price | currency:'CLP'}}</p>
+                  <ion-icon size="large" class="ion-padding-end" color="secondary" name="cash-outline"></ion-icon> 
+                  <ion-label>${{ providedService.service.price | currency:'CLP' }}</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-button color="primary" class="ion-float-end">solicitar</ion-button>
+                  <ion-icon size="large" class="ion-padding-end" color="secondary" name="calendar-outline"></ion-icon> 
+                  <ion-label>{{ providedService.datetime | date: 'mediumDate' }}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-no-padding">
+                <ion-col>
+                  <ion-icon size="large" class="ion-padding-end" color="secondary" name="time-outline"></ion-icon> 
+                  <ion-label>{{ (providedService.start | date: 'shortTime') + ' - ' + (providedService.end | date: 'shortTime') }}</ion-label>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -62,11 +86,10 @@
     </ion-row>
   </ion-grid>
 
-</ion-content>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
-<ion-footer>
-  <ion-toolbar>
-    <ion-title>Crédito:</ion-title>
-    <ion-title slot="end" class="ion-padding-horizontal"> ${{ user.credit | currency:'CLP' }}</ion-title>
-  </ion-toolbar>
-</ion-footer>
+</ion-content>
