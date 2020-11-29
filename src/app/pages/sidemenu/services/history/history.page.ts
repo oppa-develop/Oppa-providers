@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { ActionSheetController, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Service } from 'src/app/models/service';
 import { User } from 'src/app/models/user';
 import { ApiService } from 'src/app/providers/api/api.service';
 import { AuthService } from 'src/app/providers/auth/auth.service';
-import { ActionSheetController, ModalController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-services',
-  templateUrl: './services.page.html',
-  styleUrls: ['./services.page.scss'],
+  selector: 'app-history',
+  templateUrl: './history.page.html',
+  styleUrls: ['./history.page.scss'],
 })
-export class ServicesPage implements OnInit {
+export class HistoryPage implements OnInit {
 
   $services: Observable<Service[]>
   user: User
@@ -19,15 +19,14 @@ export class ServicesPage implements OnInit {
   constructor(
     private api: ApiService,
     private auth: AuthService,
-    public actionSheetController: ActionSheetController,
-    private modalController: ModalController
+    public actionSheetController: ActionSheetController
   ) {
 
   }
 
   ngOnInit() {
     this.user = this.auth.userData()
-    this.$services = this.api.getProvidedServices()
+    this.$services = this.api.getHistoryOfServices()
   }
 
   ionViewWillEnter() {

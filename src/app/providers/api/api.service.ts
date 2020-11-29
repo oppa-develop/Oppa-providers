@@ -46,6 +46,43 @@ export class ApiService {
   getProvidedServices(): Observable<any[]> {
     return of([
       {
+        workable: ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'],
+        service: {
+          name: `peluquería`,
+          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
+          price: 9990,
+        }
+      },
+      {
+        workable: ['lunes','martes','miércoles','jueves','viernes'],
+        service: {
+          name: `realizar trámite`,
+          img_url: `../../../../assets/images/1789259.jpg`,
+          price: 9990,
+        }
+      },
+      {
+        workable: ['lunes','martes','miércoles','domingo'],
+        service: {
+          name: `cuidado`,
+          img_url: `../../../../assets/images/pexels-andrea-piacquadio-3768131.jpg`,
+          price: 11990,
+        }
+      },
+      {
+        workable: ['sábado','domingo'],
+        service: {
+          name: `compras`,
+          img_url: `../../../../assets/images/pexels-gustavo-fring-4173326.jpg`,
+          price: 14990,
+        }
+      }
+    ])
+  }
+
+  getHistoryOfServices(): Observable<any[]> {
+    return of([
+      {
         elder: {
           firstname: faker.name.firstName(),
           lastname: faker.name.lastName(),

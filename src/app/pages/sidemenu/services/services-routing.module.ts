@@ -6,8 +6,19 @@ import { ServicesPage } from './services.page';
 const routes: Routes = [
   {
     path: '',
-    component: ServicesPage
+    component: ServicesPage,
+    children: [
+      {
+        path: 'offered',
+        loadChildren: './offered/offered.module#OfferedPageModule'
+      },
+      {
+        path: 'history',
+        loadChildren: './history/history.module#HistoryPageModule'
+      }
+    ]
   }
+
 ];
 
 @NgModule({

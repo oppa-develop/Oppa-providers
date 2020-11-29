@@ -25,7 +25,7 @@ export class AuthService {
           console.table(userData)
           localStorage.setItem('user', JSON.stringify(userData));
           this.ngZone.run(() => {
-            this.router.navigate(['/sidemenu/services']);
+            this.router.navigate(['/sidemenu/services/offered']);
           });
         }, err => {
           console.log(`Email y/o contraseña incorrectas`);

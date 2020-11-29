@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>Ofrecer Servicio</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-bottom ion-padding-horizontal">
+
+  <form [formGroup]="newServiceForm" ngNativeValidate>
+    <ion-list>
+      <ion-item>
+        <ion-icon name="add" slot="start"></ion-icon>
+        <ion-label position="floating">Servicio</ion-label>
+        <ion-input formControlName="title" type="text" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="add" slot="start"></ion-icon>
+        <ion-label position="floating">Días Disponible</ion-label>
+        <ion-input formControlName="workable" type="text" required></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+
+</ion-content>
