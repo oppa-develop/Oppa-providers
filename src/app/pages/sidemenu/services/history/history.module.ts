@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { HistoryPageRoutingModule } from './history-routing.module';
 
 import { HistoryPage } from './history.page';
+import { LoadingPipe } from 'src/app/pipes/loading/loading.pipe';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { HistoryPage } from './history.page';
     IonicModule,
     HistoryPageRoutingModule
   ],
-  declarations: [HistoryPage]
+  declarations: [HistoryPage, LoadingPipe]
 })
 export class HistoryPageModule {}

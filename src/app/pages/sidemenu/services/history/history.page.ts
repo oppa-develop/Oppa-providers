@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/providers/auth/auth.service';
 })
 export class HistoryPage implements OnInit {
 
-  $services: Observable<Service[]>
+  $providedServices: Observable<Service[]>
   user: User
 
   constructor(
@@ -26,7 +26,7 @@ export class HistoryPage implements OnInit {
 
   ngOnInit() {
     this.user = this.auth.userData()
-    this.$services = this.api.getHistoryOfServices()
+    this.$providedServices = this.api.getHistoryOfServices()
   }
 
   ionViewWillEnter() {

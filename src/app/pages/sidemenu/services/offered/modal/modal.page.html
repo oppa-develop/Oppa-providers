@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="secondary">
-    <ion-title>Ofrecer Servicio</ion-title>
+    <ion-title>Nuevo Servicio</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="closeModal()">
         <ion-icon slot="icon-only" name="close"></ion-icon>
@@ -9,21 +9,152 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding-bottom ion-padding-horizontal">
+<ion-content fullscreen class="ion-padding-bottom ion-padding-horizontal">
 
   <form [formGroup]="newServiceForm" ngNativeValidate>
-    <ion-list>
-      <ion-item>
-        <ion-icon name="add" slot="start"></ion-icon>
-        <ion-label position="floating">Servicio</ion-label>
-        <ion-input formControlName="title" type="text" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="add" slot="start"></ion-icon>
-        <ion-label position="floating">Días Disponible</ion-label>
-        <ion-input formControlName="workable" type="text" required></ion-input>
-      </ion-item>
-    </ion-list>
+
+    <!-- *** slides *** -->
+    <ion-slides pager="true" [options]="slideOpts">
+
+      <!-- choose a service to provide the service -->
+      <ion-slide>
+        <ion-grid *ngIf="$permitedServices | loading | async as permitedServices">
+          <ng-template [ngIf]="permitedServices.value.length > 0">
+            <ion-row>
+              <h3>Paso 1: seleccione el nuevo servicio</h3>
+            </ion-row>
+            <ion-row>
+              <ion-col size="6" *ngFor="let service of permitedServices.value">
+                <ion-card class="ion-no-margin">
+                  <ion-img [src]="service.img"></ion-img>
+                  <ion-card-header>
+                    <ion-grid class="ion-no-padding">
+                      <ion-row>
+                        <ion-col>
+                          <h3 class="ion-no-margin"><strong>{{ service.name | titlecase }}</strong></h3>
+                          <h6 class="ion-no-margin ion-margin-bottom">{{ service.type }}</h6>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row class="ion-no-padding">
+                        <ion-col>
+                          <ion-icon size="large" class="ion-padding-end" color="primary" name="cash-outline"></ion-icon> 
+                          <ion-label>${{ service.price | currency:'CLP' }}</ion-label>
+                        </ion-col>
+                      </ion-row>
+                      <ion-button expand="block" color="primary" (click)=selectService(service)>seleccionar</ion-button>
+                    </ion-grid>
+                  </ion-card-header>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ng-template>
+        </ion-grid>
+      </ion-slide>
+
+      <!-- choose a place to provide the service -->
+      <ion-slide>
+        <ion-grid>
+          <ion-row>
+            <h3>Paso 2:</h3>
+          </ion-row>
+          <ion-row class="ion-margin-top">
+            <ion-col size="12">
+              <ion-img src="../../../../../../assets/images/place_1.svg"></ion-img>
+            </ion-col>
+            <ion-col size="12">
+              <h3 class="ion-text-center">Seleccione el la(s) comuna(s) o región(es) donde ofrecer el servicio</h3>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item class="ion-margin-vertical">
+                <ion-label position="floating">Region (*)</ion-label>
+                <ion-input formControlName="region" type="text"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12">
+              <ion-item class="ion-margin-vertical">
+                <ion-label position="floating">Comuna (opcional)</ion-label>
+                <ion-input formControlName="district" type="text"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-button expand="block" (click)="next()">siguiente</ion-button>
+        </ion-grid>
+      </ion-slide>
+
+      <!-- choose the workable days to provide the service -->
+      <ion-slide>
+        <ion-grid>
+          <ion-row>
+            <h3>Paso 3:</h3>
+          </ion-row>
+          <ion-row class="ion-margin-top">
+            <ion-col size="12">
+              <ion-img src="../../../../../../assets/images/calendar.svg"></ion-img>
+            </ion-col>
+            <ion-col size="12">
+              <h3 class="ion-text-center">Seleccione el(los) día(s) entre los que ofrecer el servicio</h3>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ion-list>
+                <ion-item *ngFor="let day of ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']">
+                  <ion-label>{{ day | titlecase }}</ion-label>
+                  <ion-checkbox slot="end" [formControlName]="day"></ion-checkbox>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+          <ion-button expand="block" (click)="next()">siguiente</ion-button>
+        </ion-grid>
+      </ion-slide>
+
+      <!-- choose the time between to provide the service -->
+      <ion-slide>
+        <ion-grid>
+          <ion-row>
+            <h3>Paso 4:</h3>
+          </ion-row>
+          <ion-row class="ion-margin-top">
+            <ion-col size="12">
+              <ion-img src="../../../../../../assets/images/time.svg"></ion-img>
+            </ion-col>
+            <ion-col size="12">
+              <h3 class="ion-text-center">Seleccione el las horas entre las que ofrecer el servicio</h3>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item class="ion-margin-vertical">
+                <ion-label position="floating">Inicio</ion-label>
+                <ion-input formControlName="start" type="time"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12">
+              <ion-item class="ion-margin-vertical">
+                <ion-label position="floating">Fin</ion-label>
+                <ion-input formControlName="end" type="time"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-button expand="block" (click)="next()">siguiente</ion-button>
+        </ion-grid>
+      </ion-slide>
+    </ion-slides>
   </form>
+
+  <!-- botones manuales -->
+  <ion-grid hidden>
+    <ion-row>
+      <ion-col size="6">
+        <ion-button expand="block" (click)="prev()">-</ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button expand="block" (click)="next()">+</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>

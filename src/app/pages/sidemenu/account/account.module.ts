@@ -4,19 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ModalPageRoutingModule } from './modal-routing.module';
+import { AccountPageRoutingModule } from './account-routing.module';
 
-import { ModalPage } from './modal.page';
-import { LoadingPipe } from 'src/app/pipes/loading/loading.pipe';
+import { AccountPage } from './account.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ModalPageRoutingModule,
+    AccountPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [ModalPage, LoadingPipe]
+  declarations: [AccountPage]
 })
-export class ModalPageModule {}
+export class AccountPageModule {}

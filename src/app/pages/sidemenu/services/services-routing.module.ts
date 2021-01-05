@@ -10,11 +10,11 @@ const routes: Routes = [
     children: [
       {
         path: 'offered',
-        loadChildren: './offered/offered.module#OfferedPageModule'
+        loadChildren: () => import('./offered/offered.module').then(m => m.OfferedPageModule)
       },
       {
         path: 'history',
-        loadChildren: './history/history.module#HistoryPageModule'
+        loadChildren: () => import('./history/history.module').then(m => m.HistoryPageModule)
       }
     ]
   }
@@ -25,4 +25,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ServicesPageRoutingModule {}
+export class ServicesPageRoutingModule { }

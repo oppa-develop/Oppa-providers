@@ -20,8 +20,8 @@ const routes: Routes = [
         loadChildren: () => import('./messages/messages.module').then( m => m.MessagesPageModule)
       },
       {
-        path: 'preferences',
-        loadChildren: () => import('./preferences/preferences.module').then( m => m.PreferencesPageModule)
+        path: 'account',
+        loadChildren: () => import('./account/account.module').then( m => m.AccountPageModule)
       },
       {
         path: 'help',
@@ -31,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/sidemenu/services',
+    redirectTo: '/sidemenu/services/offered',
     pathMatch: 'full'
   }
 ];

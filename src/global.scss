@@ -36,3 +36,9 @@ ion-avatar {
   height: 88px;
   width: 88px;
 }
+
+
+// workarround to make work the slider when the modal is open
+.swiper-pagination {
+  visibility: hidden;
+}

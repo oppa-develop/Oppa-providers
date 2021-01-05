@@ -11,8 +11,8 @@ export class SidemenuPage implements OnInit {
 
   pages = [
     { title: 'Servicios',                   icon: 'construct-outline',        url: '/sidemenu/services/offered' },
+    { title: 'Cuenta',                      icon: 'person-outline',           url: '/sidemenu/account'},
     { title: 'Mensajes',                    icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
-    { title: 'Configuración de la Cuenta',  icon: 'settings-outline',         url: '/sidemenu/preferences' },
     { title: 'Ayuda',                       icon: 'help-circle-outline',      url: '/sidemenu/help' },
   ]
 

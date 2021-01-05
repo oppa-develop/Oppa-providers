@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Service } from 'src/app/models/service';
@@ -16,12 +17,13 @@ export class OfferedPage implements OnInit {
 
   $services: Observable<Service[]>
   user: User
-
+  
   constructor(
     private api: ApiService,
     private auth: AuthService,
     public actionSheetController: ActionSheetController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) {
 
   }

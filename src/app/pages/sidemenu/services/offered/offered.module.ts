@@ -8,6 +8,7 @@ import { OfferedPageRoutingModule } from './offered-routing.module';
 
 import { OfferedPage } from './offered.page';
 import { ModalPage } from './modal/modal.page';
+import { LoadingPipe } from 'src/app/pipes/loading/loading.pipe';
 
 @NgModule({
   imports: [
@@ -17,7 +18,7 @@ import { ModalPage } from './modal/modal.page';
     OfferedPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [OfferedPage, ModalPage],
+  declarations: [OfferedPage, ModalPage, LoadingPipe],
   entryComponents: [ModalPage]
 })
 export class OfferedPageModule {}

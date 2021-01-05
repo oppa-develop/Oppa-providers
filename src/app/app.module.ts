@@ -13,13 +13,12 @@ import { FormsModule } from '@angular/forms';
 
 // cambiando LOCALE_ID a español
 import es from '@angular/common/locales/es'
-import { registerLocaleData } from '@angular/common'
+import { DatePipe, registerLocaleData } from '@angular/common'
 import { ApiService } from './providers/api/api.service';
-import { LoadingPipe } from './pipes/loading/loading.pipe';
 registerLocaleData(es)
 
 @NgModule({
-  declarations: [AppComponent, LoadingPipe],
+  declarations: [AppComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -30,6 +29,7 @@ registerLocaleData(es)
   providers: [
     StatusBar,
     SplashScreen,
+    DatePipe,
     { 
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy,

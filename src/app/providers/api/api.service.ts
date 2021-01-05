@@ -6,6 +6,7 @@ import { User } from 'src/app/models/user';
 
 import * as faker from 'faker/locale/es_MX'
 import * as timeago from 'timeago.js';
+import { delay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +17,21 @@ export class ApiService {
 
   login(email: string, password: string): Observable<User> {
     return of({
-      fullname: faker.name.findName(),
-      age: faker.random.number(99),
+      firstname: faker.name.firstName(),
+      lastname: faker.name.lastName(),
       email: faker.internet.exampleEmail(),
+      birthdate: faker.date.past(20),
       avatar: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-      role: `apoderado`,
-      credit: parseInt(faker.finance.amount()) * 10,
-      accountType: `companion`
+      role: 'apoderado',
+      credit: parseInt(faker.finance.amount()) * 100,
+      accountType: 'companion',
+      token: faker.random.alphaNumeric(18),
+      location: {
+        street: 'Av. Recoleta #2121',
+        other: 'Dpto. 605B',
+        district: 'Recoleta',
+        region: 'Metropolitana de Santiago'
+      }
     })
   }
 
@@ -40,44 +49,60 @@ export class ApiService {
       { id: parseInt(faker.random.uuid()), type: `Servicio de acompañamiento`,  name: `pagos`,            description: faker.lorem.paragraph(), price: parseInt(`11990`), img: `../../../../assets/images/resize_1590967555.jpg` },
       { id: parseInt(faker.random.uuid()), type: `Servicio a Domicilio`,        name: `curaciones`,       description: faker.lorem.paragraph(), price: parseInt(`14990`), img: `../../../../assets/images/pexels-cottonbro-5721555.jpg` },
       { id: parseInt(faker.random.uuid()), type: `Servicio de acompañamiento`,  name: `compras`,          description: faker.lorem.paragraph(), price: parseInt(`14990`), img: `../../../../assets/images/pexels-gustavo-fring-4173326.jpg` }
-    ])
+    ]).pipe(delay(5000));
   }
 
   getProvidedServices(): Observable<any[]> {
     return of([
       {
-        workable: ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'],
+        workable: ['L','M','X','J','V','S','D'],
+        times: [faker.time.recent(), faker.time.recent()],
         service: {
           name: `peluquería`,
           img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
           price: 9990,
+        },
+        location: {
+          districts: ['Recoleta', 'Conchalí', 'Independencia']
         }
       },
       {
-        workable: ['lunes','martes','miércoles','jueves','viernes'],
+        workable: ['L','M','X','J','V'],
+        times: [faker.time.recent(), faker.time.recent()],
         service: {
           name: `realizar trámite`,
           img_url: `../../../../assets/images/1789259.jpg`,
           price: 9990,
+        },
+        location: {
+          regions: ['Metropolitana de Santiago']
         }
       },
       {
-        workable: ['lunes','martes','miércoles','domingo'],
+        workable: ['L','M','X','D'],
+        times: [faker.time.recent(), faker.time.recent()],
         service: {
           name: `cuidado`,
           img_url: `../../../../assets/images/pexels-andrea-piacquadio-3768131.jpg`,
           price: 11990,
+        },
+        location: {
+          districts: ['Recoleta', 'Conchalí', 'Independencia']
         }
       },
       {
-        workable: ['sábado','domingo'],
+        workable: ['S','D'],
+        times: [faker.time.recent(), faker.time.recent()],
         service: {
           name: `compras`,
           img_url: `../../../../assets/images/pexels-gustavo-fring-4173326.jpg`,
           price: 14990,
+        },
+        location: {
+          regions: ['Magallanes']
         }
       }
-    ])
+    ]).pipe(delay(5000));
   }
 
   getHistoryOfServices(): Observable<any[]> {
@@ -95,7 +120,8 @@ export class ApiService {
           name: `peluquería`,
           img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
           price: 9990,
-        }
+        },
+        state: 'cancelado'
       },
       {
         elder: {
@@ -110,7 +136,8 @@ export class ApiService {
           name: `peluquería`,
           img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
           price: 9990,
-        }
+        },
+        state: 'En curso'
       },
       {
         elder: {
@@ -125,7 +152,8 @@ export class ApiService {
           name: `peluquería`,
           img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
           price: 9990,
-        }
+        },
+        state: 'Terminado'
       },
       {
         elder: {
@@ -140,9 +168,10 @@ export class ApiService {
           name: `peluquería`,
           img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
           price: 9990,
-        }
+        },
+        state: 'Cancelado'
       },
-    ])
+    ]).pipe(delay(5000));
   }
 
   getMessages(): Observable<MessageList[]> {
@@ -157,7 +186,7 @@ export class ApiService {
       { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
       { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
       { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) }
-    ])
+    ]).pipe(delay(5000));
   }
 
   getServicesHistory(): Observable<Service[]> {
@@ -211,6 +240,35 @@ export class ApiService {
         serverRating: faker.random.number(5)
       },
 
+    ]).pipe(delay(5000));
+  }
+
+  getPermitedServices(): Observable<Service[]> {
+    return of([
+      {
+        id: parseInt(faker.random.uuid()),
+        type: 'Servicio de acompañamiento',
+        name: 'realizar trámite',
+        description: faker.lorem.paragraph(),
+        price: parseInt('9990'),
+        img: '../../../../assets/images/1789259.jpg',
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        type: 'Servicio de acompañamiento',
+        name: 'cobro',
+        description: faker.lorem.paragraph(),
+        price: parseInt('14990'),
+        img: '../../../../assets/images/pexels-eduardo-soares-5497951.jpg',
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        type: 'Servicio a Domicilio',
+        name: 'peluquería',
+        description: faker.lorem.paragraph(),
+        price: parseInt('9990'),
+        img: '../../../../assets/images/pexels-nick-demou-1319460.jpg',
+      }
     ])
   }
 
