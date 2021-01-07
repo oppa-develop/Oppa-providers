@@ -91,7 +91,7 @@ export class ApiService {
         }
       },
       {
-        workable: ['S','D'],
+        workable: ['S','V'],
         times: [faker.time.recent(), faker.time.recent()],
         service: {
           name: `compras`,

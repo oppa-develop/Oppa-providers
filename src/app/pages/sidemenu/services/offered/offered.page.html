@@ -85,7 +85,7 @@
                   <ion-col size="6">
                     <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
                     <ion-label *ngIf="providedService.workable.length == 7">Todos los días</ion-label>
-                    <ion-label *ngIf="providedService.workable.length < 7 && providedService.workable.length > 2 && (providedService.workable.includes('S') || providedService.workable.includes('D'))">
+                    <ion-label *ngIf="!(providedService.workable.length == 5 && providedService.workable.includes('L') && providedService.workable.includes('M') && providedService.workable.includes('X') && providedService.workable.includes('J') && providedService.workable.includes('V')) && providedService.workable.length < 7 && (!providedService.workable.includes('S') || !providedService.workable.includes('D'))">
                       Días: 
                       {{ (providedService.workable.includes('L')) ? 'L':null }}
                       {{ (providedService.workable.includes('M')) ? 'M':null }}

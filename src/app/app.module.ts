@@ -15,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 import es from '@angular/common/locales/es'
 import { DatePipe, registerLocaleData } from '@angular/common'
 import { ApiService } from './providers/api/api.service';
+import { LocationService } from './providers/location/location.service';
+import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 registerLocaleData(es)
 
 @NgModule({
@@ -24,7 +26,9 @@ registerLocaleData(es)
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule,
+    HttpClientJsonpModule
   ],
   providers: [
     StatusBar,
@@ -38,7 +42,8 @@ registerLocaleData(es)
       provide: LOCALE_ID,
       useValue: "es-ES"
     },
-    ApiService
+    ApiService,
+    LocationService
   ],
   bootstrap: [AppComponent]
 })

@@ -37,6 +37,9 @@ ion-avatar {
   width: 88px;
 }
 
+.alert-radio-label.sc-ion-alert-md {
+  white-space: normal !important;
+}
 
 // workarround to make work the slider when the modal is open
 .swiper-pagination {

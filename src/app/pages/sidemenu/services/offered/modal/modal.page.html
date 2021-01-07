@@ -16,7 +16,7 @@
     <!-- *** slides *** -->
     <ion-slides pager="true" [options]="slideOpts">
 
-      <!-- choose a service to provide the service -->
+      <!-- choose a service to provide -->
       <ion-slide>
         <ion-grid *ngIf="$permitedServices | loading | async as permitedServices">
           <ng-template [ngIf]="permitedServices.value.length > 0">
@@ -69,13 +69,17 @@
             <ion-col size="12">
               <ion-item class="ion-margin-vertical">
                 <ion-label position="floating">Region (*)</ion-label>
-                <ion-input formControlName="region" type="text"></ion-input>
+                <ion-select formControlName="region" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar" (ionChange)="getDistrictsByRegion()">
+                  <ion-select-option *ngFor="let region of regions">{{ region.nombre }}</ion-select-option>
+                </ion-select>
               </ion-item>
             </ion-col>
             <ion-col size="12">
               <ion-item class="ion-margin-vertical">
                 <ion-label position="floating">Comuna (opcional)</ion-label>
-                <ion-input formControlName="district" type="text"></ion-input>
+                <ion-select multiple formControlName="districts" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+                  <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
+                </ion-select>
               </ion-item>
             </ion-col>
           </ion-row>
@@ -99,12 +103,18 @@
           </ion-row>
           <ion-row>
             <ion-col size="12">
-              <ion-list>
-                <ion-item *ngFor="let day of ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']">
-                  <ion-label>{{ day | titlecase }}</ion-label>
-                  <ion-checkbox slot="end" [formControlName]="day"></ion-checkbox>
-                </ion-item>
-              </ion-list>
+              <ion-item class="ion-margin-vertical">
+                <ion-label position="floating">Días trabajables</ion-label>
+                <ion-select multiple formControlName="workable" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+                  <ion-select-option value="L">Lunes</ion-select-option>
+                  <ion-select-option value="M">Martes</ion-select-option>
+                  <ion-select-option value="X">Miércoles</ion-select-option>
+                  <ion-select-option value="J">Jueves</ion-select-option>
+                  <ion-select-option value="V">Viernes</ion-select-option>
+                  <ion-select-option value="S">Sábado</ion-select-option>
+                  <ion-select-option value="D">Domingo</ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-col>
           </ion-row>
           <ion-button expand="block" (click)="next()">siguiente</ion-button>
@@ -142,19 +152,78 @@
           <ion-button expand="block" (click)="next()">siguiente</ion-button>
         </ion-grid>
       </ion-slide>
+
+      <!-- check data before send -->
+      <ion-slide>
+        <ion-grid>
+          <ion-row>
+            <ion-col class="ion-no-padding" size="12">
+              <h3>Confirmar datos:</h3>
+            </ion-col>
+            <ion-col class="ion-no-padding" size="12">
+              <ion-card class="ion-no-margin" *ngIf="selectedService">
+                <ion-img [src]="selectedService.img"></ion-img>
+                <ion-card-header>
+                  <ion-grid class="ion-no-padding">
+                    <ion-row>
+                      <ion-col size="12">
+                        <h2 class="ion-no-margin">
+                          <strong>{{ dataToCheck.name | titlecase }}</strong>
+                        </h2>
+                        <h6 class="ion-no-margin ion-padding-bottom">{{ dataToCheck.type }}</h6>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row class="ion-no-padding">
+                      <ion-col size="6">
+                        <ion-icon size="large" class="ion-padding-end" color="primary" name="cash-outline"></ion-icon> 
+                        <ion-label>${{ dataToCheck.price | currency:'CLP' }}</ion-label>
+                      </ion-col>
+                      <ion-col size="6">
+                        <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
+                        <ion-label *ngIf="dataToCheck.workable?.length == 7">Todos los días</ion-label>
+                        <ion-label *ngIf="!(dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('L') && dataToCheck.workable?.includes('M') && dataToCheck.workable?.includes('X') && dataToCheck.workable?.includes('J') && dataToCheck.workable?.includes('V')) && dataToCheck.workable?.length < 7 && (!dataToCheck.workable?.includes('S') || !dataToCheck.workable?.includes('D'))">
+                          Días: 
+                          {{ (dataToCheck.workable?.includes('L')) ? 'L':null }}
+                          {{ (dataToCheck.workable?.includes('M')) ? 'M':null }}
+                          {{ (dataToCheck.workable?.includes('X')) ? 'X':null }}
+                          {{ (dataToCheck.workable?.includes('J')) ? 'J':null }}
+                          {{ (dataToCheck.workable?.includes('V')) ? 'V':null }}
+                          {{ (dataToCheck.workable?.includes('S')) ? 'S':null }}
+                          {{ (dataToCheck.workable?.includes('D')) ? 'D':null }}
+                        </ion-label>
+                        <ion-label *ngIf="dataToCheck.workable?.length == 2 && dataToCheck.workable?.includes('S') && dataToCheck.workable?.includes('D')">Fines de Semana</ion-label>
+                        <ion-label *ngIf="dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('L') && dataToCheck.workable?.includes('M') && dataToCheck.workable?.includes('X') && dataToCheck.workable?.includes('J') && dataToCheck.workable?.includes('V')">Durante la Semana</ion-label>
+                      </ion-col>
+                      <ion-col size="1">
+                        <ion-icon size="large" class="ion-padding-end" color="primary" name="location-outline"></ion-icon> 
+                      </ion-col>
+                      <ion-col class="col-padding" size="5" *ngIf="!dataToCheck.districts">
+                        <div>Region:</div>
+                        <div class="ion-margin-bottom">{{ dataToCheck.region }}</div>
+                      </ion-col>
+                      <ion-col class="col-padding" size="5" *ngIf="dataToCheck.districts?.length">
+                        <div>{{ (dataToCheck.districts.length > 1) ? 'Comunas:' : 'Comuna:' }}</div>
+                        <ul class="ion-no-margin ion-margin-bottom">
+                          <li *ngFor="let district of dataToCheck.districts">{{ district }}</li>
+                        </ul>
+                      </ion-col>
+                      <ion-col size="1">
+                        <ion-icon size="large" class="ion-padding-end" color="primary" name="time-outline"></ion-icon> 
+                      </ion-col>
+                      <ion-col class="col-padding" size="5">
+                        <ion-label>{{ dataToCheck.start + ' - ' + dataToCheck.end }}</ion-label>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                  <ion-button expand="block" color="primary" (click)="closeModal()">Aceptar</ion-button>
+                </ion-card-header>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-slide>
+
     </ion-slides>
   </form>
-
-  <!-- botones manuales -->
-  <ion-grid hidden>
-    <ion-row>
-      <ion-col size="6">
-        <ion-button expand="block" (click)="prev()">-</ion-button>
-      </ion-col>
-      <ion-col size="6">
-        <ion-button expand="block" (click)="next()">+</ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 
 </ion-content>
