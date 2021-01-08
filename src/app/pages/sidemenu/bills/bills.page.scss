@@ -1,10 +1,15 @@
-ion-content ion-icon {
+ion-content ion-item>ion-icon {
   position: absolute;
   right: 30px;
-  padding-top: 10px;
+  top: 30px;
 }
 
 ion-content ion-note {
   margin-top: 10px;
   font-size: 0.8rem;
+}
+
+ion-thumbnail {
+  height: 16vh;
+  width: 30%;
 }

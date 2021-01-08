@@ -13,19 +13,23 @@ const routes: Routes = [
     children: [
       {
         path: 'services',
-        loadChildren: () => import('./services/services.module').then( m => m.ServicesPageModule)
+        loadChildren: () => import('./services/services.module').then(m => m.ServicesPageModule)
       },
       {
         path: 'messages',
-        loadChildren: () => import('./messages/messages.module').then( m => m.MessagesPageModule)
+        loadChildren: () => import('./messages/messages.module').then(m => m.MessagesPageModule)
       },
       {
         path: 'account',
-        loadChildren: () => import('./account/account.module').then( m => m.AccountPageModule)
+        loadChildren: () => import('./account/account.module').then(m => m.AccountPageModule)
       },
       {
         path: 'help',
-        loadChildren: () => import('./help/help.module').then( m => m.HelpPageModule)
+        loadChildren: () => import('./help/help.module').then(m => m.HelpPageModule)
+      },
+      {
+        path: 'bills',
+        loadChildren: () => import('./bills/bills.module').then(m => m.BillsPageModule)
       }
     ]
   },

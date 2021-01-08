@@ -24,6 +24,7 @@
 
 <ion-content *ngIf="$nextServices | loading | async as nextServices">
 
+  <!-- skeleton loading for next services -->
   <ng-template [ngIf]="nextServices.loading">
     <ion-list>
       <ion-item class="ion-margin-top">
@@ -134,4 +135,5 @@
   <ng-template [ngIf]="nextServices.error">
     <h1>Error</h1>
   </ng-template>
+  
 </ion-content>

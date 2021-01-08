@@ -53,4 +53,32 @@
       <ion-button expand="block" color="primary" class="ion-margin-bottom" (click)="saveData()">Actualizar Datos</ion-button>
     </ion-card>
   </form>
+  <form [formGroup]="userAddressForm" ngNativeValidate>
+    <ion-card class="ion-margin-horizontal ion-padding-horizontal">
+      <ion-list lines="none">
+        <ion-list-header class="ion-text-center ion-no-padding">
+          <ion-title color="secondary">Mi Dirección</ion-title>
+        </ion-list-header>
+        <ion-item class="ion-margin-vertical">
+          <ion-label position="floating">Calle</ion-label>
+          <ion-input formControlName="street" type="text" required></ion-input>
+        </ion-item>
+        <ion-item class="ion-margin-vertical">
+          <ion-label position="floating">Calle</ion-label>
+          <ion-input formControlName="other" type="text" required></ion-input>
+        </ion-item>
+        <ion-item class="ion-margin-vertical">
+          <ion-label position="floating">Comuna</ion-label>
+          <ion-input formControlName="district" type="text" required></ion-input>
+        </ion-item>
+        <ion-item class="ion-margin-vertical">
+          <ion-label position="floating">Region</ion-label>
+          <ion-select formControlName="region" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar" (ionChange)="getDistrictsByRegion()">
+            <ion-select-option *ngFor="let region of regions">{{ region.nombre }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" color="primary" class="ion-margin-bottom" (click)="saveData()">Actualizar Dirección</ion-button>
+    </ion-card>
+  </form>
 </ion-content>

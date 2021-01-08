@@ -49,7 +49,7 @@ export class ApiService {
       { id: parseInt(faker.random.uuid()), type: `Servicio de acompañamiento`,  name: `pagos`,            description: faker.lorem.paragraph(), price: parseInt(`11990`), img: `../../../../assets/images/resize_1590967555.jpg` },
       { id: parseInt(faker.random.uuid()), type: `Servicio a Domicilio`,        name: `curaciones`,       description: faker.lorem.paragraph(), price: parseInt(`14990`), img: `../../../../assets/images/pexels-cottonbro-5721555.jpg` },
       { id: parseInt(faker.random.uuid()), type: `Servicio de acompañamiento`,  name: `compras`,          description: faker.lorem.paragraph(), price: parseInt(`14990`), img: `../../../../assets/images/pexels-gustavo-fring-4173326.jpg` }
-    ]).pipe(delay(5000));
+    ])
   }
 
   getProvidedServices(): Observable<any[]> {
@@ -102,7 +102,7 @@ export class ApiService {
           regions: ['Magallanes']
         }
       }
-    ]).pipe(delay(5000));
+    ])
   }
 
   getHistoryOfServices(): Observable<any[]> {
@@ -171,7 +171,7 @@ export class ApiService {
         },
         state: 'Cancelado'
       },
-    ]).pipe(delay(5000));
+    ])
   }
 
   getMessages(): Observable<MessageList[]> {
@@ -186,7 +186,7 @@ export class ApiService {
       { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
       { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
       { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) }
-    ]).pipe(delay(5000));
+    ])
   }
 
   getServicesHistory(): Observable<Service[]> {
@@ -240,7 +240,54 @@ export class ApiService {
         serverRating: faker.random.number(5)
       },
 
-    ]).pipe(delay(5000));
+    ])
+  }
+
+  getBillsFromDate(date: string): Observable<Service[]> {
+    return of([
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio a Domicilio`,
+        name: `peluquería`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`9990`),
+        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
+        payment: {
+          date: faker.date.past(),
+          price: 5000,
+          state: 'paid'
+        }
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio a Domicilio`,
+        name: `peluquería`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`9990`),
+        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
+        payment: {
+          date: faker.date.past(),
+          price: 5000,
+          state: 'pending'
+        }
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio a Domicilio`,
+        name: `peluquería`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`9990`),
+        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
+        payment: {
+          date: faker.date.past(),
+          price: 5000,
+          state: 'paid'
+        }
+      },
+    ])
   }
 
   getServicesHistoryByDate(date: string): Observable<Service[]> {
@@ -342,7 +389,7 @@ export class ApiService {
         serverRating: faker.random.number(5)
       },
 
-    ]).pipe(delay(5000));
+    ])
   }
 
   getPermitedServices(): Observable<Service[]> {

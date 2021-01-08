@@ -10,10 +10,11 @@ import { AuthService } from 'src/app/providers/auth/auth.service';
 export class SidemenuPage implements OnInit {
 
   pages = [
-    { title: 'Servicios',                   icon: 'construct-outline',        url: '/sidemenu/services/offered' },
-    { title: 'Mis Datos',                      icon: 'person-outline',           url: '/sidemenu/account'},
-    { title: 'Mensajes',                    icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
-    { title: 'Ayuda',                       icon: 'help-circle-outline',      url: '/sidemenu/help' },
+    { title: 'Servicios',  icon: 'construct-outline',        url: '/sidemenu/services/offered' },
+    { title: 'Mis Datos',  icon: 'person-outline',           url: '/sidemenu/account'},
+    { title: 'Mensajes',   icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
+    { title: 'Facturas',   icon: 'receipt-outline',          url: '/sidemenu/bills' },
+    { title: 'Ayuda',      icon: 'help-circle-outline',      url: '/sidemenu/help' },
   ]
 
   selectedPath = ''

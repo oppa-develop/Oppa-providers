@@ -48,12 +48,12 @@ export class ModalPage implements OnInit {
       .then((swiper: any) => {
         this.slider = swiper
       })
-      this.location.getRegions().toPromise()
-        .then((regions) => {
-          this.regions = regions
-          console.log(regions);
-          
-        })
+    this.location.getRegions().toPromise()
+      .then((regions) => {
+        this.regions = regions
+        console.log(regions);
+        
+      })
   }
 
   getDistrictsByRegion(){

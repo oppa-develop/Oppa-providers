@@ -5,6 +5,7 @@ import { ToastController } from '@ionic/angular';
 import { User } from 'src/app/models/user';
 import { ApiService } from 'src/app/providers/api/api.service';
 import { AuthService } from 'src/app/providers/auth/auth.service';
+import { LocationService } from 'src/app/providers/location/location.service';
 
 @Component({
   selector: 'app-account',
@@ -15,19 +16,28 @@ export class AccountPage implements OnInit {
 
   user: User
   userDataForm: FormGroup
+  userAddressForm: FormGroup
+  regions: any[]
+  districts: any[]
 
   constructor(
     private api: ApiService,
     private auth: AuthService,
     private formBuilder: FormBuilder,
     private dateFormat: DatePipe,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private location: LocationService
   ) { }
 
   ngOnInit() {
     this.user = this.auth.userData()
     this.userDataForm = this.createUserDataForm()
+    this.userAddressForm = this.createUserAddressForm()
     console.table(this.user)
+    this.location.getRegions().toPromise()
+      .then((regions) => {
+        this.regions = regions
+      })
   }
 
   async presentToast(message: string, color: string) {
@@ -48,8 +58,26 @@ export class AccountPage implements OnInit {
     })
   }
   
+
+  createUserAddressForm() {
+    return this.formBuilder.group({
+      street: [this.user.location.street, Validators.required],
+      other: [this.user.location.other, Validators.required],
+      district: [this.user.location.district, Validators.required],
+      region: [this.user.location.region, Validators.required],
+    })
+  }
+  
   saveData() {
     this.presentToast('Datos actualizados.', 'light')
+  }
+
+  getDistrictsByRegion(){
+    this.userAddressForm.controls.districts.reset()
+    this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.userAddressForm.value.region).codigo).toPromise()
+      .then((districts: any) => {
+        this.districts = districts
+      })
   }
 
 }
