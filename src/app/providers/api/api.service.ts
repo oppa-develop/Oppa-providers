@@ -243,6 +243,108 @@ export class ApiService {
     ]).pipe(delay(5000));
   }
 
+  getServicesHistoryByDate(date: string): Observable<Service[]> {
+    return of([
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio a Domicilio`,
+        name: `peluquería`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`9990`),
+        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio de acompañamiento`,
+        name: `realizar trámite`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`9990`),
+        img: `../../../../assets/images/1789259.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio a Domicilio`,
+        name: `podología`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`14990`),
+        img: `../../../../assets/images/pexels-stephanie-allen-4085445.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio de acompañamiento`,
+        name: `cobro`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`14990`),
+        img: `../../../../assets/images/pexels-eduardo-soares-5497951.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio a Domicilio`,
+        name: `peluquería`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`9990`),
+        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio de acompañamiento`,
+        name: `realizar trámite`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`9990`),
+        img: `../../../../assets/images/1789259.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio a Domicilio`,
+        name: `podología`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`14990`),
+        img: `../../../../assets/images/pexels-stephanie-allen-4085445.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+      {
+        id: parseInt(faker.random.uuid()),
+        date,
+        type: `Servicio de acompañamiento`,
+        name: `cobro`,
+        description: faker.lorem.paragraph(),
+        price: parseInt(`14990`),
+        img: `../../../../assets/images/pexels-eduardo-soares-5497951.jpg`,
+        serverName: faker.name.findName(),
+        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
+        serverRating: faker.random.number(5)
+      },
+
+    ]).pipe(delay(5000));
+  }
+
   getPermitedServices(): Observable<Service[]> {
     return of([
       {

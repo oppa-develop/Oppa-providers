@@ -9,7 +9,105 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-card>
+  <ion-text color="primary">
+    <h3 class="ion-text-center">{{ calendar.title | date:'MMM - yyyy' | titlecase }}</h3>
+  </ion-text>
+  <calendar
+  [eventSource]="eventSource"
+  [calendarMode]="calendar.mode"
+  [currentDate]="calendar.currentDate"
+  [locale]="calendar.locale"
+  (onTimeSelected)="onDateSelected($event)"
+  ></calendar>
+</ion-card>
+
 <ion-content *ngIf="$nextServices | loading | async as nextServices">
+
+  <ng-template [ngIf]="nextServices.loading">
+    <ion-list>
+      <ion-item class="ion-margin-top">
+        <ion-grid class="ion-no-padding">
+          <ion-row>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; height: 8vh; margin-bottom: 10px"></ion-skeleton-text>
+            </ion-col>
+            <ion-col class="ion-padding-start">
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 50%; height: 15px;"></ion-skeleton-text>                
+              </ion-col>
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; margin-top: 3vh;"></ion-skeleton-text>
+              </ion-col>
+            </ion-col>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 100%;"></ion-skeleton-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item class="ion-margin-top">
+        <ion-grid class="ion-no-padding">
+          <ion-row>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; height: 8vh; margin-bottom: 10px"></ion-skeleton-text>
+            </ion-col>
+            <ion-col class="ion-padding-start">
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 50%; height: 15px;"></ion-skeleton-text>                
+              </ion-col>
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; margin-top: 3vh;"></ion-skeleton-text>
+              </ion-col>
+            </ion-col>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 100%;"></ion-skeleton-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item class="ion-margin-top">
+        <ion-grid class="ion-no-padding">
+          <ion-row>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; height: 8vh; margin-bottom: 10px"></ion-skeleton-text>
+            </ion-col>
+            <ion-col class="ion-padding-start">
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 50%; height: 15px;"></ion-skeleton-text>                
+              </ion-col>
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; margin-top: 3vh;"></ion-skeleton-text>
+              </ion-col>
+            </ion-col>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 100%;"></ion-skeleton-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item class="ion-margin-top">
+        <ion-grid class="ion-no-padding">
+          <ion-row>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; height: 8vh; margin-bottom: 10px"></ion-skeleton-text>
+            </ion-col>
+            <ion-col class="ion-padding-start">
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 50%; height: 15px;"></ion-skeleton-text>                
+              </ion-col>
+              <ion-col size="12">
+                <ion-skeleton-text animated class="ion-no-margin" style="width: 90%; margin-top: 3vh;"></ion-skeleton-text>
+              </ion-col>
+            </ion-col>
+            <ion-col size="2">
+              <ion-skeleton-text animated class="ion-no-margin" style="width: 100%;"></ion-skeleton-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 
   <!-- list of next services -->
   <ng-template [ngIf]="nextServices.value">
@@ -27,8 +125,13 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-note><strong>{{ service.date | date: 'shortDate' }}</strong></ion-note>
+      <ion-note><strong>{{ service.date }}</strong></ion-note>
       <ion-icon size=large name="calendar-outline"></ion-icon>
     </ion-item>
+  </ng-template>
+
+  <!-- error on get nextServices -->
+  <ng-template [ngIf]="nextServices.error">
+    <h1>Error</h1>
   </ng-template>
 </ion-content>

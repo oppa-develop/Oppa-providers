@@ -8,13 +8,15 @@ import { ModalPageRoutingModule } from './modal-routing.module';
 
 import { ModalPage } from './modal.page';
 import { LoadingPipe } from 'src/app/pipes/loading/loading.pipe';
+import { NgCalendarModule } from 'ionic2-calendar';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ModalPageRoutingModule
+    ModalPageRoutingModule,
+    NgCalendarModule
   ],
   declarations: [ModalPage, LoadingPipe]
 })
