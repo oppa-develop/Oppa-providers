@@ -10,5 +10,10 @@ export interface Service {
   serverName?: string
   serverRating?: number 
   serverImg?: string
+  payment?: {
+    date: Date,
+    price: number,
+    state: string
+  }
 
 }

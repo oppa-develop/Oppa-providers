@@ -26,8 +26,31 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 
-ion-card *:not(ion-avatar) ion-img {
-  height: 20vh;
+ion-card  > ion-img {
+  height: 23vh;
   width: 100%;
   object-fit: cover;
+}
+
+ion-avatar {
+  height: 88px;
+  width: 88px;
+}
+
+.alert-radio-label.sc-ion-alert-md {
+  white-space: normal !important;
+}
+
+// workarround to make work the slider when the modal is open
+.swiper-pagination {
+  visibility: hidden;
+}
+
+th {
+  background-color: var(--ion-color-primary);
+  color: var(--ion-color-light-contrast);
+}
+
+td.monthview-selected {
+  background-color: var(--ion-color-primary) !important;
 }

@@ -1,72 +1,19 @@
-<ion-header>
-  <ion-toolbar color="secondary">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Servicios</ion-title>
-    <!-- se necesitan categorias de servicios -->
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-chip class="ion-margin-start">
-      <ion-icon color="dark" class="ion-no-margin" name="options-outline"></ion-icon>
-    </ion-chip>
-    <ion-chip (click)="presentActionSheetOrderBy()">
-      <ion-text>Ordenar</ion-text>
-      <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
-    </ion-chip>
-    <ion-chip (click)="presentActionSheetPriceRange()">
-      <ion-text>Rango de precios</ion-text>
-      <ion-icon color="dark" name="chevron-down-outline"></ion-icon>
-    </ion-chip>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   
-  <ion-grid>
-    <ion-row>
-
-      <!-- skeleton card for loading -->
-      <ion-col>
-        <ion-card button hidden>
-          <ion-skeleton-text animated class="ion-no-margin" style="width: 100%; height: 20vh;"></ion-skeleton-text>
-          <ion-card-header>
-            <ion-skeleton-text animated style="width: 25%"></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 55%"></ion-skeleton-text>
-          </ion-card-header>
-        </ion-card>
-      </ion-col>
-
-      <!-- services on lists of cards -->
-      <ion-col *ngFor="let service of $services | async" size="12">
-        <ion-card>
-          <ion-img [src]="service.img"></ion-img>
-          <ion-card-header>
-            <ion-grid class="ion-no-padding">
-              <ion-row class="ion-no-padding">
-                <ion-col>
-                  <ion-text color="dark">
-                    <p class="ion-no-margin"><strong>{{ service.name | titlecase }}</strong></p>
-                  </ion-text>
-                  <p class="ion-no-margin">Costo: ${{ service.price | currency:'CLP'}}</p>
-                </ion-col>
-                <ion-col>
-                  <ion-button color="primary" class="ion-float-end">solicitar</ion-button>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card-header>
-        </ion-card>
-      </ion-col>
-
-    </ion-row>
-  </ion-grid>
+  <ion-router-outlet></ion-router-outlet>
 
 </ion-content>
 
-<ion-footer>
-  <ion-toolbar>
-    <ion-title>Crédito:</ion-title>
-    <ion-title slot="end" class="ion-padding-horizontal"> ${{ user.credit | currency:'CLP' }}</ion-title>
-  </ion-toolbar>
-</ion-footer>
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="offered">
+      <ion-icon name="construct-outline"></ion-icon>
+      <ion-label>Ofrecidos</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="history">
+      <ion-icon name="time-outline"></ion-icon>
+      <ion-label>Historial</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

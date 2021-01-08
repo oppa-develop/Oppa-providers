@@ -13,33 +13,29 @@ const routes: Routes = [
     children: [
       {
         path: 'services',
-        loadChildren: () => import('./services/services.module').then( m => m.ServicesPageModule)
+        loadChildren: () => import('./services/services.module').then(m => m.ServicesPageModule)
       },
       {
         path: 'messages',
-        loadChildren: () => import('./messages/messages.module').then( m => m.MessagesPageModule)
+        loadChildren: () => import('./messages/messages.module').then(m => m.MessagesPageModule)
       },
       {
-        path: 'ratings',
-        loadChildren: () => import('./ratings/ratings.module').then( m => m.RatingsPageModule)
-      },
-      {
-        path: 'preferences',
-        loadChildren: () => import('./preferences/preferences.module').then( m => m.PreferencesPageModule)
+        path: 'account',
+        loadChildren: () => import('./account/account.module').then(m => m.AccountPageModule)
       },
       {
         path: 'help',
-        loadChildren: () => import('./help/help.module').then( m => m.HelpPageModule)
+        loadChildren: () => import('./help/help.module').then(m => m.HelpPageModule)
       },
       {
-        path: 'invoices',
-        loadChildren: () => import('./invoices/invoices.module').then( m => m.InvoicesPageModule)
+        path: 'bills',
+        loadChildren: () => import('./bills/bills.module').then(m => m.BillsPageModule)
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/sidemenu/services',
+    redirectTo: '/sidemenu/services/offered',
     pathMatch: 'full'
   }
 ];
