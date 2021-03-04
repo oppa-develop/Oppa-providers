@@ -1,5 +1,5 @@
 {
-  "name": "oppa-app",
+  "name": "oppa-providers",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -7,6 +7,7 @@
     "ng": "ng",
     "start": "ionic serve --lab --consolelogs --external --devapp --no-open",
     "build": "ionic capacitor build android",
+    "resources": "capacitor-resources -p android",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -1,6 +1,6 @@
 {
-  "appId": "oppa.app",
-  "appName": "oppa-app",
+  "appId": "oppa.providers",
+  "appName": "oppa-providers",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

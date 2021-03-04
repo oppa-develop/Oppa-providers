@@ -1,5 +1,5 @@
 {
-  "name": "oppa-app",
+  "name": "oppa-providers",
   "integrations": {
     "capacitor": {}
   },
