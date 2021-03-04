@@ -6,6 +6,7 @@ import { User } from 'src/app/models/user';
 import { ApiService } from 'src/app/providers/api/api.service';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { LocationService } from 'src/app/providers/location/location.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-account',
@@ -19,6 +20,7 @@ export class AccountPage implements OnInit {
   userAddressForm: FormGroup
   regions: any[]
   districts: any[]
+  apiUrl: string = environment.HOST + '/'
 
   constructor(
     private api: ApiService,
@@ -32,7 +34,7 @@ export class AccountPage implements OnInit {
   ngOnInit() {
     this.user = this.auth.userData()
     this.userDataForm = this.createUserDataForm()
-    this.userAddressForm = this.createUserAddressForm()
+    // this.userAddressForm = this.createUserAddressForm()
     console.table(this.user)
     this.location.getRegions().toPromise()
       .then((regions) => {
@@ -53,20 +55,21 @@ export class AccountPage implements OnInit {
     return this.formBuilder.group({
       firstname: [this.user.firstname, Validators.required],
       lastname: [this.user.lastname, Validators.required],
+      gender: [this.user.gender, Validators.required],
       email: [this.user.email, [Validators.required, Validators.email]],
       birthdate: [this.dateFormat.transform(this.user.birthdate, 'dd-MM-yyyy'), Validators.required],
+      phone: [this.user.phone, Validators.required],
     })
   }
   
-
-  createUserAddressForm() {
+  /* createUserAddressForm() {
     return this.formBuilder.group({
-      street: [this.user.location.street, Validators.required],
-      other: [this.user.location.other, Validators.required],
-      district: [this.user.location.district, Validators.required],
-      region: [this.user.location.region, Validators.required],
+      street: [this.user.addresses?.street, Validators.required],
+      other: [this.user.addresses?.other, Validators.required],
+      district: [this.user.addresses?.district, Validators.required],
+      region: [this.user.addresses?.region, Validators.required],
     })
-  }
+  } */
   
   saveData() {
     this.presentToast('Datos actualizados.', 'light')
