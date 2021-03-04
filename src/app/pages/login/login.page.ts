@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as faker from 'faker/locale/es_MX'
 import { AuthService } from 'src/app/providers/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -30,13 +30,13 @@ export class LoginPage implements OnInit {
   }
 
   login() {
-    this.auth.login(this.loginForm.value)
+    this.auth.login(this.loginForm.value.email, this.loginForm.value.password)
   }
 
   createLoginForm() {
     return this.formBuilder.group({
-      email: [faker.internet.email(), [Validators.required, Validators.email]],
-      password: [faker.internet.password(), Validators.required]
+      email: [environment.user.email || null, [Validators.required, Validators.email]],
+      password: [environment.user.password || null, Validators.required]
     })
   }
 

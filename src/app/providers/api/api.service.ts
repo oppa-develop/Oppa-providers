@@ -7,32 +7,22 @@ import { User } from 'src/app/models/user';
 import * as faker from 'faker/locale/es_MX'
 import * as timeago from 'timeago.js';
 import { delay } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  constructor() { }
+  private apiUrl: string = environment.HOST + '/api'
+
+  constructor(
+    private http: HttpClient
+  ) { }
 
   login(email: string, password: string): Observable<User> {
-    return of({
-      firstname: faker.name.firstName(),
-      lastname: faker.name.lastName(),
-      email: faker.internet.exampleEmail(),
-      birthdate: faker.date.past(20),
-      avatar: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-      role: 'apoderado',
-      credit: parseInt(faker.finance.amount()) * 100,
-      accountType: 'companion',
-      token: faker.random.alphaNumeric(18),
-      location: {
-        street: 'Av. Recoleta #2121',
-        other: 'Dpto. 605B',
-        district: 'Recoleta',
-        region: 'Metropolitana de Santiago'
-      }
-    })
+    return this.http.post<User>(this.apiUrl + '/auth/login-provider', { email, password });
   }
 
   getServices(): Observable<Service[]> {

@@ -3,7 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  serverSocket: 'http://localhost:3000',
+  HOST: 'http://localhost:3000',
+  secret: 'S0yuNt3xt0S3cR3t0',
+  user: {
+    email: 't.provider@example.com',
+    password: 'test'
+  }
 };
 
 /*

@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { User } from 'src/app/models/user';
 import { ApiService } from '../api/api.service';
 
@@ -15,22 +15,40 @@ export class AuthService {
     private api: ApiService,
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     public router: Router, // para enviar al usuario a otra vista
-    private navController: NavController
+    private navController: NavController,
+    private loadingController: LoadingController,
+    public toastCtrl: ToastController,
   ) { }
 
-  login(userCredentials){
-    this.api.login(userCredentials.email, userCredentials.password)
-      .subscribe(
-        (userData: User) => {
-          console.table(userData)
-          localStorage.setItem('user', JSON.stringify(userData));
-          this.ngZone.run(() => {
-            this.router.navigate(['/sidemenu/services/offered']);
-          });
+  async login(email, password){
+    const loading = await this.loadingController.create({
+      message: 'Ingresando...'
+    });
+    await loading.present()
+    this.api.login(email, password).toPromise()
+      .then((userData: any) => {
+        localStorage.setItem('user', JSON.stringify(userData.user));
+        this.ngZone.run(() => {
+          this.router.navigate(['/sidemenu/services/offered']);
+          loading.dismiss()
         }, err => {
-          console.log(`Email y/o contraseña incorrectas`);
+          console.log(err);
+          loading.dismiss()
+        });
+      })
+      .catch(err => {
+        loading.dismiss()
+        let errMessage: string;
+        switch (err.error.message) {
+          case 'User is not a client':
+            errMessage = 'Usuario no registrado.'
+            break
+          default:
+            errMessage = 'Email y/o contraseña incorrectas.'
+            break
         }
-      );
+        this.presentToast(errMessage, 'danger');
+      })
   }
 
   logout(){
@@ -71,5 +89,14 @@ export class AuthService {
     let userData = this.userData();
     userData.email = email;
     localStorage.setItem('user', JSON.stringify(userData));
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      color
+    });
+    toast.present();
   }
 }
