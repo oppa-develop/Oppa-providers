@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/providers/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sidemenu',
@@ -19,7 +20,7 @@ export class SidemenuPage implements OnInit {
 
   selectedPath = ''
   darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches || false;
-
+  apiUrl: string = environment.HOST + '/'
   user: User
 
   constructor(
