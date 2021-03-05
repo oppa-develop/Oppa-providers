@@ -42,57 +42,8 @@ export class ApiService {
     ])
   }
 
-  getProvidedServices(): Observable<any[]> {
-    return of([
-      {
-        workable: ['L','M','X','J','V','S','D'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        location: {
-          districts: ['Recoleta', 'Conchalí', 'Independencia']
-        }
-      },
-      {
-        workable: ['L','M','X','J','V'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `realizar trámite`,
-          img_url: `../../../../assets/images/1789259.jpg`,
-          price: 9990,
-        },
-        location: {
-          regions: ['Metropolitana de Santiago']
-        }
-      },
-      {
-        workable: ['L','M','X','D'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `cuidado`,
-          img_url: `../../../../assets/images/pexels-andrea-piacquadio-3768131.jpg`,
-          price: 11990,
-        },
-        location: {
-          districts: ['Recoleta', 'Conchalí', 'Independencia']
-        }
-      },
-      {
-        workable: ['S','V'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `compras`,
-          img_url: `../../../../assets/images/pexels-gustavo-fring-4173326.jpg`,
-          price: 14990,
-        },
-        location: {
-          regions: ['Magallanes']
-        }
-      }
-    ])
+  getProvidedServices(provider_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/services/offered/provider/${provider_id}`)
   }
 
   getHistoryOfServices(): Observable<any[]> {
@@ -409,6 +360,10 @@ export class ApiService {
         img: '../../../../assets/images/pexels-nick-demou-1319460.jpg',
       }
     ])
+  }
+
+  changeServiceOfferedState(offeredService): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/services/offered/change-state`, offeredService);
   }
 
 }

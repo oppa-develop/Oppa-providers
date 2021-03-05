@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActionSheetController, ModalController } from '@ionic/angular';
+import { ActionSheetController, ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Service } from 'src/app/models/service';
 import { User } from 'src/app/models/user';
 import { ApiService } from 'src/app/providers/api/api.service';
 import { AuthService } from 'src/app/providers/auth/auth.service';
+import { environment } from 'src/environments/environment';
 import { ModalPage } from './modal/modal.page';
 
 @Component({
@@ -17,20 +18,21 @@ export class OfferedPage implements OnInit {
 
   $services: Observable<Service[]>
   user: User
+  apiUrl: string = environment.HOST + '/'
   
   constructor(
     private api: ApiService,
     private auth: AuthService,
     public actionSheetController: ActionSheetController,
     private modalController: ModalController,
-    private router: Router
+    public toastCtrl: ToastController
   ) {
 
   }
 
   ngOnInit() {
     this.user = this.auth.userData()
-    this.$services = this.api.getProvidedServices()
+    this.$services = this.api.getProvidedServices(this.user.provider_id)
   }
 
   ionViewWillEnter() {
@@ -42,6 +44,28 @@ export class OfferedPage implements OnInit {
       component: ModalPage
     })
     return await modal.present()
+  }
+
+  changeState(service){
+    console.log(service);
+    
+    /* this.api.changeServiceOfferedState().toPromise()
+      .then((res: any) => {
+        this.presentToast('Servicio cambió estado', 'success')
+      })
+      .catch(err => {
+        console.log(err)
+        this.presentToast('No se ha podido cambiar el estado del servicio', 'danger')
+      }) */
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      color
+    });
+    toast.present();
   }
 
 }
