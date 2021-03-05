@@ -47,16 +47,20 @@ export class OfferedPage implements OnInit {
   }
 
   changeState(service){
-    console.log(service);
-    
-    /* this.api.changeServiceOfferedState().toPromise()
+    const updateData = {
+      provider_id: service.providers_provider_id,
+      user_id: service.providers_users_user_id,
+      service_id: service.services_service_id,
+      state: service.state
+    }
+    this.api.changeServiceOfferedState(updateData).toPromise()
       .then((res: any) => {
         this.presentToast('Servicio cambió estado', 'success')
       })
       .catch(err => {
         console.log(err)
         this.presentToast('No se ha podido cambiar el estado del servicio', 'danger')
-      }) */
+      })
   }
 
   async presentToast(message: string, color: string) {
