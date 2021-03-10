@@ -73,9 +73,10 @@
               <ion-grid class="ion-no-padding">
                 <ion-row>
                   <ion-col>
-                    <h2 class="ion-no-margin ion-padding-bottom">
-                      <strong>{{ providedService.title | titlecase }}</strong>
+                    <h2 class="ion-no-margin">
+                      <strong>{{ providedService.title + ' (' + providedService.gender + ')' | titlecase }}</strong>
                     </h2>
+                    <h5 class="ion-no-margin ion-margin-bottom">{{ providedService.super_category }}</h5>
                   </ion-col>
                   <ion-col size="1">
                     <ion-toggle class="ion-float-end" checked (click)="providedService.state = providedService.state == 'active' ? 'stopped':'active'; changeState(providedService)"></ion-toggle>
@@ -83,27 +84,27 @@
                 </ion-row>
                 <ion-row class="ion-no-padding">
                   <ion-col size="6">
-                    <ion-icon size="large" class="ion-padding-end" color="primary" name="cash-outline"></ion-icon> 
+                    <ion-icon [ngClass]="{'stopped': providedService.state == 'stopped'}" size="large" class="ion-padding-end" color="primary" name="cash-outline"></ion-icon> 
                     <ion-label>${{ providedService.price | currency:'CLP' }}</ion-label>
                   </ion-col>
                   <ion-col size="6">
-                    <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
+                    <ion-icon [ngClass]="{'stopped': providedService.state == 'stopped'}" size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
                     <ion-label *ngIf="providedService.workable.length == 7">Todos los días</ion-label>
-                    <ion-label *ngIf="!(providedService.workable.length == 5 && providedService.workable.includes('L') && providedService.workable.includes('M') && providedService.workable.includes('X') && providedService.workable.includes('J') && providedService.workable.includes('V')) && providedService.workable.length < 7 && (!providedService.workable.includes('S') || !providedService.workable.includes('D'))">
+                    <ion-label *ngIf="!(providedService.workable.length == 5 && providedService.workable.includes('l') && providedService.workable.includes('m') && providedService.workable.includes('x') && providedService.workable.includes('j') && providedService.workable.includes('V')) && providedService.workable.length < 7 && (!providedService.workable.includes('s') || !providedService.workable.includes('d'))">
                       Días: 
-                      {{ (providedService.workable.includes('L')) ? 'L':null }}
-                      {{ (providedService.workable.includes('M')) ? 'M':null }}
-                      {{ (providedService.workable.includes('X')) ? 'X':null }}
-                      {{ (providedService.workable.includes('J')) ? 'J':null }}
-                      {{ (providedService.workable.includes('V')) ? 'V':null }}
-                      {{ (providedService.workable.includes('S')) ? 'S':null }}
-                      {{ (providedService.workable.includes('D')) ? 'D':null }}
+                      {{ (providedService.workable.includes('l')) ? 'L':null }}
+                      {{ (providedService.workable.includes('m')) ? 'M':null }}
+                      {{ (providedService.workable.includes('x')) ? 'X':null }}
+                      {{ (providedService.workable.includes('j')) ? 'J':null }}
+                      {{ (providedService.workable.includes('v')) ? 'V':null }}
+                      {{ (providedService.workable.includes('s')) ? 'S':null }}
+                      {{ (providedService.workable.includes('d')) ? 'D':null }}
                     </ion-label>
-                    <ion-label *ngIf="providedService.workable.length == 2 && providedService.workable.includes('S') && providedService.workable.includes('D')">Fines de Semana</ion-label>
-                    <ion-label *ngIf="providedService.workable.length == 5 && providedService.workable.includes('L') && providedService.workable.includes('M') && providedService.workable.includes('X') && providedService.workable.includes('J') && providedService.workable.includes('V')">Durante la Semana</ion-label>
+                    <ion-label *ngIf="providedService.workable.length == 2 && providedService.workable.includes('s') && providedService.workable.includes('d')">Fines de Semana</ion-label>
+                    <ion-label *ngIf="providedService.workable.length == 5 && providedService.workable.includes('l') && providedService.workable.includes('m') && providedService.workable.includes('x') && providedService.workable.includes('j') && providedService.workable.includes('v')">Durante la Semana</ion-label>
                   </ion-col>
                   <ion-col size="1">
-                    <ion-icon size="large" class="ion-padding-end" color="primary" name="location-outline"></ion-icon> 
+                    <ion-icon [ngClass]="{'stopped': providedService.state == 'stopped'}" size="large" class="ion-padding-end" color="primary" name="location-outline"></ion-icon> 
                   </ion-col>
                   <ion-col class="col-padding" size="5" *ngIf="providedService.locations.length == 1 && !providedService.locations[0].district">
                     <div>Region:</div>
@@ -116,13 +117,13 @@
                     </ul>
                   </ion-col>
                   <ion-col size="1">
-                    <ion-icon size="large" class="ion-padding-end" color="primary" name="time-outline"></ion-icon> 
+                    <ion-icon [ngClass]="{'stopped': providedService.state == 'stopped'}" size="large" class="ion-padding-end" color="primary" name="time-outline"></ion-icon> 
                   </ion-col>
                   <ion-col class="col-padding" size="5">
                     <ion-label>{{ (providedService.start) + ' - ' + (providedService.end) }}</ion-label>
                   </ion-col>
                 </ion-row>
-                <ion-button expand="block" color="primary">Editar</ion-button>
+                <ion-button [disabled]="providedService.state == 'stopped'" [ngClass]="{'stopped': providedService.state == 'stopped'}" expand="block" color="primary">Editar</ion-button>
               </ion-grid>
             </ion-card-header>
           </ion-card>

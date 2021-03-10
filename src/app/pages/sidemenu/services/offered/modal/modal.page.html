@@ -19,20 +19,20 @@
       <!-- choose a service to provide -->
       <ion-slide>
         <ion-grid *ngIf="$permitedServices | loading | async as permitedServices">
-          <ng-template [ngIf]="permitedServices.value.length > 0">
+          <ng-template [ngIf]="permitedServices.value?.services.length">
             <ion-row>
               <h3>Paso 1: seleccione el nuevo servicio</h3>
             </ion-row>
             <ion-row>
-              <ion-col size="6" *ngFor="let service of permitedServices.value">
+              <ion-col size="6" *ngFor="let service of permitedServices.value?.services">
                 <ion-card class="ion-no-margin">
-                  <ion-img [src]="service.img"></ion-img>
+                  <ion-img [src]="this.apiUrl + service.img_url"></ion-img>
                   <ion-card-header>
                     <ion-grid class="ion-no-padding">
                       <ion-row>
                         <ion-col>
-                          <h3 class="ion-no-margin"><strong>{{ service.name | titlecase }}</strong></h3>
-                          <h6 class="ion-no-margin ion-margin-bottom">{{ service.type }}</h6>
+                          <h3 class="ion-no-margin"><strong>{{ service.title | titlecase }}</strong></h3>
+                          <h6 class="ion-no-margin ion-margin-bottom">{{ service.super_category }}</h6>
                         </ion-col>
                       </ion-row>
                       <ion-row class="ion-no-padding">
@@ -51,11 +51,41 @@
         </ion-grid>
       </ion-slide>
 
-      <!-- choose a place to provide the service -->
+      <!-- choose a gender to provide the service -->
       <ion-slide>
         <ion-grid>
           <ion-row>
             <h3>Paso 2:</h3>
+          </ion-row>
+          <ion-row class="ion-margin-top">
+            <ion-col size="12">
+              <ion-img src="../../../../../../assets/images/gender.svg"></ion-img>
+            </ion-col>
+            <ion-col size="12">
+              <h3 class="ion-text-center">Seleccione el género a quien ofrecer el servicio</h3>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item class="ion-margin-vertical">
+                <ion-label position="floating">Género (*)</ion-label>
+                <ion-select formControlName="gender" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+                  <ion-select-option>Hombre</ion-select-option>
+                  <ion-select-option>Mujer</ion-select-option>
+                  <ion-select-option>Unisex</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-button expand="block" (click)="next()">siguiente</ion-button>
+        </ion-grid>
+      </ion-slide>
+
+      <!-- choose a place to provide the service -->
+      <ion-slide>
+        <ion-grid>
+          <ion-row>
+            <h3>Paso 3:</h3>
           </ion-row>
           <ion-row class="ion-margin-top">
             <ion-col size="12">
@@ -91,7 +121,7 @@
       <ion-slide>
         <ion-grid>
           <ion-row>
-            <h3>Paso 3:</h3>
+            <h3>Paso 4:</h3>
           </ion-row>
           <ion-row class="ion-margin-top">
             <ion-col size="12">
@@ -125,7 +155,7 @@
       <ion-slide>
         <ion-grid>
           <ion-row>
-            <h3>Paso 4:</h3>
+            <h3>Paso 5:</h3>
           </ion-row>
           <ion-row class="ion-margin-top">
             <ion-col size="12">
@@ -162,15 +192,15 @@
             </ion-col>
             <ion-col class="ion-no-padding" size="12">
               <ion-card class="ion-no-margin" *ngIf="selectedService">
-                <ion-img [src]="selectedService.img"></ion-img>
+                <ion-img [src]="this.apiUrl + selectedService.img_url"></ion-img>
                 <ion-card-header>
                   <ion-grid class="ion-no-padding">
                     <ion-row>
                       <ion-col size="12">
                         <h2 class="ion-no-margin">
-                          <strong>{{ dataToCheck.name | titlecase }}</strong>
+                          <strong>{{ dataToCheck.title + ' (' + dataToCheck.gender + ')' | titlecase }}</strong>
                         </h2>
-                        <h6 class="ion-no-margin ion-padding-bottom">{{ dataToCheck.type }}</h6>
+                        <h6 class="ion-no-margin ion-padding-bottom">{{ dataToCheck.super_category }}</h6>
                       </ion-col>
                     </ion-row>
                     <ion-row class="ion-no-padding">
@@ -181,18 +211,18 @@
                       <ion-col size="6">
                         <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
                         <ion-label *ngIf="dataToCheck.workable?.length == 7">Todos los días</ion-label>
-                        <ion-label *ngIf="!(dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('L') && dataToCheck.workable?.includes('M') && dataToCheck.workable?.includes('X') && dataToCheck.workable?.includes('J') && dataToCheck.workable?.includes('V')) && dataToCheck.workable?.length < 7 && (!dataToCheck.workable?.includes('S') || !dataToCheck.workable?.includes('D'))">
+                        <ion-label *ngIf="!(dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('l') && dataToCheck.workable?.includes('m') && dataToCheck.workable?.includes('x') && dataToCheck.workable?.includes('j') && dataToCheck.workable?.includes('v')) && dataToCheck.workable?.length < 7 && (!dataToCheck.workable?.includes('s') || !dataToCheck.workable?.includes('d'))">
                           Días: 
-                          {{ (dataToCheck.workable?.includes('L')) ? 'L':null }}
-                          {{ (dataToCheck.workable?.includes('M')) ? 'M':null }}
-                          {{ (dataToCheck.workable?.includes('X')) ? 'X':null }}
-                          {{ (dataToCheck.workable?.includes('J')) ? 'J':null }}
-                          {{ (dataToCheck.workable?.includes('V')) ? 'V':null }}
-                          {{ (dataToCheck.workable?.includes('S')) ? 'S':null }}
-                          {{ (dataToCheck.workable?.includes('D')) ? 'D':null }}
+                          {{ (dataToCheck.workable?.includes('l')) ? 'l':null }}
+                          {{ (dataToCheck.workable?.includes('m')) ? 'm':null }}
+                          {{ (dataToCheck.workable?.includes('x')) ? 'x':null }}
+                          {{ (dataToCheck.workable?.includes('j')) ? 'j':null }}
+                          {{ (dataToCheck.workable?.includes('v')) ? 'v':null }}
+                          {{ (dataToCheck.workable?.includes('s')) ? 's':null }}
+                          {{ (dataToCheck.workable?.includes('d')) ? 'd':null }}
                         </ion-label>
-                        <ion-label *ngIf="dataToCheck.workable?.length == 2 && dataToCheck.workable?.includes('S') && dataToCheck.workable?.includes('D')">Fines de Semana</ion-label>
-                        <ion-label *ngIf="dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('L') && dataToCheck.workable?.includes('M') && dataToCheck.workable?.includes('X') && dataToCheck.workable?.includes('J') && dataToCheck.workable?.includes('V')">Durante la Semana</ion-label>
+                        <ion-label *ngIf="dataToCheck.workable?.length == 2 && dataToCheck.workable?.includes('s') && dataToCheck.workable?.includes('d')">Fines de Semana</ion-label>
+                        <ion-label *ngIf="dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('l') && dataToCheck.workable?.includes('m') && dataToCheck.workable?.includes('x') && dataToCheck.workable?.includes('j') && dataToCheck.workable?.includes('v')">Durante la Semana</ion-label>
                       </ion-col>
                       <ion-col size="1">
                         <ion-icon size="large" class="ion-padding-end" color="primary" name="location-outline"></ion-icon> 
@@ -215,14 +245,15 @@
                       </ion-col>
                     </ion-row>
                   </ion-grid>
-                  <ion-button expand="block" color="primary" (click)="closeModal()">Aceptar</ion-button>
                 </ion-card-header>
               </ion-card>
+            </ion-col>
+            <ion-col size="12" class="ion-no-padding ion-padding-top ion-no-margin">
+              <ion-button class="ion-no-margin" expand="block" color="primary" (click)="offerNewService()">Aceptar</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
       </ion-slide>
-
     </ion-slides>
   </form>
 

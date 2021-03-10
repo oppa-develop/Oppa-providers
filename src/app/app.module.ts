@@ -17,6 +17,7 @@ import { DatePipe, registerLocaleData } from '@angular/common'
 import { ApiService } from './providers/api/api.service';
 import { LocationService } from './providers/location/location.service';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
+import { WebsocketService } from './providers/websocket/websocket.service';
 registerLocaleData(es)
 
 @NgModule({
@@ -43,7 +44,8 @@ registerLocaleData(es)
       useValue: "es-ES"
     },
     ApiService,
-    LocationService
+    LocationService,
+    WebsocketService
   ],
   bootstrap: [AppComponent]
 })

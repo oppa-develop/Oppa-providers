@@ -1,6 +1,10 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { Service } from 'src/app/models/service';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/providers/auth/auth.service';
+import { WebsocketService } from 'src/app/providers/websocket/websocket.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -25,6 +29,11 @@ export class SidemenuPage implements OnInit {
 
   constructor(
     private auth: AuthService,
+    protected ws: WebsocketService,
+    private alertController: AlertController,
+    private dateFormat: DatePipe,
+    private toastCtrl: ToastController,
+    private loadingController: LoadingController
   ) { }
   
   ngOnInit() {
@@ -36,6 +45,16 @@ export class SidemenuPage implements OnInit {
       document.body.setAttribute('data-theme', 'light');
       this.darkMode = false
     }
+    this.ws.connect();
+    this.ws.emit('notificationsProvider', { // aqui el proveedor se suscribe a las notificaciones
+      user_id: this.user.user_id,
+      provider_id: this.user.provider_id
+    });
+    this.ws.listen('notificateProvider').subscribe((data: any) => { //cuando llega una notificación, hace lo siguiente
+      // alert(JSON.parse(data))
+      console.log(data);
+      this.openRequestingServiceAlert(data)
+    })
   }
   
   ionViewWillEnter() {
@@ -55,6 +74,54 @@ export class SidemenuPage implements OnInit {
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
     }
+  }
+
+  async openRequestingServiceAlert(data) {
+    const alert = await this.alertController.create({
+      header: 'Agendar Servicio',
+      message: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
+      buttons: [{
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Agendar servicio cancelado');
+        }
+      }, {
+        text: 'Agendar',
+        handler: () => {
+          console.log('Agendando servicio');
+          alert.onDidDismiss().then(async () => {
+            data.state = 'accepted'
+            data.provider = this.user
+            this.ws.emit('notificateUser', data)
+            const loading = await this.loadingController.create({
+              message: 'Esperando confirmación del usuario...'
+            });
+            await loading.present();
+            this.ws.listen('serviceConfirmation').subscribe((data: any) => { 
+              console.log(data);
+              loading.dismiss();
+              if (data.success) {
+                this.presentToast('Servicio agendado', 'success')
+              } else {
+                this.presentToast('Servicio cancelado', 'danger')
+              }
+            })
+          })
+        }
+      }]
+    });
+
+    await alert.present();
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      color
+    });
+    toast.present();
   }
 
 }

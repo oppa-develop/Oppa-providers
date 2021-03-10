@@ -1,8 +1,9 @@
 export interface Service {
 
-  id: number
-  type: string
-  name: string
+  service_id?: number
+  category_id?: number
+  title?: string
+  super_category?: string
   price: number
   description: string
   img: string
@@ -15,5 +16,9 @@ export interface Service {
     price: number,
     state: string
   }
-
+  
+  id?: number
+  name?: string
+  type?: string
+  categories_category_id?: number
 }

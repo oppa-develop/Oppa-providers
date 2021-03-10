@@ -333,8 +333,9 @@ export class ApiService {
     ])
   }
 
-  getPermitedServices(): Observable<Service[]> {
-    return of([
+  getPermitedServices(provider_id: number): Observable<Service[]> {
+    return this.http.get<Service[]>(`${this.apiUrl}/services/permitted/provider/${provider_id}`)
+    /* return of([
       {
         id: parseInt(faker.random.uuid()),
         type: 'Servicio de acompañamiento',
@@ -359,11 +360,22 @@ export class ApiService {
         price: parseInt('9990'),
         img: '../../../../assets/images/pexels-nick-demou-1319460.jpg',
       }
-    ])
+    ]) */
   }
 
   changeServiceOfferedState(offeredService): Observable<any> {
     return this.http.patch(`${this.apiUrl}/services/offered/change-state`, offeredService);
+  }
+
+  offerNewService(offerNewService): Observable<any> {
+    let workable = ''
+    for (let days of offerNewService.workable) {
+      workable += days
+    }
+    offerNewService.workable = workable
+    offerNewService.state = 'active'
+    console.log(offerNewService);
+    return this.http.post(`${this.apiUrl}/services/provide-service`, offerNewService);
   }
 
 }

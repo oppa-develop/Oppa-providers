@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Service } from 'src/app/models/service';
+import { User } from 'src/app/models/user';
 import { ApiService } from 'src/app/providers/api/api.service';
+import { AuthService } from 'src/app/providers/auth/auth.service';
 import { LocationService } from 'src/app/providers/location/location.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-modal',
@@ -13,6 +16,8 @@ import { LocationService } from 'src/app/providers/location/location.service';
 })
 export class ModalPage implements OnInit {
 
+  user: User
+  apiUrl: string = environment.HOST + '/'
   regions: any[] = []
   districts: string[] = []
   newServiceForm: FormGroup
@@ -38,12 +43,15 @@ export class ModalPage implements OnInit {
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private api: ApiService,
-    private location: LocationService
+    private location: LocationService,
+    private auth: AuthService,
+    public toastCtrl: ToastController
   ) { }
 
   ngOnInit() {
+    this.user = this.auth.userData()
     this.newServiceForm = this.createNewServiceForm()
-    this.$permitedServices = this.api.getPermitedServices()
+    this.$permitedServices = this.api.getPermitedServices(this.user.provider_id)
     document.querySelector('ion-slides').getSwiper()
       .then((swiper: any) => {
         this.slider = swiper
@@ -52,7 +60,6 @@ export class ModalPage implements OnInit {
       .then((regions) => {
         this.regions = regions
         console.log(regions);
-        
       })
   }
 
@@ -65,18 +72,22 @@ export class ModalPage implements OnInit {
   }
   
   selectService(service: Service) {
+    console.count()
+    console.table(service)
     this.selectedService = service
-    this.newServiceForm.value.name = service.name
+    this.newServiceForm.value.title = service.title
     this.newServiceForm.value.price = service.price
-    this.newServiceForm.value.type = service.type
+    this.newServiceForm.value.category_id = service.categories_category_id
+    this.newServiceForm.value.super_category = service.super_category
     this.next()
   }
   
   next() {
-    this.newServiceForm.value.id = this.selectedService.id
-    this.newServiceForm.value.name = this.selectedService.name
+    this.newServiceForm.value.service_id = this.selectedService.service_id
+    this.newServiceForm.value.title = this.selectedService.title
     this.newServiceForm.value.price = this.selectedService.price
-    this.newServiceForm.value.type = this.selectedService.type
+    this.newServiceForm.value.category_id = this.selectedService.categories_category_id
+    this.newServiceForm.value.super_category = this.selectedService.super_category
     this.dataToCheck = this.newServiceForm.value;
     this.slider.appendSlide('') // workarround to make work the slider when the modal is open
     this.slider.removeSlide(6) // workarround to make work the slider when the modal is open
@@ -98,21 +109,44 @@ export class ModalPage implements OnInit {
   
   createNewServiceForm() {
     return this.formBuilder.group({
-      id: [null, Validators.required],
-      name: [null, Validators.required],
+      service_id: [null, Validators.required],
+      title: [null, Validators.required],
       price: [null, Validators.required],
-      type: [null, Validators.required],
+      category_id: [null, Validators.required],
+      super_category: [null, Validators.required],
       region: [null, Validators.required],
       districts: [null, Validators.required],
       start: [null, Validators.required],
       end: [null, Validators.required],
-      workable: [null, Validators.required]
+      workable: [null, Validators.required],
+      gender: [null, Validators.required],
+      provider_id: [this.user.provider_id, Validators.required],
+      user_id: [this.user.user_id, Validators.required]
     })
   }
   
   async closeModal() {
     this.slider.slideReset()
     await this.modalController.dismiss()
+  }
+
+  offerNewService() {
+    this.api.offerNewService(this.dataToCheck).toPromise()
+      .then((res: any) => {
+        this.presentToast('Servicio creado', 'success')
+      })
+      .catch(err => {
+        this.presentToast('No se ha podido crear el servicio', 'danger')
+      });
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      color
+    });
+    toast.present();
   }
 
 }

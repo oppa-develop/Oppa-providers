@@ -15,16 +15,29 @@ ul {
 }
 
 ion-toggle {
-  padding: 5px 0px;
+  padding: 8px 0px;
 }
 
-.stopped {
+ion-img.stopped {
   filter: grayscale(100%);
-  transition: 200ms;
+}
+
+ion-button button, ion-icon, ion-img.stopped, .stopped-btn {
+  transition: 500ms;
+}
+
+ion-button.stopped, ion-icon.stopped {
+  --ion-color-base: grey !important;
+  --ion-color-base-rgb: grey !important;
+  --ion-color-contrast: white !important;
+  --ion-color-contrast-rgb: grey !important;
+  --ion-color-shade: grey !important;
+  --ion-color-tint: grey !important;
 }
 
 .stopped-btn {
   border: 5px solid red;
+  background-color: rgba(0,0,0,0.5);
   width: 60%;
   font-size: 3rem;
   text-align: center;
@@ -35,7 +48,6 @@ ion-toggle {
   transform: rotate(-30deg);
   margin: 80px;
   top: 70px;
-  transition: 500ms;
   opacity: 0;
 }
 
