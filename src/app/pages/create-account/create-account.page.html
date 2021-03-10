@@ -14,15 +14,32 @@
     <form [formGroup]="createAccountForm" (ngSubmit)="createAccount()" ngNativeValidate>
       <ion-row>
         <ion-col>
-          <ion-list-header class="ion-no-padding">
-            <ion-label>
-              <h2>Datos personales</h2>
-            </ion-label>
-          </ion-list-header>
+          <ion-item class="ion-margin-bottom">
+            <ion-grid class="ion-margin">
+              <ion-row>
+                <ion-col class="ion-text-center">
+                  <ion-avatar>
+                    <ion-img *ngIf="!user_img" src="../../../assets/images/default_avatar.png"></ion-img>
+                    <ion-img *ngIf="user_img" [src]="'data:image/jpeg;base64,' + user_img"></ion-img>
+                  </ion-avatar>
+                  <ion-fab-button>
+                    <ion-fab (click)="selectImage()">
+                      <ion-icon name="camera-outline"></ion-icon>
+                    </ion-fab>
+                  </ion-fab-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
           <ion-item class="ion-margin-bottom">
             <ion-icon slot="start" name="person-outline"></ion-icon>
             <ion-label position="floating">Nombre</ion-label>
-            <ion-input formControlName="fullname" type="text" required></ion-input>
+            <ion-input formControlName="firstname" type="text" required></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-bottom">
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            <ion-label position="floating">Apellido</ion-label>
+            <ion-input formControlName="lastname" type="text" required></ion-input>
           </ion-item>
           <ion-item class="ion-margin-vertical">
             <ion-icon slot="start" name="mail-outline"></ion-icon>
@@ -36,16 +53,26 @@
           <ion-item class="ion-margin-vertical">
             <ion-icon slot="start" name="call-outline"></ion-icon>
             <ion-label position="floating">Teléfono</ion-label>
-            <ion-input formControlName="phone" type="number" required></ion-input>
+            <ion-input formControlName="phone" type="tel" required></ion-input>
           </ion-item>
           <ion-item class="ion-margin-vertical">
-            <ion-label>Género</ion-label>
             <ion-icon slot="start" name="male-female-outline"></ion-icon>
-            <ion-select placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
-              <ion-select-option value="f">Mujer</ion-select-option>
-              <ion-select-option value="m">Hombre</ion-select-option>
-              <ion-select-option value="o">Otro</ion-select-option>
+            <ion-label>Género</ion-label>
+            <ion-select formControlName="gender" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+              <ion-select-option value="mujer">Mujer</ion-select-option>
+              <ion-select-option value="hombre">Hombre</ion-select-option>
+              <ion-select-option value="otro">Otro</ion-select-option>
             </ion-select>
+          </ion-item>
+          <ion-item class="ion-margin-bottom">
+            <ion-icon slot="start" src="../../../assets/icons/id-card-outline.svg"></ion-icon>
+            <ion-label position="floating">Rut</ion-label>
+            <ion-input formControlName="rut" maxlength="12" [value]="createAccountForm.get('rut').value | rutParse" type="text" required></ion-input>
+          </ion-item>
+          <ion-item class="ion-margin-bottom">
+            <ion-icon slot="start" name="mail-outline"></ion-icon>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input formControlName="email" type="email" required></ion-input>
           </ion-item>
           <ion-item class="ion-margin-vertical">
             <ion-icon slot="start" name="lock-open-outline"></ion-icon>
