@@ -145,10 +145,7 @@ export class CreateAccountPage implements OnInit {
       this.api.createAccount(this.createAccountForm.value).toPromise()
         .then(userData => {
           loading.dismiss()
-          this.auth.login({
-            email: userData.email,
-            password: this.createAccountForm.value.password
-          })
+          this.auth.login(userData.email,this.createAccountForm.value.password)
         })
         .catch(err => {
           loading.dismiss()

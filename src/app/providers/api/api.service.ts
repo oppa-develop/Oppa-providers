@@ -9,6 +9,7 @@ import * as timeago from 'timeago.js';
 import { delay } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { serialize } from 'object-to-formdata';
 
 @Injectable({
   providedIn: 'root'
@@ -376,6 +377,38 @@ export class ApiService {
     offerNewService.state = 'active'
     console.log(offerNewService);
     return this.http.post(`${this.apiUrl}/services/provide-service`, offerNewService);
+  }
+
+  createAccount(newAccount): Observable<any> {
+    console.log(newAccount);
+    delete newAccount['checkPassword']
+    if (newAccount.image) {
+      newAccount.image = this.base64toBlob(newAccount.image, 'image/' + newAccount.image_ext);
+    }
+    let formData = serialize(newAccount);
+    console.log(formData);
+    return this.http.post<any>(`${this.apiUrl}/users/new-client`, formData);
+  }
+
+  private base64toBlob(base64Data: string, contentType: string) {
+    contentType = contentType || '';
+    let sliceSize = 1024;
+    let byteCharacters = atob(base64Data);
+    let bytesLength = byteCharacters.length;
+    let slicesCount = Math.ceil(bytesLength / sliceSize);
+    let byteArrays = new Array(slicesCount);
+
+    for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        let begin = sliceIndex * sliceSize;
+        let end = Math.min(begin + sliceSize, bytesLength);
+
+        let bytes = new Array(end - begin);
+        for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+            bytes[i] = byteCharacters[offset].charCodeAt(0);
+        }
+        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
   }
 
 }

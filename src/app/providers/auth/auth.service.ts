@@ -34,6 +34,7 @@ export class AuthService {
         }, err => {
           console.log(err);
           loading.dismiss()
+          this.presentToast('No se ha podido crear la cuenta', 'danger');
         });
       })
       .catch(err => {

@@ -18,6 +18,7 @@ import { ApiService } from './providers/api/api.service';
 import { LocationService } from './providers/location/location.service';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { WebsocketService } from './providers/websocket/websocket.service';
+import { Camera } from '@ionic-native/Camera/ngx';
 registerLocaleData(es)
 
 @NgModule({
@@ -35,6 +36,7 @@ registerLocaleData(es)
     StatusBar,
     SplashScreen,
     DatePipe,
+    Camera,
     { 
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy,
