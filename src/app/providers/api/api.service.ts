@@ -47,73 +47,8 @@ export class ApiService {
     return this.http.get<any[]>(`${this.apiUrl}/services/offered/provider/${provider_id}`)
   }
 
-  getHistoryOfServices(): Observable<any[]> {
-    return of([
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'cancelado'
-      },
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'En curso'
-      },
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'Terminado'
-      },
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'Cancelado'
-      },
-    ])
+  getHistoryOfServices(provider_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/services/history/provider/${provider_id}`);
   }
 
   getMessages(): Observable<MessageList[]> {
