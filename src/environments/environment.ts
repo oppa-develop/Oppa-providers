@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  serverSocket: 'http://localhost:3000',
-  HOST: 'http://localhost:3000',
+  serverSocket: 'https://oppa-api.herokuapp.com',
+  HOST: 'https://oppa-api.herokuapp.com',
   secret: 'S0yuNt3xt0S3cR3t0',
   user: {
     email: 't.provider@example.com',

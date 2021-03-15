@@ -19,6 +19,8 @@ import { LocationService } from './providers/location/location.service';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { WebsocketService } from './providers/websocket/websocket.service';
 import { Camera } from '@ionic-native/Camera/ngx';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 registerLocaleData(es)
 
 @NgModule({
@@ -47,7 +49,9 @@ registerLocaleData(es)
     },
     ApiService,
     LocationService,
-    WebsocketService
+    WebsocketService,
+    BackgroundMode,
+    LocalNotifications
   ],
   bootstrap: [AppComponent]
 })

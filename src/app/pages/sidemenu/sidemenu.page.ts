@@ -6,6 +6,8 @@ import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { WebsocketService } from 'src/app/providers/websocket/websocket.service';
 import { environment } from 'src/environments/environment';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @Component({
   selector: 'app-sidemenu',
@@ -33,11 +35,15 @@ export class SidemenuPage implements OnInit {
     private alertController: AlertController,
     private dateFormat: DatePipe,
     private toastCtrl: ToastController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private backgroundMode: BackgroundMode,
+    private localNotifications: LocalNotifications
   ) { }
   
   ngOnInit() {
-    this.user = this.auth.userData()
+    this.backgroundMode.enable();
+    this.backgroundMode.overrideBackButton();
+    this.user = this.auth.userData();
     if (localStorage.getItem('darkMode') === 'on') {
       document.body.setAttribute('data-theme', 'dark');
       this.darkMode = true
@@ -51,7 +57,12 @@ export class SidemenuPage implements OnInit {
       provider_id: this.user.provider_id
     });
     this.ws.listen('notificateProvider').subscribe((data: any) => { //cuando llega una notificación, hace lo siguiente
-      // alert(JSON.parse(data))
+      this.localNotifications.schedule({
+        id: 1,
+        title: 'Nueva solicitud de servicio',
+        text: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
+        launch: true
+      });
       console.log(data);
       this.openRequestingServiceAlert(data)
     })

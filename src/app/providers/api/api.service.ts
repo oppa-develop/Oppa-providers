@@ -322,7 +322,7 @@ export class ApiService {
     }
     let formData = serialize(newAccount);
     console.log(formData);
-    return this.http.post<any>(`${this.apiUrl}/users/new-client`, formData);
+    return this.http.post<any>(`${this.apiUrl}/users/new-provider`, formData);
   }
 
   private base64toBlob(base64Data: string, contentType: string) {

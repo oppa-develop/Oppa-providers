@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { User } from 'src/app/models/user';
 import { ApiService } from '../api/api.service';
@@ -18,6 +19,7 @@ export class AuthService {
     private navController: NavController,
     private loadingController: LoadingController,
     public toastCtrl: ToastController,
+    private backgroundMode: BackgroundMode
   ) { }
 
   async login(email, password){
@@ -54,6 +56,7 @@ export class AuthService {
 
   logout(){
     localStorage.removeItem('user');
+    this.backgroundMode.disable();
     this.ngZone.run(() => {
       this.navController.navigateRoot(['login'])
     });
