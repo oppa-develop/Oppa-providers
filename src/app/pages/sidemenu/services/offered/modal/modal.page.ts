@@ -133,10 +133,11 @@ export class ModalPage implements OnInit {
   offerNewService() {
     this.api.offerNewService(this.dataToCheck).toPromise()
       .then((res: any) => {
-        this.presentToast('Servicio creado', 'success')
+        this.presentToast('Servicio creado', 'success');
+        this.closeModal();
       })
       .catch(err => {
-        this.presentToast('No se ha podido crear el servicio', 'danger')
+        this.presentToast('No se ha podido crear el servicio', 'danger');
       });
   }
 
