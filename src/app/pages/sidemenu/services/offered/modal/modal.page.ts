@@ -125,16 +125,18 @@ export class ModalPage implements OnInit {
     })
   }
   
-  async closeModal() {
+  async closeModal(reload: boolean) {
     this.slider.slideReset()
-    await this.modalController.dismiss()
+    await this.modalController.dismiss({
+      reload
+    })
   }
 
   offerNewService() {
     this.api.offerNewService(this.dataToCheck).toPromise()
       .then((res: any) => {
         this.presentToast('Servicio creado', 'success');
-        this.closeModal();
+        this.closeModal(true);
       })
       .catch(err => {
         this.presentToast('No se ha podido crear el servicio', 'danger');

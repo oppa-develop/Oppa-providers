@@ -43,6 +43,12 @@ export class OfferedPage implements OnInit {
     const modal = await this.modalController.create({
       component: ModalPage
     })
+
+    modal.onDidDismiss()
+      .then((res: any) => {
+        if (res.data.reload) this.$services = this.api.getProvidedServices(this.user.provider_id)
+      })
+
     return await modal.present()
   }
 
