@@ -95,6 +95,8 @@ export class SidemenuPage implements OnInit {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
+          data.state = 'canceled'
+          this.ws.emit('notificateUser', data)
           console.log('Agendar servicio cancelado');
         }
       }, {

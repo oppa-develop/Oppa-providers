@@ -104,7 +104,7 @@
     
     <!-- list of messages -->
     <ng-template [ngIf]="messages.value">
-      <ion-item button *ngFor="let message of messages.value">
+      <ion-item button (click)="openModal()" *ngFor="let message of messages.value">
         <ion-avatar size="large" slot="start">
           <ion-img [src]="message.img"></ion-img>
         </ion-avatar>
