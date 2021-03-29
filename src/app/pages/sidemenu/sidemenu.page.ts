@@ -111,9 +111,10 @@ export class SidemenuPage implements OnInit {
               message: 'Esperando confirmación del usuario...'
             });
             await loading.present();
-            this.ws.listen('serviceConfirmation').subscribe((data: any) => { 
+            const serviceConfirmation = this.ws.listen('serviceConfirmation').subscribe((data: any) => { 
               console.log(data);
               loading.dismiss();
+              serviceConfirmation.unsubscribe()
               if (data.success) {
                 this.presentToast('Servicio agendado', 'success')
               } else {

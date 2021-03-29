@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'modal',
-    loadChildren: () => import('./modal/modal.module').then( m => m.ModalPageModule)
+    loadChildren: () => import('../calendar/calendar.module').then( m => m.CalendarPageModule)
   }
 ];
 

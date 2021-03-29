@@ -5,13 +5,16 @@ import { Service } from 'src/app/models/service';
 import { ApiService } from 'src/app/providers/api/api.service';
 import * as dayjs from 'dayjs'
 import { CalendarComponent } from 'ionic2-calendar';
+import { AuthService } from 'src/app/providers/auth/auth.service';
+import { User } from 'src/app/models/user';
+import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-modal',
-  templateUrl: './modal.page.html',
-  styleUrls: ['./modal.page.scss'],
+  selector: 'app-calendar',
+  templateUrl: './calendar.page.html',
+  styleUrls: ['./calendar.page.scss'],
 })
-export class ModalPage implements OnInit {
+export class CalendarPage implements OnInit {
 
   $nextServices: Observable<Service[]>
   eventSource = []
@@ -21,15 +24,19 @@ export class ModalPage implements OnInit {
     locale: 'es-ES',
     title: new Date()
   }
+  user: User
+  apiUrl: string = environment.HOST + '/'
   
 
   constructor(
     private modalController: ModalController,
-    private api: ApiService
+    private api: ApiService,
+    private auth: AuthService
   ) { }
 
   ngOnInit() {
-    this.$nextServices = this.api.getServicesHistoryByDate(dayjs(this.calendar.currentDate).format('DD-MM-YYYY'))
+    this.user = this.auth.userData()
+    this.$nextServices = this.api.getServicesHistoryByDate(this.user.provider_id, dayjs(this.calendar.currentDate).format('YYYY-MM-DD'))
   }
 
   ngAfterViewInit() {
@@ -43,7 +50,7 @@ export class ModalPage implements OnInit {
   onDateSelected($event){
     console.log($event.selectedTime)
     this.calendar.title = $event.selectedTime
-    this.$nextServices = this.api.getServicesHistoryByDate(dayjs($event.selectedTime).format('DD-MM-YYYY'))
+    this.$nextServices = this.api.getServicesHistoryByDate(this.user.provider_id, dayjs($event.selectedTime).format('YYYY-MM-DD'))
   }
 
 }

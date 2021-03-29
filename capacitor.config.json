@@ -1,5 +1,5 @@
 {
-  "appId": "oppa.providers",
+  "appId": "io.ionic.starter",
   "appName": "oppa-providers",
   "bundledWebRuntime": false,
   "npmClient": "npm",

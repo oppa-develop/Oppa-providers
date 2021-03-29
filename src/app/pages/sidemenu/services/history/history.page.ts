@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActionSheetController, ModalController } from '@ionic/angular';
+import { ActionSheetController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Service } from 'src/app/models/service';
 import { User } from 'src/app/models/user';
 import { ApiService } from 'src/app/providers/api/api.service';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { environment } from 'src/environments/environment';
-import { ModalPage } from '../history/modal/modal.page';
 
 @Component({
   selector: 'app-history',
@@ -22,8 +21,7 @@ export class HistoryPage implements OnInit {
   constructor(
     private api: ApiService,
     private auth: AuthService,
-    public actionSheetController: ActionSheetController,
-    private modalController: ModalController
+    public actionSheetController: ActionSheetController
   ) {
 
   }
@@ -35,13 +33,6 @@ export class HistoryPage implements OnInit {
 
   ionViewWillEnter() {
     this.user = this.auth.userData()
-  }
-
-  async openModal() {
-    const modal = await this.modalController.create({
-      component: ModalPage
-    })
-    return await modal.present()
   }
 
   async presentActionSheetOrderBy() {

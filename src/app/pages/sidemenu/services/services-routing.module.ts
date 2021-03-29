@@ -15,6 +15,10 @@ const routes: Routes = [
       {
         path: 'history',
         loadChildren: () => import('./history/history.module').then(m => m.HistoryPageModule)
+      },
+      {
+        path: 'calendar',
+        loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarPageModule)
       }
     ]
   }
