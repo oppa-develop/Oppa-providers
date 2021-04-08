@@ -106,7 +106,7 @@
             </ion-col>
             <ion-col size="12">
               <ion-item class="ion-margin-vertical">
-                <ion-label position="floating">Comuna (opcional)</ion-label>
+                <ion-label position="floating">Comuna(s) (opcional)</ion-label>
                 <ion-select multiple formControlName="districts" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
                   <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
                 </ion-select>
@@ -169,13 +169,13 @@
             <ion-col size="12">
               <ion-item class="ion-margin-vertical">
                 <ion-label position="floating">Inicio</ion-label>
-                <ion-input formControlName="start" type="time"></ion-input>
+                <ion-input formControlName="start" type="time" step="1800"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col size="12">
               <ion-item class="ion-margin-vertical">
                 <ion-label position="floating">Fin</ion-label>
-                <ion-input formControlName="end" type="time"></ion-input>
+                <ion-input formControlName="end" type="time" step="1800"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
