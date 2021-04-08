@@ -21,6 +21,7 @@ import { WebsocketService } from './providers/websocket/websocket.service';
 import { Camera } from '@ionic-native/Camera/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { BrowserTab } from '@ionic-native/browser-tab/ngx';
 registerLocaleData(es)
 
 @NgModule({
@@ -51,7 +52,8 @@ registerLocaleData(es)
     LocationService,
     WebsocketService,
     BackgroundMode,
-    LocalNotifications
+    LocalNotifications,
+    BrowserTab
   ],
   bootstrap: [AppComponent]
 })

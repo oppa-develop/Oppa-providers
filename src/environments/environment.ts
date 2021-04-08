@@ -4,9 +4,10 @@
 
 export const environment = {
   production: false,
-  serverSocket: 'http://ec2-15-228-21-133.sa-east-1.compute.amazonaws.com:3000',
+  // serverSocket: 'http://ec2-15-228-21-133.sa-east-1.compute.amazonaws.com:3000',
   // HOST: 'http://ec2-15-228-21-133.sa-east-1.compute.amazonaws.com:3000',
-  HOST: 'http://localhost:3000',
+  serverSocket: 'http://192.168.0.29:3000',
+  HOST: 'http://192.168.0.29:3000',
   secret: 'S0yuNt3xt0S3cR3t0',
   user: {
     email: 't.provider@example.com',

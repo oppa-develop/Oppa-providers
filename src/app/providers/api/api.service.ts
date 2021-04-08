@@ -167,8 +167,8 @@ export class ApiService {
     ])
   }
 
-  getServicesHistoryByDate(provider_id: number, date: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/services/history/provider/${provider_id}/date/${date}`)
+  getServicesByDate(provider_id: number, date: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/services/provider/${provider_id}/date/${date}`)
   }
 
   getPermitedServices(provider_id: number): Observable<Service[]> {
@@ -246,6 +246,11 @@ export class ApiService {
         byteArrays[sliceIndex] = new Uint8Array(bytes);
     }
     return new Blob(byteArrays, { type: contentType });
+  }
+
+  editOfferedService(service) {
+    console.log(service)
+    return this.http.put(`${this.apiUrl}/services/offered/edit`, service)
   }
 
 }

@@ -7,6 +7,7 @@ import { User } from 'src/app/models/user';
 import { ApiService } from 'src/app/providers/api/api.service';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { environment } from 'src/environments/environment';
+import { EditServicePage } from './edit-service/edit-service.page';
 import { ModalPage } from './modal/modal.page';
 
 @Component({
@@ -42,6 +43,22 @@ export class OfferedPage implements OnInit {
   async openModal() {
     const modal = await this.modalController.create({
       component: ModalPage
+    })
+
+    modal.onDidDismiss()
+      .then((res: any) => {
+        if (res.data.reload) this.$services = this.api.getProvidedServices(this.user.provider_id)
+      })
+
+    return await modal.present()
+  }
+
+  async openEditServiceModal(service) {
+    const modal = await this.modalController.create({
+      component: EditServicePage,
+      componentProps: {
+        service
+      }
     })
 
     modal.onDidDismiss()

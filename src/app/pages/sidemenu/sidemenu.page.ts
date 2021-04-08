@@ -17,7 +17,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 export class SidemenuPage implements OnInit {
 
   pages = [
-    { title: 'Servicios',  icon: 'construct-outline',        url: '/sidemenu/services/offered' },
+    { title: 'Servicios',  icon: 'construct-outline',        url: '/sidemenu/services/calendar' },
     { title: 'Mis Datos',  icon: 'person-outline',           url: '/sidemenu/account'},
     { title: 'Mensajes',   icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
     { title: 'Facturas',   icon: 'receipt-outline',          url: '/sidemenu/bills' },

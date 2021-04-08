@@ -123,7 +123,7 @@
                     <ion-label>{{ (providedService.start) + ' - ' + (providedService.end) }}</ion-label>
                   </ion-col>
                 </ion-row>
-                <ion-button [disabled]="providedService.state == 'stopped'" [ngClass]="{'stopped': providedService.state == 'stopped'}" expand="block" color="primary">Editar</ion-button>
+                <ion-button [disabled]="providedService.state == 'stopped'" [ngClass]="{'stopped': providedService.state == 'stopped'}" expand="block" color="primary" (click)="openEditServiceModal(providedService)">Editar</ion-button>
               </ion-grid>
             </ion-card-header>
           </ion-card>

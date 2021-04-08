@@ -1,0 +1,75 @@
+<ion-content class="bicolor">
+  <ion-button class="close-btn" (click)="closeModal()">
+    <ion-icon size="large" slot="icon-only" name="close"></ion-icon>
+  </ion-button>
+  <ion-img class="header-img" [src]="apiUrl + service.img_url"></ion-img>
+  <ion-card class="ion-margin-horizontal ion-padding-horizontal">
+    <form [formGroup]="editServiceForm" (ngSubmit)="editService()" ngNativeValidate>
+      <ion-list lines="none">
+        <ion-list-header class="ion-no-padding">
+          <ion-grid class="ion-no-padding">
+            <ion-row class="ion-no-padding">
+              <ion-col class="ion-text-center ion-no-padding" size="12">
+                <h1 class="ion-no-margin ion-margin-top">
+                  <ion-label color="primary"><strong>{{ service.title | titlecase }}</strong></ion-label>
+                </h1>
+              </ion-col>
+              <ion-col class="ion-text-center ion-no-padding" size="12">
+                <h3 class="ion-no-margin">
+                  <ion-text>${{ service.price | number }}</ion-text>
+                </h3>
+              </ion-col>
+              <ion-col size="12">
+                <h6 class="ion-no-margin ion-margin-horizontal ion-margin-bottom">
+                  <ion-text>{{ service.description }}</ion-text>
+                </h6>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-list-header>
+        <ion-item>
+          <ion-label>Género</ion-label>
+          <ion-select formControlName="gender" cancelText="cancelar" okText="aceptar">
+            <ion-select-option>Hombre</ion-select-option>
+            <ion-select-option>Mujer</ion-select-option>
+            <ion-select-option>Unisex</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Día(s) disponible(s)</ion-label>
+          <ion-select multiple formControlName="workable" okText="aceptar" cancelText="cancelar">
+            <ion-select-option value="l">Lunes</ion-select-option>
+            <ion-select-option value="m">Martes</ion-select-option>
+            <ion-select-option value="x">Miércoles</ion-select-option>
+            <ion-select-option value="j">Jueves</ion-select-option>
+            <ion-select-option value="v">Viernes</ion-select-option>
+            <ion-select-option value="s">Sábado</ion-select-option>
+            <ion-select-option value="d">Domingo</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Región</ion-label>
+          <ion-select formControlName="region" okText="aceptar" cancelText="cancelar" (ionChange)="getDistrictsByRegion()">
+            <ion-select-option *ngFor="let region of regions">{{ region.nombre }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Comuna(s) (opcional)</ion-label>
+          <ion-select multiple formControlName="districts" cancelText="cancelar" okText="aceptar">
+            <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Inicio</ion-label>
+          <ion-input formControlName="start" type="time" step="1800"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fin</ion-label>
+          <ion-input formControlName="end" type="time" step="1800"></ion-input>
+        </ion-item>
+        <ion-button class="ion-padding-horizontal" expand="block" color="light" (click)="closeModal()">cancelar</ion-button>
+        <ion-button class="ion-padding-horizontal" expand="block" color="primary" type="submit">Guardar Cambios</ion-button>
+      </ion-list>
+    </form>
+  </ion-card>
+</ion-content>

@@ -35,7 +35,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/sidemenu/services/offered',
+    redirectTo: '/sidemenu/services/calendar',
     pathMatch: 'full'
   }
 ];
