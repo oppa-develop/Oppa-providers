@@ -4,11 +4,6 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Próximos Servicios</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="closeModal()">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -115,26 +110,34 @@
 
   <!-- list of next services -->
   <ng-template [ngIf]="nextServices.value">
-    <ion-item *ngFor="let service of nextServices.value.services">
+    <ion-item button (click)="presentActionSheet(service)" *ngFor="let service of nextServices.value.services">
       <ion-thumbnail slot="start">
         <img [src]="apiUrl + service.img_url">
       </ion-thumbnail>
       <ion-grid>
         <ion-row>
-          <ion-col size="8">
+          <ion-col size="12">
             <h3 class="ion-no-margin">{{ service.title }}</h3>
-          </ion-col>
-          <ion-col size="4">
-            <ion-chip>{{ service.state }}</ion-chip>
           </ion-col>
           <ion-col size="12">
             <h6 class="ion-no-margin">{{ service.client.firstname + ' ' + service.client.lastname }}</h6>
           </ion-col>
+          <ion-col size="12">
+            <h6 *ngIf="service.address.other" class="ion-no-margin">{{ service.address.street + ', ' + service.address.other + ', ' + service.address.district + ', región ' + service.address.region + '.' }}</h6>
+            <h6 *ngIf="!service.address.other" class="ion-no-margin">{{ service.address.street + ', ' + service.address.district + ', región ' + service.address.region + '.' }}</h6>
+          </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-note><strong>{{ service.start + ' hrs' }}</strong></ion-note>
+      <ion-chip>{{ service.state }}</ion-chip>
       <ion-icon size=large name="time-outline"></ion-icon>
+      <ion-note><strong>{{ service.start + ' hrs' }}</strong></ion-note>
     </ion-item>
+  </ng-template>
+
+  <!-- list of next services empty -->
+  <ng-template [ngIf]="nextServices.value?.services.length == 0">
+    <ion-img src="../../../../../assets/images/no-data.svg"></ion-img>
+    <h1 class="ion-text-center">Sin Servicios<br>agendados este día</h1>
   </ng-template>
 
   <!-- error on get nextServices -->
