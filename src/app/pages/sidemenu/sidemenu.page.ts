@@ -8,6 +8,7 @@ import { WebsocketService } from 'src/app/providers/websocket/websocket.service'
 import { environment } from 'src/environments/environment';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidemenu',
@@ -17,11 +18,11 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 export class SidemenuPage implements OnInit {
 
   pages = [
-    { title: 'Servicios',  icon: 'construct-outline',        url: '/sidemenu/services/calendar' },
-    { title: 'Mis Datos',  icon: 'person-outline',           url: '/sidemenu/account'},
-    { title: 'Mensajes',   icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
-    { title: 'Facturas',   icon: 'receipt-outline',          url: '/sidemenu/bills' },
-    { title: 'Ayuda',      icon: 'help-circle-outline',      url: '/sidemenu/help' },
+    { title: 'Servicios', icon: 'construct-outline', url: '/sidemenu/services/calendar' },
+    { title: 'Mis Datos', icon: 'person-outline', url: '/sidemenu/account' },
+    { title: 'Mensajes', icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
+    { title: 'Facturas', icon: 'receipt-outline', url: '/sidemenu/bills' },
+    { title: 'Ayuda', icon: 'help-circle-outline', url: '/sidemenu/help' },
   ]
 
   selectedPath = ''
@@ -37,9 +38,10 @@ export class SidemenuPage implements OnInit {
     private toastCtrl: ToastController,
     private loadingController: LoadingController,
     private backgroundMode: BackgroundMode,
+    public router: Router,
     private localNotifications: LocalNotifications
   ) { }
-  
+
   ngOnInit() {
     this.backgroundMode.enable();
     this.backgroundMode.overrideBackButton();
@@ -52,22 +54,32 @@ export class SidemenuPage implements OnInit {
       this.darkMode = false
     }
     this.ws.connect();
-    this.ws.emit('notificationsProvider', { // aqui el proveedor se suscribe a las notificaciones
+    // aqui el proveedor se suscribe a las notificaciones
+    this.ws.emit('notificationsProvider', {
       user_id: this.user.user_id,
       provider_id: this.user.provider_id
     });
-    this.ws.listen('notificateProvider').subscribe((data: any) => { //cuando llega una notificación, hace lo siguiente
+    this.ws.emit('notificationsClient', {
+      user_id: this.user.user_id,
+      provider_id: this.user.provider_id
+    });
+    this.ws.listen('notificateProvider').subscribe((data: any) => {
+      console.log(data);
+      //cuando llega una notificación, hace lo siguiente
       this.localNotifications.schedule({
         id: 1,
         title: 'Nueva solicitud de servicio',
         text: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
         launch: true
       });
-      console.log(data);
       this.openRequestingServiceAlert(data)
     })
+    this.ws.listen('notificateClient').subscribe((data: any) => {
+      console.log(data);
+      if (this.router.url !== '/sidemenu/messages' && data.type === 'message') this.presentToast(`Nuevo mensaje de ${data.firstname} ${data.lastname}:\n${data.text}`, 'dark')
+    })
   }
-  
+
   ionViewWillEnter() {
     this.user = this.auth.userData()
   }
@@ -76,12 +88,12 @@ export class SidemenuPage implements OnInit {
     this.auth.logout()
   }
 
-  onClick(event){
-    if(event.detail.checked){
+  onClick(event) {
+    if (event.detail.checked) {
       document.body.setAttribute('data-theme', 'dark');
       localStorage.setItem('darkMode', 'on');
     }
-    else{
+    else {
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
     }
@@ -111,7 +123,7 @@ export class SidemenuPage implements OnInit {
               message: 'Esperando confirmación del usuario...'
             });
             await loading.present();
-            const serviceConfirmation = this.ws.listen('serviceConfirmation').subscribe((data: any) => { 
+            const serviceConfirmation = this.ws.listen('serviceConfirmation').subscribe((data: any) => {
               console.log(data);
               loading.dismiss();
               serviceConfirmation.unsubscribe()

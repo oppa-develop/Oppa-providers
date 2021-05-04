@@ -104,15 +104,16 @@
     
     <!-- list of messages -->
     <ng-template [ngIf]="messages.value">
-      <ion-item button (click)="openModal()" *ngFor="let message of messages.value">
+      <ion-item button (click)="openModal(chat)" *ngFor="let chat of messages.value.chats">
         <ion-avatar size="large" slot="start">
-          <ion-img [src]="message.img"></ion-img>
+          <ion-img *ngIf="chat.receptor_img_url" [src]="apiUrl + chat.receptor_img_url"></ion-img>
+          <ion-img *ngIf="!chat.receptor_img_url" src="../../../../assets/images/default_avatar.png"></ion-img>
         </ion-avatar>
         <ion-label>
-          <h2 slot="start">{{ message.name }}</h2>
-          <p slot="end">{{ message.service }}</p>
-          <p>{{ message.lastMsg }}</p>
-          <p class="timeago">{{ message.lastMsgAgo }}</p>
+          <h2 slot="start">{{ chat.title }}</h2>
+          <p slot="end">{{ chat.receptor_name }}</p>
+          <p>{{ chat.last_msg?.text }}</p>
+          <p class="timeago">{{ chat.last_msg?.created_at | date: 'dd/mm/yyyy' }}</p>
         </ion-label>
       </ion-item>
     </ng-template>

@@ -10,6 +10,7 @@ import { delay } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { serialize } from 'object-to-formdata';
+import { Message } from 'src/app/models/message';
 
 @Injectable({
   providedIn: 'root'
@@ -51,19 +52,12 @@ export class ApiService {
     return this.http.get<any[]>(`${this.apiUrl}/services/history/provider/${provider_id}`);
   }
 
-  getMessages(): Observable<MessageList[]> {
-    return of([
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) }
-    ])
+  getChatList(user_id: number): Observable<MessageList[]> {
+    return this.http.get<MessageList[]>(`${this.apiUrl}/chats/${user_id}`)
+  }
+
+  getChatMessages(chat_id: number): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.apiUrl}/chats/${chat_id}/messages`)
   }
 
   getServicesHistory(): Observable<Service[]> {
@@ -249,8 +243,12 @@ export class ApiService {
   }
 
   editOfferedService(service) {
-    console.log(service)
     return this.http.put(`${this.apiUrl}/services/offered/edit`, service)
+  }
+  
+  editUser(userData) {
+    console.log(userData)
+    return this.http.patch(`${this.apiUrl}/users/edit`, userData)
   }
 
 }

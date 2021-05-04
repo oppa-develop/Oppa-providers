@@ -70,10 +70,10 @@ export class OfferedPage implements OnInit {
   }
 
   changeState(service){
+    console.log({service});
+    
     const updateData = {
-      provider_id: service.providers_provider_id,
-      user_id: service.providers_users_user_id,
-      service_id: service.services_service_id,
+      provider_has_services_id: service.provider_has_services_id,
       state: service.state
     }
     this.api.changeServiceOfferedState(updateData).toPromise()
