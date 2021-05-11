@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: CalendarPage
+  },  {
+    path: 'clinical-record',
+    loadChildren: () => import('./clinical-record/clinical-record.module').then( m => m.ClinicalRecordPageModule)
   }
+
 ];
 
 @NgModule({

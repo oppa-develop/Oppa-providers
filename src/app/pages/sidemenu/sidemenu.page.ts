@@ -64,7 +64,6 @@ export class SidemenuPage implements OnInit {
       provider_id: this.user.provider_id
     });
     this.ws.listen('notificateProvider').subscribe((data: any) => {
-      console.log(data);
       //cuando llega una notificación, hace lo siguiente
       this.localNotifications.schedule({
         id: 1,
@@ -74,7 +73,7 @@ export class SidemenuPage implements OnInit {
       });
       this.openRequestingServiceAlert(data)
     })
-    this.ws.listen('notificateClient').subscribe((data: any) => {
+    this.ws.listen('notificateUser').subscribe((data: any) => {
       console.log(data);
       if (this.router.url !== '/sidemenu/messages' && data.type === 'message') this.presentToast(`Nuevo mensaje de ${data.firstname} ${data.lastname}:\n${data.text}`, 'dark')
     })

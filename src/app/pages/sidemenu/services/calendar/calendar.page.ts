@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, ModalController } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Service } from 'src/app/models/service';
 import { ApiService } from 'src/app/providers/api/api.service';
 import * as dayjs from 'dayjs'
-import { CalendarComponent } from 'ionic2-calendar';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { User } from 'src/app/models/user';
 import { environment } from 'src/environments/environment';
 import { BrowserTab } from '@ionic-native/browser-tab/ngx';
+import { ClinicalRecordPage } from './clinical-record/clinical-record.page';
 
 @Component({
   selector: 'app-calendar',
@@ -34,7 +34,8 @@ export class CalendarPage implements OnInit {
     private api: ApiService,
     private auth: AuthService,
     private actionSheetController: ActionSheetController,
-    private browserTab: BrowserTab
+    private browserTab: BrowserTab,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -83,13 +84,15 @@ export class CalendarPage implements OnInit {
         text: 'Marcar como terminado',
         icon: 'checkmark-done-outline',
         handler: () => {
-          console.log('Marcar como terminado');
+          console.log('Solicita marcar como terminado el servicio');
+          this.confirmEndOfService()
         }
       }, {
         text: 'Cancelar Servicio',
         icon: 'ban-outline',
         handler: () => {
-          console.log('Cancelar Servicio');
+          console.log('Solicita cancelar el servicio');
+          this.cancelService()
         }
       }, {
         text: 'Cerrar',
@@ -101,6 +104,83 @@ export class CalendarPage implements OnInit {
       }]
     });
     await actionSheet.present();
+  }
+
+  async confirmEndOfService() {
+    const alert = await this.alertController.create({
+      header: '¿Desea dar por terminado el servicio?',
+      message: 'Confirma que el servicio ya se ha llevado a cabo',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Cancela termino de servicio');
+          }
+        }, {
+          text: 'Aceptar',
+          handler: () => {
+            console.log('Confirma termino de servicio');
+            this.makeRegister()
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async makeRegister() {
+    const alert = await this.alertController.create({
+      header: '¿Desea dejar un registro en la ficha del usuario?',
+      message: 'Puede ser la receta o la ingesta de algún medicamento, la visita al doctor, el diagnóstico de alguna enfermedad, etc.',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => {
+            console.log('No se crea registro en ficha clínica');
+          }
+        }, {
+          text: 'Sí',
+          handler: () => {
+            console.log('Confirma crear registro en ficha clínica');
+            this.openModal();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async cancelService() {
+    const alert = await this.alertController.create({
+      header: '¿Desea cancelar el servicio?',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => {
+            console.log('no se cancela el servicio');
+          }
+        }, {
+          text: 'Sí',
+          handler: () => {
+            console.log('Confirma cancelar el servicio');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async openModal() {
+    const modal = await this.modalController.create({
+      component: ClinicalRecordPage,
+    })
+
+    return await modal.present()
   }
 
 }
