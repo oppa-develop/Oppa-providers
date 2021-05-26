@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
+import { ApiService } from 'src/app/providers/api/api.service';
 
 @Component({
   selector: 'app-clinical-record',
@@ -13,10 +14,12 @@ export class ClinicalRecordPage implements OnInit {
   customActionSheetOptions: any = {
     header: 'Seleccione un tipo de registro'
   };
+  @Input() client_users_user_id: number
 
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
+    private api: ApiService,
     public toastCtrl: ToastController
   ) { }
 
@@ -29,7 +32,8 @@ export class ClinicalRecordPage implements OnInit {
       title: [null, Validators.required],
       description: [null, Validators.required],
       icon: [null, Validators.required],
-      iconType: [null, Validators.required]
+      icon_type: ['null', Validators.required],
+      users_user_id: [this.client_users_user_id, Validators.required]
     })
   }
 
@@ -38,9 +42,11 @@ export class ClinicalRecordPage implements OnInit {
       case 'medic':
       case 'syringe':
       case 'pills':
-        this.newRecordForm.value.iconType = 'custom-icon'
+        this.newRecordForm.value.icon_type = 'custom-icon'
+        break
       default:
-        this.newRecordForm.value.iconType = 'ion-icon'
+        this.newRecordForm.value.icon_type = 'ion-icon'
+        break
     }
   }
 
@@ -48,7 +54,12 @@ export class ClinicalRecordPage implements OnInit {
     if (!this.newRecordForm.value.icon){
       this.presentToast('Debes seleccionar un tipo', 'danger')
     }else {
-      this.closeModal(true)
+      this.setIconType()
+      this.api.createRecord(this.newRecordForm.value).toPromise()
+        .then((res: any) => {
+          console.log('new record:', res.record);
+          this.closeModal(true)
+        })
     }
   }
 

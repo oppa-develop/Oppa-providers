@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { serialize } from 'object-to-formdata';
 import { Message } from 'src/app/models/message';
+import { Record } from 'src/app/models/record';
 
 @Injectable({
   providedIn: 'root'
@@ -249,6 +250,10 @@ export class ApiService {
   editUser(userData) {
     console.log(userData)
     return this.http.patch(`${this.apiUrl}/users/edit`, userData)
+  }
+
+  createRecord(record: Record): Observable<Record> {
+    return this.http.post<Record>(`${this.apiUrl}/records/new-record`, record)
   }
 
 }

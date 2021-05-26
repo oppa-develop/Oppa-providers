@@ -47,10 +47,6 @@ export class CalendarPage implements OnInit {
     document.querySelector('ion-list.event-detail-container').remove()
   }
 
-  async closeModal() {
-    await this.modalController.dismiss()
-  }
-
   onDateSelected($event) {
     console.log($event.selectedTime)
     this.calendar.title = $event.selectedTime
@@ -85,7 +81,7 @@ export class CalendarPage implements OnInit {
         icon: 'checkmark-done-outline',
         handler: () => {
           console.log('Solicita marcar como terminado el servicio');
-          this.confirmEndOfService()
+          this.confirmEndOfService(service)
         }
       }, {
         text: 'Cancelar Servicio',
@@ -106,7 +102,7 @@ export class CalendarPage implements OnInit {
     await actionSheet.present();
   }
 
-  async confirmEndOfService() {
+  async confirmEndOfService(service) {
     const alert = await this.alertController.create({
       header: '¿Desea dar por terminado el servicio?',
       message: 'Confirma que el servicio ya se ha llevado a cabo',
@@ -122,7 +118,7 @@ export class CalendarPage implements OnInit {
           text: 'Aceptar',
           handler: () => {
             console.log('Confirma termino de servicio');
-            this.makeRegister()
+            this.makeRegister(service)
           }
         }
       ]
@@ -131,7 +127,7 @@ export class CalendarPage implements OnInit {
     await alert.present();
   }
 
-  async makeRegister() {
+  async makeRegister(service) {
     const alert = await this.alertController.create({
       header: '¿Desea dejar un registro en la ficha del usuario?',
       message: 'Puede ser la receta o la ingesta de algún medicamento, la visita al doctor, el diagnóstico de alguna enfermedad, etc.',
@@ -140,12 +136,14 @@ export class CalendarPage implements OnInit {
           text: 'No',
           handler: () => {
             console.log('No se crea registro en ficha clínica');
+            // actualizamos el estado del servicio
           }
         }, {
           text: 'Sí',
           handler: () => {
             console.log('Confirma crear registro en ficha clínica');
-            this.openModal();
+            // actualizamos el estado del servicio antes de crear el registro en la ficha
+            this.openModal(service);
           }
         }
       ]
@@ -175,10 +173,18 @@ export class CalendarPage implements OnInit {
     await alert.present();
   }
 
-  async openModal() {
+  async openModal(service) {
     const modal = await this.modalController.create({
       component: ClinicalRecordPage,
+      componentProps: {
+        client_users_user_id: service.clients_users_user_id
+      }
     })
+
+    modal.onDidDismiss()
+      .then((res: any) => {
+        if (res.data.reload) this.$nextServices = this.api.getServicesByDate(this.user.provider_id, dayjs(this.calendar.title).format('YYYY-MM-DD'))
+      })
 
     return await modal.present()
   }
