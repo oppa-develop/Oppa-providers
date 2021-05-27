@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, AlertController, ModalController } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Service } from 'src/app/models/service';
 import { ApiService } from 'src/app/providers/api/api.service';
@@ -35,6 +35,7 @@ export class CalendarPage implements OnInit {
     private auth: AuthService,
     private actionSheetController: ActionSheetController,
     private browserTab: BrowserTab,
+    private toastCtrl: ToastController,
     private alertController: AlertController
   ) { }
 
@@ -48,58 +49,60 @@ export class CalendarPage implements OnInit {
   }
 
   onDateSelected($event) {
-    console.log($event.selectedTime)
     this.calendar.title = $event.selectedTime
     this.$nextServices = this.api.getServicesByDate(this.user.provider_id, dayjs($event.selectedTime).format('YYYY-MM-DD'))
   }
 
   async presentActionSheet(service) {
-    const actionSheet = await this.actionSheetController.create({
-      header: service.title + ' (' + service.client.firstname + ' ' + service.client.lastname + ')',
-      // cssClass: 'my-custom-class',
-      buttons: [{
-        text: 'Ver dirección',
-        icon: 'location-outline',
-        handler: () => {
-          let address = (service.other) ? [service.address.street, service.address.other, service.address.district, service.address.region].join('+') : [service.address.street, service.address.district, service.address.region].join('+')
-          address = address.replace(' ', '%20')
-          this.browserTab.isAvailable()
-            .then(isAvailable => {
-              if (isAvailable) {
-                this.browserTab.openUrl('https://www.google.com/maps/place/' + address);
-                console.log('Direccion', 'https://www.google.com/maps/place/' + address);
-              } else {
+    console.log(service.state)
+    if (service.state === 'active') {
+      const actionSheet = await this.actionSheetController.create({
+        header: service.title + ' (' + service.client.firstname + ' ' + service.client.lastname + ')',
+        // cssClass: 'my-custom-class',
+        buttons: [{
+          text: 'Ver dirección',
+          icon: 'location-outline',
+          handler: () => {
+            let address = (service.other) ? [service.address.street, service.address.other, service.address.district, service.address.region].join('+') : [service.address.street, service.address.district, service.address.region].join('+')
+            address = address.replace(' ', '%20')
+            this.browserTab.isAvailable()
+              .then(isAvailable => {
+                if (isAvailable) {
+                  this.browserTab.openUrl('https://www.google.com/maps/place/' + address);
+                  console.log('Direccion', 'https://www.google.com/maps/place/' + address);
+                } else {
+                  window.open('https://www.google.com/maps/place/' + address);
+                }
+              })
+              .catch(err => {
                 window.open('https://www.google.com/maps/place/' + address);
-              }
-            })
-            .catch(err => {
-              window.open('https://www.google.com/maps/place/' + address);
-            });
-        }
-      }, {
-        text: 'Marcar como terminado',
-        icon: 'checkmark-done-outline',
-        handler: () => {
-          console.log('Solicita marcar como terminado el servicio');
-          this.confirmEndOfService(service)
-        }
-      }, {
-        text: 'Cancelar Servicio',
-        icon: 'ban-outline',
-        handler: () => {
-          console.log('Solicita cancelar el servicio');
-          this.cancelService()
-        }
-      }, {
-        text: 'Cerrar',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cerrar');
-        }
-      }]
-    });
-    await actionSheet.present();
+              });
+          }
+        }, {
+          text: 'Marcar como terminado',
+          icon: 'checkmark-done-outline',
+          handler: () => {
+            console.log('Solicita marcar como terminado el servicio');
+            this.confirmEndOfService(service)
+          }
+        }, {
+          text: 'Cancelar Servicio',
+          icon: 'ban-outline',
+          handler: () => {
+            console.log('Solicita cancelar el servicio');
+            this.cancelService()
+          }
+        }, {
+          text: 'Cerrar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cerrar');
+          }
+        }]
+      });
+      await actionSheet.present();
+    }
   }
 
   async confirmEndOfService(service) {
@@ -113,12 +116,32 @@ export class CalendarPage implements OnInit {
           cssClass: 'secondary',
           handler: () => {
             console.log('Cancela termino de servicio');
+            this.api.changeServiceScheduledState({
+              scheduled_services_id: service.scheduled_services_id,
+              state: 'canceled'
+            }).toPromise()
+              .then((res: any) => {
+                this.$nextServices = this.api.getServicesByDate(this.user.provider_id, dayjs(this.calendar.title).format('YYYY-MM-DD'))
+              })
+              .catch(err => {
+                this.presentToast('No se ha podido cancelar el servicio. Intente nuevamente', 'danger')
+              })
           }
         }, {
           text: 'Aceptar',
           handler: () => {
-            console.log('Confirma termino de servicio');
-            this.makeRegister(service)
+            console.log('Confirma termino de servicio', { scheduled_services_id: service.scheduled_services_id, state: 'finished' });
+            this.api.changeServiceScheduledState({
+              scheduled_services_id: service.scheduled_services_id,
+              state: 'finished'
+            }).toPromise()
+              .then((res: any) => {
+                this.$nextServices = this.api.getServicesByDate(this.user.provider_id, dayjs(this.calendar.title).format('YYYY-MM-DD'))
+                this.makeRegister(service)
+              })
+              .catch(err => {
+                this.presentToast('No se ha podido terminar el servicio. Intente nuevamente', 'danger')
+              })
           }
         }
       ]
@@ -136,13 +159,11 @@ export class CalendarPage implements OnInit {
           text: 'No',
           handler: () => {
             console.log('No se crea registro en ficha clínica');
-            // actualizamos el estado del servicio
           }
         }, {
           text: 'Sí',
           handler: () => {
             console.log('Confirma crear registro en ficha clínica');
-            // actualizamos el estado del servicio antes de crear el registro en la ficha
             this.openModal(service);
           }
         }
@@ -187,6 +208,15 @@ export class CalendarPage implements OnInit {
       })
 
     return await modal.present()
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2000,
+      color
+    });
+    toast.present();
   }
 
 }

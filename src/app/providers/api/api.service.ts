@@ -200,6 +200,10 @@ export class ApiService {
     return this.http.patch(`${this.apiUrl}/services/offered/change-state`, offeredService);
   }
 
+  changeServiceScheduledState(scheduledService): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/services/scheduled/change-state`, scheduledService);
+  }
+
   offerNewService(offerNewService): Observable<any> {
     let workable = ''
     for (let days of offerNewService.workable) {
