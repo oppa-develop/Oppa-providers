@@ -128,7 +128,7 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-chip>{{ service.state }}</ion-chip>
+      <ion-chip>{{ service.state | titlecase }}</ion-chip>
       <ion-icon size=large name="time-outline"></ion-icon>
       <ion-note><strong>{{ service.start + ' hrs' }}</strong></ion-note>
     </ion-item>

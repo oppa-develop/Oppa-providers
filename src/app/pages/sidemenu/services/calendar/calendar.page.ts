@@ -55,7 +55,7 @@ export class CalendarPage implements OnInit {
 
   async presentActionSheet(service) {
     console.log(service.state)
-    if (service.state === 'active') {
+    if (service.state === 'agendado') {
       const actionSheet = await this.actionSheetController.create({
         header: service.title + ' (' + service.client.firstname + ' ' + service.client.lastname + ')',
         // cssClass: 'my-custom-class',
@@ -90,7 +90,7 @@ export class CalendarPage implements OnInit {
           icon: 'ban-outline',
           handler: () => {
             console.log('Solicita cancelar el servicio');
-            this.cancelService()
+            this.cancelService(service)
           }
         }, {
           text: 'Cerrar',
@@ -115,25 +115,15 @@ export class CalendarPage implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Cancela termino de servicio');
-            this.api.changeServiceScheduledState({
-              scheduled_services_id: service.scheduled_services_id,
-              state: 'canceled'
-            }).toPromise()
-              .then((res: any) => {
-                this.$nextServices = this.api.getServicesByDate(this.user.provider_id, dayjs(this.calendar.title).format('YYYY-MM-DD'))
-              })
-              .catch(err => {
-                this.presentToast('No se ha podido cancelar el servicio. Intente nuevamente', 'danger')
-              })
+            console.log('Cancela término de servicio');
           }
         }, {
           text: 'Aceptar',
           handler: () => {
-            console.log('Confirma termino de servicio', { scheduled_services_id: service.scheduled_services_id, state: 'finished' });
+            console.log('Confirma termino de servicio', { scheduled_services_id: service.scheduled_services_id, state: 'terminado' });
             this.api.changeServiceScheduledState({
               scheduled_services_id: service.scheduled_services_id,
-              state: 'finished'
+              state: 'terminado'
             }).toPromise()
               .then((res: any) => {
                 this.$nextServices = this.api.getServicesByDate(this.user.provider_id, dayjs(this.calendar.title).format('YYYY-MM-DD'))
@@ -173,7 +163,7 @@ export class CalendarPage implements OnInit {
     await alert.present();
   }
 
-  async cancelService() {
+  async cancelService(service) {
     const alert = await this.alertController.create({
       header: '¿Desea cancelar el servicio?',
       buttons: [
@@ -186,6 +176,16 @@ export class CalendarPage implements OnInit {
           text: 'Sí',
           handler: () => {
             console.log('Confirma cancelar el servicio');
+            this.api.changeServiceScheduledState({
+              scheduled_services_id: service.scheduled_services_id,
+              state: 'cancelado'
+            }).toPromise()
+              .then((res: any) => {
+                this.$nextServices = this.api.getServicesByDate(this.user.provider_id, dayjs(this.calendar.title).format('YYYY-MM-DD'))
+              })
+              .catch(err => {
+                this.presentToast('No se ha podido cancelar el servicio. Intente nuevamente', 'danger')
+              })
           }
         }
       ]
