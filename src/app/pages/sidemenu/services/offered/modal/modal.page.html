@@ -13,248 +13,235 @@
 
   <form [formGroup]="newServiceForm" ngNativeValidate>
 
-    <!-- *** slides *** -->
-    <ion-slides pager="true" [options]="slideOpts">
-
-      <!-- choose a service to provide -->
-      <ion-slide>
-        <ion-grid *ngIf="$permitedServices | loading | async as permitedServices">
-          <ng-template [ngIf]="permitedServices.value?.services.length">
-            <ion-row>
-              <h3>Paso 1: seleccione el nuevo servicio</h3>
-            </ion-row>
-            <ion-row>
-              <ion-col size="6" *ngFor="let service of permitedServices.value?.services">
-                <ion-card class="ion-no-margin">
-                  <ion-img [src]="this.apiUrl + service.img_url"></ion-img>
-                  <ion-card-header>
-                    <ion-grid class="ion-no-padding">
-                      <ion-row>
-                        <ion-col>
-                          <h3 class="ion-no-margin"><strong>{{ service.title | titlecase }}</strong></h3>
-                          <h6 class="ion-no-margin ion-margin-bottom">{{ service.super_category }}</h6>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row class="ion-no-padding">
-                        <ion-col>
-                          <ion-icon size="large" class="ion-padding-end" color="primary" name="cash-outline"></ion-icon> 
-                          <ion-label>${{ service.price | currency:'CLP' }}</ion-label>
-                        </ion-col>
-                      </ion-row>
-                      <ion-button expand="block" color="primary" (click)=selectService(service)>seleccionar</ion-button>
-                    </ion-grid>
-                  </ion-card-header>
-                </ion-card>
-              </ion-col>
-            </ion-row>
-          </ng-template>
-        </ion-grid>
-      </ion-slide>
-
-      <!-- choose a gender to provide the service -->
-      <ion-slide>
-        <ion-grid>
+    <!-- choose a service to provide -->
+    <div *ngIf="steps === 1">
+      <ion-grid *ngIf="$permitedServices | loading | async as permitedServices">
+        <ng-template [ngIf]="permitedServices.value?.services.length">
           <ion-row>
-            <h3>Paso 2:</h3>
-          </ion-row>
-          <ion-row class="ion-margin-top">
-            <ion-col size="12">
-              <ion-img src="../../../../../../assets/images/gender.svg"></ion-img>
-            </ion-col>
-            <ion-col size="12">
-              <h3 class="ion-text-center">Seleccione el género a quien ofrecer el servicio</h3>
-            </ion-col>
+            <h3>Paso 1: seleccione el nuevo servicio</h3>
           </ion-row>
           <ion-row>
-            <ion-col size="12">
-              <ion-item class="ion-margin-vertical">
-                <ion-label position="floating">Género (*)</ion-label>
-                <ion-select formControlName="gender" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
-                  <ion-select-option>Hombre</ion-select-option>
-                  <ion-select-option>Mujer</ion-select-option>
-                  <ion-select-option>Unisex</ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-          <ion-button expand="block" (click)="next()">siguiente</ion-button>
-        </ion-grid>
-      </ion-slide>
-
-      <!-- choose a place to provide the service -->
-      <ion-slide>
-        <ion-grid>
-          <ion-row>
-            <h3>Paso 3:</h3>
-          </ion-row>
-          <ion-row class="ion-margin-top">
-            <ion-col size="12">
-              <ion-img src="../../../../../../assets/images/place_1.svg"></ion-img>
-            </ion-col>
-            <ion-col size="12">
-              <h3 class="ion-text-center">Seleccione el la(s) comuna(s) o región(es) donde ofrecer el servicio</h3>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="12">
-              <ion-item class="ion-margin-vertical">
-                <ion-label position="floating">Region (*)</ion-label>
-                <ion-select formControlName="region" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar" (ionChange)="getDistrictsByRegion()">
-                  <ion-select-option *ngFor="let region of regions">{{ region.nombre }}</ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-col>
-            <ion-col size="12">
-              <ion-item class="ion-margin-vertical">
-                <ion-label position="floating">Comuna(s) (opcional)</ion-label>
-                <ion-select multiple formControlName="districts" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
-                  <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-          <ion-button expand="block" (click)="next()">siguiente</ion-button>
-        </ion-grid>
-      </ion-slide>
-
-      <!-- choose the workable days to provide the service -->
-      <ion-slide>
-        <ion-grid>
-          <ion-row>
-            <h3>Paso 4:</h3>
-          </ion-row>
-          <ion-row class="ion-margin-top">
-            <ion-col size="12">
-              <ion-img src="../../../../../../assets/images/calendar.svg"></ion-img>
-            </ion-col>
-            <ion-col size="12">
-              <h3 class="ion-text-center">Seleccione el(los) día(s) entre los que ofrecer el servicio</h3>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="12">
-              <ion-item class="ion-margin-vertical">
-                <ion-label position="floating">Días trabajables</ion-label>
-                <ion-select multiple formControlName="workable" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
-                  <ion-select-option value="l">Lunes</ion-select-option>
-                  <ion-select-option value="m">Martes</ion-select-option>
-                  <ion-select-option value="x">Miércoles</ion-select-option>
-                  <ion-select-option value="j">Jueves</ion-select-option>
-                  <ion-select-option value="v">Viernes</ion-select-option>
-                  <ion-select-option value="s">Sábado</ion-select-option>
-                  <ion-select-option value="d">Domingo</ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-          <ion-button expand="block" (click)="next()">siguiente</ion-button>
-        </ion-grid>
-      </ion-slide>
-
-      <!-- choose the time between to provide the service -->
-      <ion-slide>
-        <ion-grid>
-          <ion-row>
-            <h3>Paso 5:</h3>
-          </ion-row>
-          <ion-row class="ion-margin-top">
-            <ion-col size="12">
-              <ion-img src="../../../../../../assets/images/time.svg"></ion-img>
-            </ion-col>
-            <ion-col size="12">
-              <h3 class="ion-text-center">Seleccione el las horas entre las que ofrecer el servicio</h3>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="12">
-              <ion-item class="ion-margin-vertical">
-                <ion-label position="floating">Inicio</ion-label>
-                <ion-input formControlName="start" type="time" step="1800"></ion-input>
-              </ion-item>
-            </ion-col>
-            <ion-col size="12">
-              <ion-item class="ion-margin-vertical">
-                <ion-label position="floating">Fin</ion-label>
-                <ion-input formControlName="end" type="time" step="1800"></ion-input>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-          <ion-button expand="block" (click)="next()">siguiente</ion-button>
-        </ion-grid>
-      </ion-slide>
-
-      <!-- check data before send -->
-      <ion-slide>
-        <ion-grid>
-          <ion-row>
-            <ion-col class="ion-no-padding" size="12">
-              <h3>Confirmar datos:</h3>
-            </ion-col>
-            <ion-col class="ion-no-padding" size="12">
-              <ion-card class="ion-no-margin" *ngIf="selectedService">
-                <ion-img [src]="this.apiUrl + selectedService.img_url"></ion-img>
+            <ion-col size="6" *ngFor="let service of permitedServices.value?.services">
+              <ion-card class="ion-no-margin">
+                <ion-img [src]="this.apiUrl + service.img_url"></ion-img>
                 <ion-card-header>
                   <ion-grid class="ion-no-padding">
                     <ion-row>
-                      <ion-col size="12">
-                        <h2 class="ion-no-margin">
-                          <strong>{{ dataToCheck.title + ' (' + dataToCheck.gender + ')' | titlecase }}</strong>
-                        </h2>
-                        <h6 class="ion-no-margin ion-padding-bottom">{{ dataToCheck.super_category }}</h6>
+                      <ion-col>
+                        <h3 class="ion-no-margin"><strong>{{ service.title | titlecase }}</strong></h3>
+                        <h6 class="ion-no-margin ion-margin-bottom">{{ service.super_category }}</h6>
                       </ion-col>
                     </ion-row>
                     <ion-row class="ion-no-padding">
-                      <ion-col size="6">
+                      <ion-col>
                         <ion-icon size="large" class="ion-padding-end" color="primary" name="cash-outline"></ion-icon> 
-                        <ion-label>${{ dataToCheck.price | currency:'CLP' }}</ion-label>
-                      </ion-col>
-                      <ion-col size="6">
-                        <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
-                        <ion-label *ngIf="dataToCheck.workable?.length == 7">Todos los días</ion-label>
-                        <ion-label *ngIf="!(dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('l') && dataToCheck.workable?.includes('m') && dataToCheck.workable?.includes('x') && dataToCheck.workable?.includes('j') && dataToCheck.workable?.includes('v')) && dataToCheck.workable?.length < 7 && (!dataToCheck.workable?.includes('s') || !dataToCheck.workable?.includes('d'))">
-                          Días: 
-                          {{ (dataToCheck.workable?.includes('l')) ? 'l':null }}
-                          {{ (dataToCheck.workable?.includes('m')) ? 'm':null }}
-                          {{ (dataToCheck.workable?.includes('x')) ? 'x':null }}
-                          {{ (dataToCheck.workable?.includes('j')) ? 'j':null }}
-                          {{ (dataToCheck.workable?.includes('v')) ? 'v':null }}
-                          {{ (dataToCheck.workable?.includes('s')) ? 's':null }}
-                          {{ (dataToCheck.workable?.includes('d')) ? 'd':null }}
-                        </ion-label>
-                        <ion-label *ngIf="dataToCheck.workable?.length == 2 && dataToCheck.workable?.includes('s') && dataToCheck.workable?.includes('d')">Fines de Semana</ion-label>
-                        <ion-label *ngIf="dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('l') && dataToCheck.workable?.includes('m') && dataToCheck.workable?.includes('x') && dataToCheck.workable?.includes('j') && dataToCheck.workable?.includes('v')">Durante la Semana</ion-label>
-                      </ion-col>
-                      <ion-col size="1">
-                        <ion-icon size="large" class="ion-padding-end" color="primary" name="location-outline"></ion-icon> 
-                      </ion-col>
-                      <ion-col class="col-padding" size="5" *ngIf="!dataToCheck.districts">
-                        <div>Region:</div>
-                        <div class="ion-margin-bottom">{{ dataToCheck.region }}</div>
-                      </ion-col>
-                      <ion-col class="col-padding" size="5" *ngIf="dataToCheck.districts?.length">
-                        <div>{{ (dataToCheck.districts.length > 1) ? 'Comunas:' : 'Comuna:' }}</div>
-                        <ul class="ion-no-margin ion-margin-bottom">
-                          <li *ngFor="let district of dataToCheck.districts">{{ district }}</li>
-                        </ul>
-                      </ion-col>
-                      <ion-col size="1">
-                        <ion-icon size="large" class="ion-padding-end" color="primary" name="time-outline"></ion-icon> 
-                      </ion-col>
-                      <ion-col class="col-padding" size="5">
-                        <ion-label>{{ dataToCheck.start + ' - ' + dataToCheck.end }}</ion-label>
+                        <ion-label>${{ service.price | currency:'CLP' }}</ion-label>
                       </ion-col>
                     </ion-row>
+                    <ion-button expand="block" color="primary" (click)="selectService(service)">seleccionar</ion-button>
                   </ion-grid>
                 </ion-card-header>
               </ion-card>
             </ion-col>
-            <ion-col size="12" class="ion-no-padding ion-padding-top ion-no-margin">
-              <ion-button class="ion-no-margin" expand="block" color="primary" (click)="offerNewService()">Aceptar</ion-button>
-            </ion-col>
           </ion-row>
-        </ion-grid>
-      </ion-slide>
-    </ion-slides>
+        </ng-template>
+      </ion-grid>
+    </div>
+
+    <!-- choose a gender to provide the service -->
+    <ion-grid *ngIf="steps === 2">
+      <ion-row>
+        <h3>Paso 2:</h3>
+      </ion-row>
+      <ion-row class="ion-margin-top">
+        <ion-col size="12">
+          <ion-img src="../../../../../../assets/images/gender.svg"></ion-img>
+        </ion-col>
+        <ion-col size="12">
+          <h3 class="ion-text-center">Seleccione el género a quien ofrecer el servicio</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="floating">Género (*)</ion-label>
+            <ion-select formControlName="gender" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+              <ion-select-option>Hombre</ion-select-option>
+              <ion-select-option>Mujer</ion-select-option>
+              <ion-select-option>Unisex</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-button expand="block" (click)="next()">siguiente</ion-button>
+    </ion-grid>
+
+    <!-- choose a place to provide the service -->
+    <ion-grid *ngIf="steps === 3">
+      <ion-row>
+        <h3>Paso 3:</h3>
+      </ion-row>
+      <ion-row class="ion-margin-top">
+        <ion-col size="12">
+          <ion-img src="../../../../../../assets/images/place_1.svg"></ion-img>
+        </ion-col>
+        <ion-col size="12">
+          <h3 class="ion-text-center">Seleccione el la(s) comuna(s) o región(es) donde ofrecer el servicio</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="floating">Region (*)</ion-label>
+            <ion-select formControlName="region" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar" (ionChange)="getDistrictsByRegion()">
+              <ion-select-option *ngFor="let region of regions">{{ region.nombre }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="floating">Comuna(s) (opcional)</ion-label>
+            <ion-select multiple formControlName="districts" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+              <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-button expand="block" (click)="next()">siguiente</ion-button>
+    </ion-grid>
+
+    <!-- choose the workable days to provide the service -->
+    <ion-grid *ngIf="steps === 4">
+      <ion-row>
+        <h3>Paso 4:</h3>
+      </ion-row>
+      <ion-row class="ion-margin-top">
+        <ion-col size="12">
+          <ion-img src="../../../../../../assets/images/calendar.svg"></ion-img>
+        </ion-col>
+        <ion-col size="12">
+          <h3 class="ion-text-center">Seleccione el(los) día(s) entre los que ofrecer el servicio</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="floating">Días trabajables</ion-label>
+            <ion-select multiple formControlName="workable" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+              <ion-select-option value="l">Lunes</ion-select-option>
+              <ion-select-option value="m">Martes</ion-select-option>
+              <ion-select-option value="x">Miércoles</ion-select-option>
+              <ion-select-option value="j">Jueves</ion-select-option>
+              <ion-select-option value="v">Viernes</ion-select-option>
+              <ion-select-option value="s">Sábado</ion-select-option>
+              <ion-select-option value="d">Domingo</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-button expand="block" (click)="next()">siguiente</ion-button>
+    </ion-grid>
+
+    <!-- choose the time between to provide the service -->
+    <ion-grid *ngIf="steps === 5">
+      <ion-row>
+        <h3>Paso 5:</h3>
+      </ion-row>
+      <ion-row class="ion-margin-top">
+        <ion-col size="12">
+          <ion-img src="../../../../../../assets/images/time.svg"></ion-img>
+        </ion-col>
+        <ion-col size="12">
+          <h3 class="ion-text-center">Seleccione el las horas entre las que ofrecer el servicio</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="floating">Inicio</ion-label>
+            <ion-input formControlName="start" type="time" step="1800"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="ion-margin-vertical">
+            <ion-label position="floating">Fin</ion-label>
+            <ion-input formControlName="end" type="time" step="1800"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-button expand="block" (click)="next()">siguiente</ion-button>
+    </ion-grid>
+
+    <!-- check data before send -->
+    <ion-grid *ngIf="steps === 6">
+      <ion-row>
+        <ion-col class="ion-no-padding" size="12">
+          <h3>Confirmar datos:</h3>
+        </ion-col>
+        <ion-col class="ion-no-padding" size="12">
+          <ion-card class="ion-no-margin" *ngIf="selectedService">
+            <ion-img [src]="this.apiUrl + selectedService.img_url"></ion-img>
+            <ion-card-header>
+              <ion-grid class="ion-no-padding">
+                <ion-row>
+                  <ion-col size="12">
+                    <h2 class="ion-no-margin">
+                      <strong>{{ dataToCheck.title + ' (' + dataToCheck.gender + ')' | titlecase }}</strong>
+                    </h2>
+                    <h6 class="ion-no-margin ion-padding-bottom">{{ dataToCheck.super_category }}</h6>
+                  </ion-col>
+                </ion-row>
+                <ion-row class="ion-no-padding">
+                  <ion-col size="6">
+                    <ion-icon size="large" class="ion-padding-end" color="primary" name="cash-outline"></ion-icon> 
+                    <ion-label>${{ dataToCheck.price | currency:'CLP' }}</ion-label>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
+                    <ion-label *ngIf="dataToCheck.workable?.length == 7">Todos los días</ion-label>
+                    <ion-label *ngIf="!(dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('l') && dataToCheck.workable?.includes('m') && dataToCheck.workable?.includes('x') && dataToCheck.workable?.includes('j') && dataToCheck.workable?.includes('v')) && dataToCheck.workable?.length < 7 && (!dataToCheck.workable?.includes('s') || !dataToCheck.workable?.includes('d'))">
+                      Días: 
+                      {{ (dataToCheck.workable?.includes('l')) ? 'l':null }}
+                      {{ (dataToCheck.workable?.includes('m')) ? 'm':null }}
+                      {{ (dataToCheck.workable?.includes('x')) ? 'x':null }}
+                      {{ (dataToCheck.workable?.includes('j')) ? 'j':null }}
+                      {{ (dataToCheck.workable?.includes('v')) ? 'v':null }}
+                      {{ (dataToCheck.workable?.includes('s')) ? 's':null }}
+                      {{ (dataToCheck.workable?.includes('d')) ? 'd':null }}
+                    </ion-label>
+                    <ion-label *ngIf="dataToCheck.workable?.length == 2 && dataToCheck.workable?.includes('s') && dataToCheck.workable?.includes('d')">Fines de Semana</ion-label>
+                    <ion-label *ngIf="dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('l') && dataToCheck.workable?.includes('m') && dataToCheck.workable?.includes('x') && dataToCheck.workable?.includes('j') && dataToCheck.workable?.includes('v')">Durante la Semana</ion-label>
+                  </ion-col>
+                  <ion-col size="1">
+                    <ion-icon size="large" class="ion-padding-end" color="primary" name="location-outline"></ion-icon> 
+                  </ion-col>
+                  <ion-col class="col-padding" size="5" *ngIf="!dataToCheck.districts">
+                    <div>Region:</div>
+                    <div class="ion-margin-bottom">{{ dataToCheck.region }}</div>
+                  </ion-col>
+                  <ion-col class="col-padding" size="5" *ngIf="dataToCheck.districts?.length">
+                    <div>{{ (dataToCheck.districts.length > 1) ? 'Comunas:' : 'Comuna:' }}</div>
+                    <ul class="ion-no-margin ion-margin-bottom">
+                      <li *ngFor="let district of dataToCheck.districts">{{ district }}</li>
+                    </ul>
+                  </ion-col>
+                  <ion-col size="1">
+                    <ion-icon size="large" class="ion-padding-end" color="primary" name="time-outline"></ion-icon> 
+                  </ion-col>
+                  <ion-col class="col-padding" size="5">
+                    <ion-label>{{ dataToCheck.start + ' - ' + dataToCheck.end }}</ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" class="ion-no-padding ion-padding-top ion-no-margin">
+          <ion-button class="ion-no-margin" expand="block" color="primary" (click)="offerNewService()">Aceptar</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
   </form>
 
 </ion-content>

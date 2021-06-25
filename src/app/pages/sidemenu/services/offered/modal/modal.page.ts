@@ -24,20 +24,7 @@ export class ModalPage implements OnInit {
   $permitedServices: Observable<Service[]>
   selectedService: Service
   dataToCheck: any
-  slider: any
-  slideOpts = {
-    centeredSlides: true,
-    centeredSlidesBounds: true,
-    coverflowEffect: {
-      rotate: 50,
-      stretch: 0,
-      depth: 100,
-      modifier: 1,
-      slideShadows: true,
-    },
-    allowTouchMove: false,
-    autoHeight: false
-  }
+  steps: number = 1
 
   constructor(
     private modalController: ModalController,
@@ -52,10 +39,10 @@ export class ModalPage implements OnInit {
     this.user = this.auth.userData()
     this.newServiceForm = this.createNewServiceForm()
     this.$permitedServices = this.api.getPermitedServices(this.user.provider_id)
-    document.querySelector('ion-slides').getSwiper()
+    /* document.querySelector('ion-slides').getSwiper()
       .then((swiper: any) => {
         this.slider = swiper
-      })
+      }) */
     this.location.getRegions().toPromise()
       .then((regions) => {
         this.regions = regions
@@ -73,7 +60,6 @@ export class ModalPage implements OnInit {
   
   selectService(service: Service) {
     console.count()
-    console.table(service)
     this.selectedService = service
     this.newServiceForm.value.title = service.title
     this.newServiceForm.value.price = service.price
@@ -83,28 +69,19 @@ export class ModalPage implements OnInit {
   }
   
   next() {
+    this.steps++
     this.newServiceForm.value.service_id = this.selectedService.service_id
     this.newServiceForm.value.title = this.selectedService.title
     this.newServiceForm.value.price = this.selectedService.price
     this.newServiceForm.value.category_id = this.selectedService.categories_category_id
     this.newServiceForm.value.super_category = this.selectedService.super_category
     this.dataToCheck = this.newServiceForm.value;
-    this.slider.appendSlide('') // workarround to make work the slider when the modal is open
-    this.slider.removeSlide(6) // workarround to make work the slider when the modal is open
-    this.slider.slideNext(); // workarround to make work the slider when the modal is open
-    this.scrollTo('ion-slides'); // workarround to make work the slider when the modal is open
-    console.table(this.dataToCheck)
   }
 
   scrollTo(element: string) {
     document.querySelector(element).scrollIntoView({
       behavior: 'smooth'
     });
-  }
-  
-  prev() {
-    console.log('prev step', this.slider)
-    this.slider.slidePrev();
   }
   
   createNewServiceForm() {
@@ -126,7 +103,6 @@ export class ModalPage implements OnInit {
   }
   
   async closeModal(reload: boolean) {
-    this.slider.slideReset()
     await this.modalController.dismiss({
       reload
     })
