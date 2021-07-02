@@ -24,6 +24,9 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { BrowserTab } from '@ionic-native/browser-tab/ngx';
 registerLocaleData(es)
 
+// animaciones
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -33,7 +36,8 @@ registerLocaleData(es)
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    HttpClientJsonpModule
+    HttpClientJsonpModule,
+    BrowserAnimationsModule
   ],
   providers: [
     StatusBar,

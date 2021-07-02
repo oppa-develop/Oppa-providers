@@ -9,10 +9,23 @@ import { AuthService } from 'src/app/providers/auth/auth.service';
 import { LocationService } from 'src/app/providers/location/location.service';
 import { environment } from 'src/environments/environment';
 
+// animaciones
+import { slideInLeft, slideInRight, slideOutRight, slideOutLeft } from 'ng-animate'
+import { trigger, transition, useAnimation } from '@angular/animations'
+
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.page.html',
   styleUrls: ['./modal.page.scss'],
+  animations: [
+    trigger('onChargeFirst', [
+      transition(':leave', useAnimation(slideOutLeft, { params: { timing: 0.2, delay: 0 } })),
+    ]),
+    trigger('onCharge', [
+      transition(':enter', useAnimation(slideInRight, { params: { timing: 0.2, delay: 0.18 } })),
+      transition(':leave', useAnimation(slideOutLeft, { params: { timing: 0.2, delay: 0 } })),
+    ]),
+  ]
 })
 export class ModalPage implements OnInit {
 
@@ -50,14 +63,14 @@ export class ModalPage implements OnInit {
       })
   }
 
-  getDistrictsByRegion(){
+  getDistrictsByRegion() {
     this.newServiceForm.controls.districts.reset()
     this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.newServiceForm.value.region).codigo).toPromise()
       .then((districts: any) => {
         this.districts = districts
       })
   }
-  
+
   selectService(service: Service) {
     console.count()
     this.selectedService = service
@@ -67,7 +80,7 @@ export class ModalPage implements OnInit {
     this.newServiceForm.value.super_category = service.super_category
     this.next()
   }
-  
+
   next() {
     this.steps++
     this.newServiceForm.value.service_id = this.selectedService.service_id
@@ -78,12 +91,16 @@ export class ModalPage implements OnInit {
     this.dataToCheck = this.newServiceForm.value;
   }
 
+  prev() {
+    this.steps--
+  }
+
   scrollTo(element: string) {
     document.querySelector(element).scrollIntoView({
       behavior: 'smooth'
     });
   }
-  
+
   createNewServiceForm() {
     return this.formBuilder.group({
       service_id: [null, Validators.required],
@@ -101,7 +118,7 @@ export class ModalPage implements OnInit {
       user_id: [this.user.user_id, Validators.required]
     })
   }
-  
+
   async closeModal(reload: boolean) {
     await this.modalController.dismiss({
       reload

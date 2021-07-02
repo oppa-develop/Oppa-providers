@@ -1,5 +1,10 @@
 <ion-header>
   <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-button *ngIf="steps !== 1" (click)="prev()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>Nuevo Servicio</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="closeModal()">
@@ -14,7 +19,7 @@
   <form [formGroup]="newServiceForm" ngNativeValidate>
 
     <!-- choose a service to provide -->
-    <div *ngIf="steps === 1">
+    <div [@onChargeFirst] *ngIf="steps === 1">
       <ion-grid *ngIf="$permitedServices | loading | async as permitedServices">
         <ng-template [ngIf]="permitedServices.value?.services.length">
           <ion-row>
@@ -49,7 +54,7 @@
     </div>
 
     <!-- choose a gender to provide the service -->
-    <ion-grid *ngIf="steps === 2">
+    <ion-grid [@onCharge] *ngIf="steps === 2">
       <ion-row>
         <h3>Paso 2:</h3>
       </ion-row>
@@ -77,7 +82,7 @@
     </ion-grid>
 
     <!-- choose a place to provide the service -->
-    <ion-grid *ngIf="steps === 3">
+    <ion-grid [@onCharge] *ngIf="steps === 3">
       <ion-row>
         <h3>Paso 3:</h3>
       </ion-row>
@@ -111,7 +116,7 @@
     </ion-grid>
 
     <!-- choose the workable days to provide the service -->
-    <ion-grid *ngIf="steps === 4">
+    <ion-grid [@onCharge] *ngIf="steps === 4">
       <ion-row>
         <h3>Paso 4:</h3>
       </ion-row>
@@ -143,7 +148,7 @@
     </ion-grid>
 
     <!-- choose the time between to provide the service -->
-    <ion-grid *ngIf="steps === 5">
+    <ion-grid [@onCharge] *ngIf="steps === 5">
       <ion-row>
         <h3>Paso 5:</h3>
       </ion-row>
@@ -173,7 +178,7 @@
     </ion-grid>
 
     <!-- check data before send -->
-    <ion-grid *ngIf="steps === 6">
+    <ion-grid [@onCharge] *ngIf="steps === 6">
       <ion-row>
         <ion-col class="ion-no-padding" size="12">
           <h3>Confirmar datos:</h3>

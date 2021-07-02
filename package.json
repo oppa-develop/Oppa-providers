@@ -15,6 +15,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^12.1.0",
     "@angular/common": "~10.0.0",
     "@angular/core": "~10.0.0",
     "@angular/forms": "~10.0.0",
@@ -42,6 +43,7 @@
     "faker": "^5.1.0",
     "ionic2-calendar": "^0.6.6",
     "jetifier": "^1.6.6",
+    "ng-animate": "^1.0.0",
     "object-to-formdata": "^4.1.0",
     "rxjs": "~6.5.5",
     "socket.io-client": "^3.1.2",
