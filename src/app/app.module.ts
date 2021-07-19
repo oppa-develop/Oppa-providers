@@ -26,6 +26,7 @@ registerLocaleData(es)
 
 // animaciones
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Autostart } from '@ionic-native/autostart/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,6 +41,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
     BrowserAnimationsModule
   ],
   providers: [
+    Autostart,
     StatusBar,
     SplashScreen,
     DatePipe,
