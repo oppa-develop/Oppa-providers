@@ -260,5 +260,13 @@ export class ApiService {
     return this.http.post<Record>(`${this.apiUrl}/records/new-record`, record)
   }
 
+  getCode(rut: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/recover-account`, rut)
+  }
+
+  changePass(data: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/users/change-password`, data)
+  }
+
 }
 

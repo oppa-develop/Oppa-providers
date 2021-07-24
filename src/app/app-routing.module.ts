@@ -35,7 +35,11 @@ const routes: Routes = [
     path: '',
     redirectTo: '/sidemenu',
     pathMatch: 'full'
+  },  {
+    path: 'recover-account',
+    loadChildren: () => import('./pages/recover-account/recover-account.module').then( m => m.RecoverAccountPageModule)
   }
+
 
 ];
 
