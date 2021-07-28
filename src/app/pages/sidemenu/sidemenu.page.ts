@@ -29,6 +29,8 @@ export class SidemenuPage implements OnInit {
   darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches || false;
   apiUrl: string = environment.HOST + '/'
   user: User
+  notificationState: string
+  requestingServiceAlert
 
   constructor(
     private auth: AuthService,
@@ -64,14 +66,20 @@ export class SidemenuPage implements OnInit {
       provider_id: this.user.provider_id
     });
     this.ws.listen('notificateProvider').subscribe((data: any) => {
-      //cuando llega una notificación, hace lo siguiente
-      this.localNotifications.schedule({
-        id: 1,
-        title: 'Nueva solicitud de servicio',
-        text: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
-        launch: true
-      });
-      this.openRequestingServiceAlert(data)
+      //cuando llega una notificación, hace lo siguiente:
+      this.notificationState = data.state
+      if (this.notificationState === 'requesting') {
+        this.localNotifications.schedule({
+          id: 1,
+          title: 'Nueva solicitud de servicio',
+          text: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
+          launch: true
+        });
+        this.openRequestingServiceAlert(data)
+      } else if (this.notificationState === 'canceling') {
+        this.requestingServiceAlert.dismiss()
+        this.presentToast(`Solicitud de servicio cancelada`, 'danger')
+      }
     })
     this.ws.listen('notificateUser').subscribe((data: any) => {
       console.log(data);
@@ -99,7 +107,7 @@ export class SidemenuPage implements OnInit {
   }
 
   async openRequestingServiceAlert(data) {
-    const alert = await this.alertController.create({
+    this.requestingServiceAlert = await this.alertController.create({
       header: 'Agendar Servicio',
       message: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
       buttons: [{
@@ -114,7 +122,7 @@ export class SidemenuPage implements OnInit {
         text: 'Agendar',
         handler: () => {
           console.log('Agendando servicio');
-          alert.onDidDismiss().then(async () => {
+          this.requestingServiceAlert.onDidDismiss().then(async () => {
             data.state = 'accepted'
             data.provider = this.user
             this.ws.emit('notificateUser', data)
@@ -137,7 +145,7 @@ export class SidemenuPage implements OnInit {
       }]
     });
 
-    await alert.present();
+    await this.requestingServiceAlert.present();
   }
 
   async presentToast(message: string, color: string) {
