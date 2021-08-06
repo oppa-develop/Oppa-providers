@@ -107,6 +107,7 @@ export class CalendarPage implements OnInit {
 
   async confirmEndOfService(service) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       header: '¿Desea dar por terminado el servicio?',
       message: 'Confirma que el servicio ya se ha llevado a cabo',
       buttons: [
@@ -142,6 +143,7 @@ export class CalendarPage implements OnInit {
 
   async makeRegister(service) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       header: '¿Desea dejar un registro en la ficha del usuario?',
       message: 'Puede ser la receta o la ingesta de algún medicamento, la visita al doctor, el diagnóstico de alguna enfermedad, etc.',
       buttons: [
@@ -165,6 +167,7 @@ export class CalendarPage implements OnInit {
 
   async cancelService(service) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       header: '¿Desea cancelar el servicio?',
       buttons: [
         {

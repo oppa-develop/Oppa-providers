@@ -108,6 +108,7 @@ export class SidemenuPage implements OnInit {
 
   async openRequestingServiceAlert(data) {
     this.requestingServiceAlert = await this.alertController.create({
+      backdropDismiss: false,
       header: 'Agendar Servicio',
       message: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
       buttons: [{
@@ -126,6 +127,7 @@ export class SidemenuPage implements OnInit {
             data.state = 'accepted'
             data.provider = this.user
             this.ws.emit('notificateUser', data)
+            let userConfirmation = false
             const loading = await this.loadingController.create({
               message: 'Esperando confirmación del usuario...'
             });
@@ -134,12 +136,20 @@ export class SidemenuPage implements OnInit {
               console.log(data);
               loading.dismiss();
               serviceConfirmation.unsubscribe()
+              userConfirmation = true;
               if (data.success) {
                 this.presentToast('Servicio agendado', 'success')
               } else {
                 this.presentToast('Servicio cancelado', 'danger')
               }
             })
+
+            setTimeout(() => {
+              if (userConfirmation) {
+                loading.dismiss();
+                this.presentToast('Servicio en espera de confirmación. Revise más tarde.', 'warning')
+              }
+            }, 120000)
           })
         }
       }]
