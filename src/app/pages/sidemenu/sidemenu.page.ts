@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
+import { ModalsAndAlertsService } from 'src/app/providers/modalsAndAlerts/modals-and-alerts.service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -18,11 +19,11 @@ import { Router } from '@angular/router';
 export class SidemenuPage implements OnInit {
 
   pages = [
-    { title: 'Servicios', icon: 'construct-outline', url: '/sidemenu/services/calendar' },
-    { title: 'Mis Datos', icon: 'person-outline', url: '/sidemenu/account' },
-    { title: 'Mensajes', icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
-    { title: 'Facturas', icon: 'receipt-outline', url: '/sidemenu/bills' },
-    { title: 'Ayuda', icon: 'help-circle-outline', url: '/sidemenu/help' },
+    { title: 'Servicios', icon: 'construct-outline',          url: '/sidemenu/services/calendar' },
+    { title: 'Mis Datos', icon: 'person-outline',             url: '/sidemenu/account' },
+    { title: 'Mensajes',  icon: 'chatbox-ellipses-outline',   url: '/sidemenu/messages' },
+    { title: 'Facturas',  icon: 'receipt-outline',            url: '/sidemenu/bills' },
+    { title: 'Ayuda',     icon: 'help-circle-outline',        url: '/sidemenu/help' },
   ]
 
   selectedPath = ''
@@ -41,7 +42,8 @@ export class SidemenuPage implements OnInit {
     private loadingController: LoadingController,
     private backgroundMode: BackgroundMode,
     public router: Router,
-    private localNotifications: LocalNotifications
+    private localNotifications: LocalNotifications,
+    private modalsAndAlerts: ModalsAndAlertsService
   ) { }
 
   ngOnInit() {
@@ -68,7 +70,7 @@ export class SidemenuPage implements OnInit {
     this.ws.listen('notificateProvider').subscribe((data: any) => {
       //cuando llega una notificación, hace lo siguiente:
       this.notificationState = data.state
-      if (this.notificationState === 'requesting') {
+      if (this.notificationState === 'requesting' && !this.modalsAndAlerts.isSomethingOpen()) {
         this.localNotifications.schedule({
           id: 1,
           title: 'Nueva solicitud de servicio',
@@ -107,6 +109,7 @@ export class SidemenuPage implements OnInit {
   }
 
   async openRequestingServiceAlert(data) {
+    this.modalsAndAlerts.changeState(true);
     this.requestingServiceAlert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Agendar Servicio',
@@ -115,6 +118,7 @@ export class SidemenuPage implements OnInit {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
+          this.modalsAndAlerts.changeState(false);
           data.state = 'canceled'
           this.ws.emit('notificateUser', data)
           console.log('Agendar servicio cancelado');
@@ -124,6 +128,7 @@ export class SidemenuPage implements OnInit {
         handler: () => {
           console.log('Agendando servicio');
           this.requestingServiceAlert.onDidDismiss().then(async () => {
+            this.modalsAndAlerts.changeState(true);
             data.state = 'accepted'
             data.provider = this.user
             this.ws.emit('notificateUser', data)
@@ -135,7 +140,8 @@ export class SidemenuPage implements OnInit {
             const serviceConfirmation = this.ws.listen('serviceConfirmation').subscribe((data: any) => {
               console.log(data);
               loading.dismiss();
-              serviceConfirmation.unsubscribe()
+              serviceConfirmation.unsubscribe();
+              this.modalsAndAlerts.changeState(false);
               userConfirmation = true;
               if (data.success) {
                 this.presentToast('Servicio agendado', 'success')
@@ -146,6 +152,7 @@ export class SidemenuPage implements OnInit {
 
             setTimeout(() => {
               if (userConfirmation) {
+                this.modalsAndAlerts.changeState(false);
                 loading.dismiss();
                 this.presentToast('Servicio en espera de confirmación. Revise más tarde.', 'warning')
               }
