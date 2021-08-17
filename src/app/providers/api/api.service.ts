@@ -215,6 +215,10 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/services/provide-service`, offerNewService);
   }
 
+  deleteService(provider_id, provider_has_services_id): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/services/offered/provider/${provider_id}/delete/${provider_has_services_id}`);
+  }
+
   createAccount(newAccount): Observable<any> {
     console.log(newAccount);
     delete newAccount['checkPassword']

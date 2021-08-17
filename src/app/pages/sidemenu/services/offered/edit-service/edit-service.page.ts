@@ -64,7 +64,7 @@ export class EditServicePage implements OnInit {
       services_service_id: [this.service.services_service_id, Validators.required],
       workable: [workable, Validators.required],
       region: [this.service.locations[0].region, Validators.required],
-      districts: [null],
+      districts: [this.service.locations[0].districts],
       start: [this.service.start, Validators.required],
       end: [this.service.end, Validators.required]
     })
@@ -90,6 +90,17 @@ export class EditServicePage implements OnInit {
       })
       .catch(err => {
         this.presentToast('No se han podido actualizar los datos del servicio', 'danger')
+      })
+  }
+
+  deleteService() {
+    this.api.deleteService(this.service.providers_provider_id, this.service.provider_has_services_id).toPromise()
+      .then(() => {
+        this.closeModal(true)
+        this.presentToast('Servicio eliminado correctamente', 'success')
+      })
+      .catch(err => {
+        this.presentToast('No se han podido eliminar el servicio', 'danger')
       })
   }
 
