@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
-import { ModalsAndAlertsService } from 'src/app/providers/modalsAndAlerts/modals-and-alerts.service';
 
 @Component({
   selector: 'app-sidemenu',
@@ -42,8 +41,7 @@ export class SidemenuPage implements OnInit {
     private loadingController: LoadingController,
     private backgroundMode: BackgroundMode,
     public router: Router,
-    private localNotifications: LocalNotifications,
-    private modalsAndAlerts: ModalsAndAlertsService
+    private localNotifications: LocalNotifications
   ) { }
 
   ngOnInit() {
@@ -58,39 +56,6 @@ export class SidemenuPage implements OnInit {
       this.darkMode = false
     }
     this.ws.connect();
-    // aqui el proveedor se suscribe a las notificaciones
-    this.ws.emit('notificationsProvider', {
-      user_id: this.user.user_id,
-      provider_id: this.user.provider_id
-    });
-    this.ws.emit('notificationsClient', {
-      user_id: this.user.user_id,
-      provider_id: this.user.provider_id
-    });
-    this.ws.listen('notificateProvider').subscribe((data: any) => {
-      //cuando llega una notificación, hace lo siguiente:
-      this.notificationState = data.state
-      if (this.notificationState === 'requesting' && !this.modalsAndAlerts.isSomethingOpen()) {
-        this.localNotifications.schedule({
-          id: 1,
-          title: 'Nueva solicitud de servicio',
-          text: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
-          launch: true
-        });
-        this.openRequestingServiceAlert(data)
-      } else if (this.notificationState === 'canceling') {
-        this.requestingServiceAlert.dismiss()
-        this.presentToast(`Solicitud de servicio cancelada`, 'danger')
-      }
-    })
-    this.ws.listen('notificateUser').subscribe((data: any) => {
-      console.log(data);
-      if (this.router.url !== '/sidemenu/messages' && data.type === 'message') this.presentToast(`Nuevo mensaje de ${data.firstname} ${data.lastname}:\n${data.text}`, 'dark')
-    })
-  }
-
-  ionViewWillEnter() {
-    this.user = this.auth.userData()
   }
 
   logout() {
@@ -106,63 +71,6 @@ export class SidemenuPage implements OnInit {
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
     }
-  }
-
-  async openRequestingServiceAlert(data) {
-    this.modalsAndAlerts.changeState(true);
-    this.requestingServiceAlert = await this.alertController.create({
-      backdropDismiss: false,
-      header: 'Agendar Servicio',
-      message: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
-      buttons: [{
-        text: 'Cancelar',
-        role: 'cancel',
-        handler: () => {
-          this.modalsAndAlerts.changeState(false);
-          data.state = 'canceled'
-          this.ws.emit('notificateUser', data)
-          console.log('Agendar servicio cancelado');
-        }
-      }, {
-        text: 'Agendar',
-        handler: () => {
-          console.log('Agendando servicio');
-          this.requestingServiceAlert.onDidDismiss().then(async () => {
-            this.modalsAndAlerts.changeState(true);
-            data.state = 'accepted'
-            data.provider = this.user
-            this.ws.emit('notificateUser', data)
-            let userConfirmation = false
-            const loading = await this.loadingController.create({
-              message: 'Esperando confirmación del usuario...'
-            });
-            await loading.present();
-            const serviceConfirmation = this.ws.listen('serviceConfirmation').subscribe((data: any) => {
-              console.log(data);
-              loading.dismiss();
-              serviceConfirmation.unsubscribe();
-              this.modalsAndAlerts.changeState(false);
-              userConfirmation = true;
-              if (data.success) {
-                this.presentToast('Servicio agendado', 'success')
-              } else {
-                this.presentToast('Servicio cancelado', 'danger')
-              }
-            })
-
-            setTimeout(() => {
-              if (userConfirmation) {
-                this.modalsAndAlerts.changeState(false);
-                loading.dismiss();
-                this.presentToast('Servicio en espera de confirmación. Revise más tarde.', 'warning')
-              }
-            }, 120000)
-          })
-        }
-      }]
-    });
-
-    await this.requestingServiceAlert.present();
   }
 
   async presentToast(message: string, color: string) {
