@@ -64,7 +64,7 @@ export class SidemenuPage implements OnInit {
         console.log('Client requesting service:', data);
       }
     })
-    this.ws.emit('notification', { type: 'notification', destination: 2, message: 'Hello World!' })
+    this.ws.emit('notification', { type: 'notification', emitter: this.user.user_id, destination: 1, message: 'Hello World!' })
   }
 
   logout() {
