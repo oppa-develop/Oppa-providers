@@ -76,7 +76,6 @@ export class SidemenuPage implements OnInit {
       document.body.setAttribute('data-theme', 'dark');
       localStorage.setItem('darkMode', 'on');
     } else {
-    else {
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
     }
