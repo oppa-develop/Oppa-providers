@@ -56,6 +56,15 @@ export class SidemenuPage implements OnInit {
       this.darkMode = false
     }
     this.ws.connect();
+    // nos conectamos a la sala de notificaciones
+    this.ws.listen('notification').subscribe((data: any) => {
+      if (data.type === 'notification') {
+        console.log('Notification received:', data);
+      } else if (data.type === 'service request') {
+        console.log('Client requesting service:', data);
+      }
+    })
+    this.ws.emit('notification', { type: 'notification', destination: 2, message: 'Hello World!' })
   }
 
   logout() {
@@ -66,7 +75,7 @@ export class SidemenuPage implements OnInit {
     if (event.detail.checked) {
       document.body.setAttribute('data-theme', 'dark');
       localStorage.setItem('darkMode', 'on');
-    }
+    } else {
     else {
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
