@@ -62,9 +62,12 @@ export class SidemenuPage implements OnInit {
         console.log('Notification received:', data);
       } else if (data.type === 'service request') {
         console.log('Client requesting service:', data);
+        this.showClientRequest(data);
       }
+
+      if (data.state === 'data sended') this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: 'Hello World!', state: 'data received' })
     })
-    this.ws.emit('notification', { type: 'notification', emitter: this.user.user_id, destination: 1, message: 'Hello World!' })
+    // this.ws.emit('notification', { type: 'notification', emitter: this.user.user_id, destination: 1, message: 'Hello World!' })
   }
 
   logout() {
@@ -79,6 +82,31 @@ export class SidemenuPage implements OnInit {
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
     }
+  }
+
+  async showClientRequest(data) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'Agendar Servicio',
+      message: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${this.dateFormat.transform(data.message.hour, 'hh:mm a')}, en ${data.message.address.district}.`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            this.ws.emit('service request', { type: 'service accepted', emitter: this.user.user_id, destination: data.emitter, message: 'Hello World!' })
+          }
+        },
+        {
+          text: 'Aceptar',
+          handler: () => {
+            this.ws.emit('service request', { type: 'service accepted', emitter: this.user.user_id, destination: data.emitter, message: 'Hello World!' })
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async presentToast(message: string, color: string) {
