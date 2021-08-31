@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'app-sidemenu',
@@ -31,6 +32,7 @@ export class SidemenuPage implements OnInit {
   user: User
   notificationState: string
   requestingServiceAlert
+  paymentLoading
 
   constructor(
     private auth: AuthService,
@@ -63,11 +65,16 @@ export class SidemenuPage implements OnInit {
       } else if (data.type === 'service request') {
         console.log('Client requesting service:', data);
         this.showClientRequest(data);
+      } else if (data.type === 'client payment') {
+        console.log('Client payment:', data);
+        this.paymentLoading.dismiss();
+        if (data.state === 'payment accepted') {
+          this.presentToast('El cliente ha pagdo el servicio', 'success');
+        } else if (data.state === 'payment rejected') {
+          this.presentToast('Cliente ha cancelado el servicio', 'danger');
+        }
       }
-
-      if (data.state === 'data sended') this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: 'Hello World!', state: 'data received' })
     })
-    // this.ws.emit('notification', { type: 'notification', emitter: this.user.user_id, destination: 1, message: 'Hello World!' })
   }
 
   logout() {
@@ -88,19 +95,24 @@ export class SidemenuPage implements OnInit {
     const alert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Agendar Servicio',
-      message: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${this.dateFormat.transform(data.message.hour, 'hh:mm a')}, en ${data.message.address.district}.`,
+      message: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${data.message.hour} hrs., en ${data.message.address.district}.`,
       buttons: [
         {
           text: 'Cancelar',
           role: 'cancel',
-          handler: () => {
-            this.ws.emit('service request', { type: 'service accepted', emitter: this.user.user_id, destination: data.emitter, message: 'Hello World!' })
+          handler: () => {            
+            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request rejected' })
           }
         },
         {
           text: 'Aceptar',
-          handler: () => {
-            this.ws.emit('service request', { type: 'service accepted', emitter: this.user.user_id, destination: data.emitter, message: 'Hello World!' })
+          handler: async () => {            
+            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request accepted' })
+
+            this.paymentLoading = await this.loadingController.create({
+              message: 'Esperando pago del usuario Oppa...'
+            });
+            await this.paymentLoading.present();
           }
         }
       ]
