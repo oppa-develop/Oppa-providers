@@ -115,7 +115,7 @@ export class SidemenuPage implements OnInit {
         {
           text: 'Aceptar',
           handler: async () => {            
-            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request accepted' })
+            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request accepted', provider: this.user})
 
             this.paymentLoading = await this.loadingController.create({
               message: 'Esperando pago del usuario Oppa...'
