@@ -67,7 +67,7 @@ export class SidemenuPage implements OnInit {
         this.appState = 'busy'
         console.log('Client requesting service:', data);
         this.showClientRequest(data);
-      } else if (data.type === 'client payment' && this.appState === 'ok') {
+      } else if (data.type === 'client payment' && (this.appState === 'ok' || this.appState === 'busy')) {
         this.appState = 'busy'
         console.log('Client payment:', data);
         this.paymentLoading.dismiss();
@@ -77,7 +77,7 @@ export class SidemenuPage implements OnInit {
         } else if (data.state === 'payment rejected') {
           this.presentToast('Cliente ha cancelado el servicio', 'danger');
         }
-      } else if (this.appState === 'busy') { // si estamos con alert en pantalla o loading se cancelan las solicitudes con un estado especial
+      } else if (this.appState === 'busy' && data.type !== 'client payment') { // si estamos con alert en pantalla o loading se cancelan las solicitudes con un estado especial
         this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'provider busy' })
       }
     })
