@@ -78,7 +78,11 @@ export class SidemenuPage implements OnInit {
           this.presentToast('Cliente ha cancelado el servicio', 'danger');
         }
       } else if (this.appState === 'busy' && data.type !== 'client payment') { // si estamos con alert en pantalla o loading se cancelan las solicitudes con un estado especial
-        this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'provider busy' })
+        this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'provider busy', id: data.id })
+      } else if (data.type === 'service request' && data.state === 'service canceled by time out') {
+        this.paymentLoading.dismiss();
+        this.appState = 'ok'
+        this.presentToast('Se ha canceado a solicitud por sobrepasar el tiempo de espera', 'danger');
       }
     })
   }
@@ -109,13 +113,13 @@ export class SidemenuPage implements OnInit {
           role: 'cancel',
           handler: () => {
             this.appState = 'busy'
-            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request rejected' })
+            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request rejected', id: data.id })
           }
         },
         {
           text: 'Aceptar',
           handler: async () => {            
-            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request accepted', provider: this.user})
+            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request accepted', provider: this.user, id: data.id })
 
             this.paymentLoading = await this.loadingController.create({
               message: 'Esperando pago del usuario Oppa...'
