@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  // serverSocket: 'https://api.somosoppa.cl',
-  // HOST: 'https://api.somosoppa.cl',
-  serverSocket: 'http://localhost:3000',
-  HOST: 'http://localhost:3000',
+  serverSocket: 'https://api.somosoppa.cl',
+  HOST: 'https://api.somosoppa.cl',
+  // serverSocket: 'http://localhost:3000',
+  // HOST: 'http://localhost:3000',
   secret: 'S0yuNt3xt0S3cR3t0',
   user: {
     email: 't.provider@example.com',

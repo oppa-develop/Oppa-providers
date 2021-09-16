@@ -19,11 +19,11 @@ import * as dayjs from 'dayjs';
 export class SidemenuPage implements OnInit {
 
   pages = [
-    { title: 'Servicios', icon: 'construct-outline',          url: '/sidemenu/services/calendar' },
-    { title: 'Mis Datos', icon: 'person-outline',             url: '/sidemenu/account' },
-    { title: 'Mensajes',  icon: 'chatbox-ellipses-outline',   url: '/sidemenu/messages' },
-    { title: 'Facturas',  icon: 'receipt-outline',            url: '/sidemenu/bills' },
-    { title: 'Ayuda',     icon: 'help-circle-outline',        url: '/sidemenu/help' },
+    { title: 'Servicios', icon: 'construct-outline',        url: '/sidemenu/services/calendar' },
+    { title: 'Mis Datos', icon: 'person-outline',           url: '/sidemenu/account' },
+    { title: 'Mensajes',  icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
+    { title: 'Facturas',  icon: 'receipt-outline',          url: '/sidemenu/bills' },
+    { title: 'Ayuda',     icon: 'help-circle-outline',      url: '/sidemenu/help' },
   ]
 
   selectedPath = ''
@@ -63,7 +63,7 @@ export class SidemenuPage implements OnInit {
       if (data.type === 'notification' && this.appState === 'ok') {
         this.appState = 'busy'
         console.log('Notification received:', data);
-      } else if (data.type === 'service request' && this.appState === 'ok') {
+      } else if (data.type === 'service request' && data.state === 'data sended' && this.appState === 'ok') {
         this.appState = 'busy'
         console.log('Client requesting service:', data);
         this.showClientRequest(data);
@@ -77,12 +77,19 @@ export class SidemenuPage implements OnInit {
         } else if (data.state === 'payment rejected') {
           this.presentToast('Cliente ha cancelado el servicio', 'danger');
         }
-      } else if (this.appState === 'busy' && data.type !== 'client payment') { // si estamos con alert en pantalla o loading se cancelan las solicitudes con un estado especial
-        this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'provider busy', id: data.id })
       } else if (data.type === 'service request' && data.state === 'service canceled by time out') {
-        this.paymentLoading.dismiss();
+        this.paymentLoading?.dismiss();
+        this.requestingServiceAlert?.dismiss();
         this.appState = 'ok'
         this.presentToast('Se ha canceado a solicitud por sobrepasar el tiempo de espera', 'danger');
+      } else if (data.type === 'service request' && data.state === 'service canceled by client') {
+        this.paymentLoading.dismiss();
+        this.appState = 'ok'
+        this.presentToast('El cliente ha cancelado el servicio', 'danger');
+      } else if (data.type === 'service request' && data.state === 'payment rejected') {
+        this.paymentLoading.dismiss();
+        this.appState = 'ok'
+        this.presentToast('El cliente no ha pagado el servicio', 'danger');
       }
     })
   }
@@ -103,7 +110,7 @@ export class SidemenuPage implements OnInit {
 
   async showClientRequest(data) {
     this.appState = 'busy'
-    const alert = await this.alertController.create({
+    this.requestingServiceAlert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Agendar Servicio',
       message: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${data.message.hour} hrs., en ${data.message.address.district}.`,
@@ -112,7 +119,7 @@ export class SidemenuPage implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           handler: () => {
-            this.appState = 'busy'
+            this.appState = 'ok'
             this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request rejected', id: data.id })
           }
         },
@@ -130,7 +137,7 @@ export class SidemenuPage implements OnInit {
       ]
     });
 
-    await alert.present();
+    await this.requestingServiceAlert.present();
   }
 
   async presentToast(message: string, color: string) {
