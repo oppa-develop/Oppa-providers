@@ -113,7 +113,7 @@ export class SidemenuPage implements OnInit {
     this.localNotifications.schedule({
       id: 1,
       title: 'Nueva solicitud de servicio',
-      text: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${this.dateFormat.transform(data.message.start, 'hh:mm a')}, en ${data.message.address.district}.`,
+      text: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${data.message.hour}, en ${data.message.address.district}.`,
       launch: true
     });
     this.requestingServiceAlert = await this.alertController.create({
