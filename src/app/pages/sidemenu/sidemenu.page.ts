@@ -110,6 +110,12 @@ export class SidemenuPage implements OnInit {
 
   async showClientRequest(data) {
     this.appState = 'busy'
+    this.localNotifications.schedule({
+      id: 1,
+      title: 'Nueva solicitud de servicio',
+      text: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${this.dateFormat.transform(data.message.start, 'hh:mm a')}, en ${data.message.address.district}.`,
+      launch: true
+    });
     this.requestingServiceAlert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Agendar Servicio',
