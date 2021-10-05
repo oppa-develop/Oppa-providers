@@ -55,7 +55,7 @@
         </ion-item>
         <ion-item>
           <ion-label>Comuna(s) (opcional)</ion-label>
-          <ion-select multiple formControlName="districts" cancelText="cancelar" okText="aceptar">
+          <ion-select multiple formControlName="districts" cancelText="cancelar" okText="aceptar" (change)="prueba()">
             <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
           </ion-select>
         </ion-item>

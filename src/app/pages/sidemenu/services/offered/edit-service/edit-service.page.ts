@@ -16,6 +16,8 @@ export class EditServicePage implements OnInit {
   apiUrl: string = environment.HOST + '/'
   regions: any[] = []
   districts: string[] = []
+  serviceRegions: any[] = []
+  serviceDistricts: string[] = []
   @Input() public service
 
   constructor(
@@ -27,12 +29,10 @@ export class EditServicePage implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log('service:', this.service);
     this.editServiceForm = this.createEditServiceForm()
-    this.location.getRegions().toPromise()
-      .then((regions) => {
-        this.regions = regions
-        if (this.editServiceForm.value.region) this.getDistrictsByRegion()
-      })
+    if (this.editServiceForm.value.region.length) this.getDistrictsByRegion()
+    console.log('serviceForm:', this.editServiceForm.value);
   }
 
   getDistrictsByRegion() {
@@ -54,6 +54,13 @@ export class EditServicePage implements OnInit {
     if (this.service.workable.search('s') !== -1) workable.push('s')
     if (this.service.workable.search('d') !== -1) workable.push('d')
 
+    this.service.locations.forEach(location => {
+      // guardamos la región sin repetir
+      if (this.serviceRegions.indexOf(location.region) === -1) this.serviceRegions.push(location.region)
+      // guardamos la comuna sin repetir
+      if (this.serviceDistricts.indexOf(location.district) === -1) this.serviceDistricts.push(location.district)
+    })
+    
     return this.formBuilder.group({
       provider_has_services_id: [this.service.provider_has_services_id, Validators.required],
       gender: [this.service.gender, Validators.required],
@@ -63,8 +70,8 @@ export class EditServicePage implements OnInit {
       services_categories_category_id: [this.service.services_categories_category_id, Validators.required],
       services_service_id: [this.service.services_service_id, Validators.required],
       workable: [workable, Validators.required],
-      region: [this.service.locations[0].region, Validators.required],
-      districts: [this.service.locations[0].districts],
+      region: [this.serviceRegions, Validators.required],
+      districts: [this.serviceDistricts],
       start: [this.service.start, Validators.required],
       end: [this.service.end, Validators.required]
     })
@@ -111,6 +118,10 @@ export class EditServicePage implements OnInit {
       color
     });
     toast.present();
+  }
+
+  prueba() {
+    console.log('districts:', this.editServiceForm.value.districts);
   }
 
 }
