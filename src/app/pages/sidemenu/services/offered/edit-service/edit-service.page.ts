@@ -16,9 +16,8 @@ export class EditServicePage implements OnInit {
   apiUrl: string = environment.HOST + '/'
   regions: any[] = []
   districts: string[] = []
-  serviceRegions: any[] = []
-  serviceDistricts: string[] = []
   @Input() public service
+  editCount: number = 1
 
   constructor(
     private modalController: ModalController,
@@ -28,16 +27,26 @@ export class EditServicePage implements OnInit {
     public toastCtrl: ToastController
   ) { }
 
-  ngOnInit() {
-    console.log('service:', this.service);
+  async ngOnInit() {
     this.editServiceForm = this.createEditServiceForm()
-    if (this.editServiceForm.value.region.length) this.getDistrictsByRegion()
-    console.log('serviceForm:', this.editServiceForm.value);
+    this.regions = await this.location.getRegions().toPromise()
+    this.districts = await this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.service.locations[0].region).codigo).toPromise()
+    /* let districts = []
+    this.service.locations.forEach(location => {
+      districts.push(location.district)
+    }) */
+    this.editServiceForm.controls.region.setValue(this.service.locations[0].region)
+    this.editServiceForm.controls.districts.setValue(this.service.locations.map(location => location.district))
   }
 
-  getDistrictsByRegion() {
-    this.editServiceForm.controls.districts.reset()
-    this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.editServiceForm.value.region).codigo).toPromise()
+  getDistrictsByRegion(resetDistricts: boolean ) {
+    console.log('districts', this.editServiceForm.value.districts);
+    
+    if (resetDistricts) {
+      this.editServiceForm.controls.districts.reset()
+      this.editCount++
+    }
+    this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.editServiceForm.controls.region.value)?.codigo).toPromise()
       .then((districts: any) => {
         this.districts = districts
       })
@@ -53,13 +62,6 @@ export class EditServicePage implements OnInit {
     if (this.service.workable.search('v') !== -1) workable.push('v')
     if (this.service.workable.search('s') !== -1) workable.push('s')
     if (this.service.workable.search('d') !== -1) workable.push('d')
-
-    this.service.locations.forEach(location => {
-      // guardamos la región sin repetir
-      if (this.serviceRegions.indexOf(location.region) === -1) this.serviceRegions.push(location.region)
-      // guardamos la comuna sin repetir
-      if (this.serviceDistricts.indexOf(location.district) === -1) this.serviceDistricts.push(location.district)
-    })
     
     return this.formBuilder.group({
       provider_has_services_id: [this.service.provider_has_services_id, Validators.required],
@@ -70,8 +72,8 @@ export class EditServicePage implements OnInit {
       services_categories_category_id: [this.service.services_categories_category_id, Validators.required],
       services_service_id: [this.service.services_service_id, Validators.required],
       workable: [workable, Validators.required],
-      region: [this.serviceRegions, Validators.required],
-      districts: [this.serviceDistricts],
+      region: [null, Validators.required],
+      districts: [],
       start: [this.service.start, Validators.required],
       end: [this.service.end, Validators.required]
     })

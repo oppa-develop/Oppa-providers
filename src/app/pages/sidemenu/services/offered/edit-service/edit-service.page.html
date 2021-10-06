@@ -49,7 +49,7 @@
         </ion-item>
         <ion-item>
           <ion-label>Región</ion-label>
-          <ion-select formControlName="region" okText="aceptar" cancelText="cancelar" (ionChange)="getDistrictsByRegion()">
+          <ion-select formControlName="region" okText="aceptar" cancelText="cancelar" (ionChange)="getDistrictsByRegion(true)">
             <ion-select-option *ngFor="let region of regions">{{ region.nombre }}</ion-select-option>
           </ion-select>
         </ion-item>
