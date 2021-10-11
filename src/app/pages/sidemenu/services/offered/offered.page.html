@@ -131,7 +131,10 @@
 
       <!-- no services offered -->
       <ng-template [ngIf]="!services.value?.services.length">
-        <h1>No ofreces servicios todavía</h1>
+        <ion-col size="12">
+          <ion-img class="not-services" src="../../../../../assets/images/not_services.svg"></ion-img>
+          <h1 class="ion-text-center">No ofreces servicios todavía</h1>
+        </ion-col>
       </ng-template>
 
       <!-- error on get services -->
