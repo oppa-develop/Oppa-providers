@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
-import { ModalsAndAlertsService } from 'src/app/providers/modalsAndAlerts/modals-and-alerts.service';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'app-sidemenu',
@@ -19,19 +19,20 @@ import { ModalsAndAlertsService } from 'src/app/providers/modalsAndAlerts/modals
 export class SidemenuPage implements OnInit {
 
   pages = [
-    { title: 'Servicios', icon: 'construct-outline',          url: '/sidemenu/services/calendar' },
-    { title: 'Mis Datos', icon: 'person-outline',             url: '/sidemenu/account' },
-    { title: 'Mensajes',  icon: 'chatbox-ellipses-outline',   url: '/sidemenu/messages' },
-    { title: 'Facturas',  icon: 'receipt-outline',            url: '/sidemenu/bills' },
-    { title: 'Ayuda',     icon: 'help-circle-outline',        url: '/sidemenu/help' },
+    { title: 'Servicios', icon: 'construct-outline',        url: '/sidemenu/services/calendar' },
+    { title: 'Mis Datos', icon: 'person-outline',           url: '/sidemenu/account' },
+    { title: 'Mensajes',  icon: 'chatbox-ellipses-outline', url: '/sidemenu/messages' },
+    { title: 'Facturas',  icon: 'receipt-outline',          url: '/sidemenu/bills' },
+    { title: 'Ayuda',     icon: 'help-circle-outline',      url: '/sidemenu/help' },
   ]
 
   selectedPath = ''
   darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches || false;
   apiUrl: string = environment.HOST + '/'
   user: User
-  notificationState: string
+  appState: string = 'ok'
   requestingServiceAlert
+  paymentLoading
 
   constructor(
     private auth: AuthService,
@@ -42,8 +43,7 @@ export class SidemenuPage implements OnInit {
     private loadingController: LoadingController,
     private backgroundMode: BackgroundMode,
     public router: Router,
-    private localNotifications: LocalNotifications,
-    private modalsAndAlerts: ModalsAndAlertsService
+    private localNotifications: LocalNotifications
   ) { }
 
   ngOnInit() {
@@ -58,39 +58,40 @@ export class SidemenuPage implements OnInit {
       this.darkMode = false
     }
     this.ws.connect();
-    // aqui el proveedor se suscribe a las notificaciones
-    this.ws.emit('notificationsProvider', {
-      user_id: this.user.user_id,
-      provider_id: this.user.provider_id
-    });
-    this.ws.emit('notificationsClient', {
-      user_id: this.user.user_id,
-      provider_id: this.user.provider_id
-    });
-    this.ws.listen('notificateProvider').subscribe((data: any) => {
-      //cuando llega una notificación, hace lo siguiente:
-      this.notificationState = data.state
-      if (this.notificationState === 'requesting' && !this.modalsAndAlerts.isSomethingOpen()) {
-        this.localNotifications.schedule({
-          id: 1,
-          title: 'Nueva solicitud de servicio',
-          text: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
-          launch: true
-        });
-        this.openRequestingServiceAlert(data)
-      } else if (this.notificationState === 'canceling') {
-        this.requestingServiceAlert.dismiss()
-        this.presentToast(`Solicitud de servicio cancelada`, 'danger')
+    // nos conectamos a la sala de notificaciones
+    this.ws.listen('notification').subscribe((data: any) => {
+      if (data.type === 'notification' && this.appState === 'ok') {
+        this.appState = 'busy'
+        console.log('Notification received:', data);
+      } else if (data.type === 'service request' && data.state === 'data sended' && this.appState === 'ok') {
+        this.appState = 'busy'
+        console.log('Client requesting service:', data);
+        this.showClientRequest(data);
+      } else if (data.type === 'client payment' && (this.appState === 'ok' || this.appState === 'busy')) {
+        this.appState = 'busy'
+        console.log('Client payment:', data);
+        this.paymentLoading.dismiss();
+        this.appState = 'ok'
+        if (data.state === 'payment accepted') {
+          this.presentToast('El cliente ha pagdo el servicio', 'success');
+        } else if (data.state === 'payment rejected') {
+          this.presentToast('Cliente ha cancelado el servicio', 'danger');
+        }
+      } else if (data.type === 'service request' && data.state === 'service canceled by time out') {
+        this.paymentLoading?.dismiss();
+        this.requestingServiceAlert?.dismiss();
+        this.appState = 'ok'
+        this.presentToast('Se ha canceado a solicitud por sobrepasar el tiempo de espera', 'danger');
+      } else if (data.type === 'service request' && data.state === 'service canceled by client') {
+        this.paymentLoading.dismiss();
+        this.appState = 'ok'
+        this.presentToast('El cliente ha cancelado el servicio', 'danger');
+      } else if (data.type === 'service request' && data.state === 'payment rejected') {
+        this.paymentLoading.dismiss();
+        this.appState = 'ok'
+        this.presentToast('El cliente no ha pagado el servicio', 'danger');
       }
     })
-    this.ws.listen('notificateUser').subscribe((data: any) => {
-      console.log(data);
-      if (this.router.url !== '/sidemenu/messages' && data.type === 'message') this.presentToast(`Nuevo mensaje de ${data.firstname} ${data.lastname}:\n${data.text}`, 'dark')
-    })
-  }
-
-  ionViewWillEnter() {
-    this.user = this.auth.userData()
   }
 
   logout() {
@@ -101,65 +102,45 @@ export class SidemenuPage implements OnInit {
     if (event.detail.checked) {
       document.body.setAttribute('data-theme', 'dark');
       localStorage.setItem('darkMode', 'on');
-    }
-    else {
+    } else {
       document.body.setAttribute('data-theme', 'light');
       localStorage.setItem('darkMode', 'off');
     }
   }
 
-  async openRequestingServiceAlert(data) {
-    this.modalsAndAlerts.changeState(true);
+  async showClientRequest(data) {
+    this.appState = 'busy'
+    this.localNotifications.schedule({
+      id: 1,
+      title: 'Nueva solicitud de servicio',
+      text: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${data.message.hour}, en ${data.message.address.district}.`,
+      launch: true
+    });
     this.requestingServiceAlert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Agendar Servicio',
-      message: `${data.receptor.firstname} ${data.receptor.lastname} solicita el servicio ${data.service.title}, el día ${this.dateFormat.transform(data.date, 'fullDate')}, a las ${this.dateFormat.transform(data.start, 'hh:mm a')}, en ${data.address.district}.`,
-      buttons: [{
-        text: 'Cancelar',
-        role: 'cancel',
-        handler: () => {
-          this.modalsAndAlerts.changeState(false);
-          data.state = 'canceled'
-          this.ws.emit('notificateUser', data)
-          console.log('Agendar servicio cancelado');
-        }
-      }, {
-        text: 'Agendar',
-        handler: () => {
-          console.log('Agendando servicio');
-          this.requestingServiceAlert.onDidDismiss().then(async () => {
-            this.modalsAndAlerts.changeState(true);
-            data.state = 'accepted'
-            data.provider = this.user
-            this.ws.emit('notificateUser', data)
-            let userConfirmation = false
-            const loading = await this.loadingController.create({
-              message: 'Esperando confirmación del usuario...'
-            });
-            await loading.present();
-            const serviceConfirmation = this.ws.listen('serviceConfirmation').subscribe((data: any) => {
-              console.log(data);
-              loading.dismiss();
-              serviceConfirmation.unsubscribe();
-              this.modalsAndAlerts.changeState(false);
-              userConfirmation = true;
-              if (data.success) {
-                this.presentToast('Servicio agendado', 'success')
-              } else {
-                this.presentToast('Servicio cancelado', 'danger')
-              }
-            })
+      message: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${data.message.hour} hrs., en ${data.message.address.district}.`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            this.appState = 'ok'
+            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request rejected', id: data.id })
+          }
+        },
+        {
+          text: 'Aceptar',
+          handler: async () => {            
+            this.ws.emit('notification', { type: 'service request', emitter: this.user.user_id, destination: data.emitter, message: `Respuesta del proveedor ${this.user.firstname} ${this.user.lastname}`, state: 'request accepted', provider: this.user, id: data.id })
 
-            setTimeout(() => {
-              if (userConfirmation) {
-                this.modalsAndAlerts.changeState(false);
-                loading.dismiss();
-                this.presentToast('Servicio en espera de confirmación. Revise más tarde.', 'warning')
-              }
-            }, 120000)
-          })
+            this.paymentLoading = await this.loadingController.create({
+              message: 'Esperando pago del usuario Oppa...'
+            });
+            await this.paymentLoading.present();
+          }
         }
-      }]
+      ]
     });
 
     await this.requestingServiceAlert.present();

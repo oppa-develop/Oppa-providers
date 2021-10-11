@@ -17,6 +17,7 @@ export class EditServicePage implements OnInit {
   regions: any[] = []
   districts: string[] = []
   @Input() public service
+  editCount: number = 1
 
   constructor(
     private modalController: ModalController,
@@ -26,18 +27,26 @@ export class EditServicePage implements OnInit {
     public toastCtrl: ToastController
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.editServiceForm = this.createEditServiceForm()
-    this.location.getRegions().toPromise()
-      .then((regions) => {
-        this.regions = regions
-        if (this.editServiceForm.value.region) this.getDistrictsByRegion()
-      })
+    this.regions = await this.location.getRegions().toPromise()
+    this.districts = await this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.service.locations[0].region).codigo).toPromise()
+    /* let districts = []
+    this.service.locations.forEach(location => {
+      districts.push(location.district)
+    }) */
+    this.editServiceForm.controls.region.setValue(this.service.locations[0].region)
+    this.editServiceForm.controls.districts.setValue(this.service.locations.map(location => location.district))
   }
 
-  getDistrictsByRegion() {
-    this.editServiceForm.controls.districts.reset()
-    this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.editServiceForm.value.region).codigo).toPromise()
+  getDistrictsByRegion(resetDistricts: boolean ) {
+    console.log('districts', this.editServiceForm.value.districts);
+    
+    if (resetDistricts) {
+      this.editServiceForm.controls.districts.reset()
+      this.editCount++
+    }
+    this.location.getDistrictsByRegion(this.regions.find(region => region.nombre === this.editServiceForm.controls.region.value)?.codigo).toPromise()
       .then((districts: any) => {
         this.districts = districts
       })
@@ -53,7 +62,7 @@ export class EditServicePage implements OnInit {
     if (this.service.workable.search('v') !== -1) workable.push('v')
     if (this.service.workable.search('s') !== -1) workable.push('s')
     if (this.service.workable.search('d') !== -1) workable.push('d')
-
+    
     return this.formBuilder.group({
       provider_has_services_id: [this.service.provider_has_services_id, Validators.required],
       gender: [this.service.gender, Validators.required],
@@ -63,8 +72,8 @@ export class EditServicePage implements OnInit {
       services_categories_category_id: [this.service.services_categories_category_id, Validators.required],
       services_service_id: [this.service.services_service_id, Validators.required],
       workable: [workable, Validators.required],
-      region: [this.service.locations[0].region, Validators.required],
-      districts: [this.service.locations[0].districts],
+      region: [null, Validators.required],
+      districts: [],
       start: [this.service.start, Validators.required],
       end: [this.service.end, Validators.required]
     })
@@ -111,6 +120,10 @@ export class EditServicePage implements OnInit {
       color
     });
     toast.present();
+  }
+
+  prueba() {
+    console.log('districts:', this.editServiceForm.value.districts);
   }
 
 }

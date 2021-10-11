@@ -33,3 +33,5 @@ npm-debug.log*
 android/
 
 resources/
+
+src/environments/
