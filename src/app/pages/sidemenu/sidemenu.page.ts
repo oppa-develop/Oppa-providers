@@ -10,6 +10,7 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
 import * as dayjs from 'dayjs';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 @Component({
   selector: 'app-sidemenu',
@@ -43,10 +44,28 @@ export class SidemenuPage implements OnInit {
     private loadingController: LoadingController,
     private backgroundMode: BackgroundMode,
     public router: Router,
-    private localNotifications: LocalNotifications
+    private localNotifications: LocalNotifications,
+    private androidPermissions: AndroidPermissions
   ) { }
 
   ngOnInit() {
+
+    // verificamos que la aplicación tenga permisos para usar gps
+    this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.ACCESS_FINE_LOCATION).then(
+      result => console.log('Has permission?',result.hasPermission),
+      err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.ACCESS_FINE_LOCATION)
+    );
+    // verificamos que la aplicación tenga permisos para usar almacenamiento
+    this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.MANAGE_EXTERNAL_STORAGE).then(
+      result => console.log('Has permission?',result.hasPermission),
+      err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.MANAGE_EXTERNAL_STORAGE)
+    );
+    // verificamos que la aplicación tenga permisos para usar cámara
+    this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
+      result => console.log('Has permission?',result.hasPermission),
+      err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
+    );
+
     this.backgroundMode.enable();
     this.backgroundMode.overrideBackButton();
     this.user = this.auth.userData();
