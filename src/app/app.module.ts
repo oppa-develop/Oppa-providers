@@ -18,6 +18,7 @@ import { ApiService } from './providers/api/api.service';
 import { LocationService } from './providers/location/location.service';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { WebsocketService } from './providers/websocket/websocket.service';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Camera } from '@ionic-native/Camera/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
@@ -43,6 +44,7 @@ import { Autostart } from '@ionic-native/autostart/ngx';
   ],
   providers: [
     Autostart,
+    ScreenOrientation,
     StatusBar,
     SplashScreen,
     DatePipe,
