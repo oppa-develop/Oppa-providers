@@ -14,7 +14,6 @@ import { AuthService } from 'src/app/providers/auth/auth.service';
 export class CreateAccountPage implements OnInit {
 
   public createAccountForm: FormGroup
-  public passConfirmationWrong = null
 
   img_base64 = "";
   user_img: string;
@@ -59,11 +58,9 @@ export class CreateAccountPage implements OnInit {
   // confirm new password validator
   onPasswordChange() {
     if (this.confirm_password.value == this.password.value) {
-      this.confirm_password.setErrors({ mismatch: false });
-      this.passConfirmationWrong = false;
+      this.confirm_password.setErrors(null);
     } else {
       this.confirm_password.setErrors({ mismatch: true });
-      this.passConfirmationWrong = true;
     }
   }
   
@@ -131,14 +128,7 @@ export class CreateAccountPage implements OnInit {
   }
 
   async createAccount() {
-    if(!this.createAccountForm.value.checkedTerms && this.createAccountForm.value.checkedContact) {
-      this.presentToast('Debe aceptar los "Términos y Condiciones"', 'danger')
-    }else if(!this.createAccountForm.value.checkedContact && this.createAccountForm.value.checkedTerms) {
-      this.presentToast('Debe aceptar las "comunicaciones comerciales"', 'danger')
-    }else if(!this.createAccountForm.value.checkedContact && !this.createAccountForm.value.checkedTerms) {
-      this.presentToast('Debe aceptar los "Términos y Condiciones" y las "comunicaciones comerciales"', 'danger')
-    }
-    if(this.createAccountForm.value.checkedTerms && this.createAccountForm.value.checkedContact){
+    if(this.createAccountForm.valid){
       const loading = await this.loadingController.create({
         message: 'Creando usuario...'
       });
