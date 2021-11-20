@@ -5,7 +5,6 @@ import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { WebsocketService } from 'src/app/providers/websocket/websocket.service';
 import { environment } from 'src/environments/environment';
-import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { Router } from '@angular/router';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { Plugins, LocalNotificationEnabledResult, LocalNotificationActionPerformed, LocalNotification, Device } from '@capacitor/core';
@@ -42,7 +41,6 @@ export class SidemenuPage implements OnInit {
     private dateFormat: DatePipe,
     private toastCtrl: ToastController,
     private loadingController: LoadingController,
-    private backgroundMode: BackgroundMode,
     public router: Router,
     private androidPermissions: AndroidPermissions
   ) { }
@@ -69,12 +67,10 @@ export class SidemenuPage implements OnInit {
     LocalNotifications.requestPermission().then()
 
     // si se preciona una notificación, hacemos el proceso agendamiento de servicio
-    LocalNotifications.addListener('localNotificationActionPerformed', (notification: LocalNotificationActionPerformed) => {
+    /* LocalNotifications.addListener('localNotificationActionPerformed', (notification: LocalNotificationActionPerformed) => {
       this.showClientRequest(this.globalData)
-    });
+    }); */
 
-    this.backgroundMode.enable();
-    this.backgroundMode.overrideBackButton();
     if (localStorage.getItem('darkMode') === 'on') {
       document.body.setAttribute('data-theme', 'dark');
       this.darkMode = true
