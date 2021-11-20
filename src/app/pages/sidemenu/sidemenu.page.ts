@@ -66,11 +66,6 @@ export class SidemenuPage implements OnInit {
     // verificamos que la aplicación tenga permisos para usar notificaciones
     LocalNotifications.requestPermission().then()
 
-    // si se preciona una notificación, hacemos el proceso agendamiento de servicio
-    /* LocalNotifications.addListener('localNotificationActionPerformed', (notification: LocalNotificationActionPerformed) => {
-      this.showClientRequest(this.globalData)
-    }); */
-
     if (localStorage.getItem('darkMode') === 'on') {
       document.body.setAttribute('data-theme', 'dark');
       this.darkMode = true
@@ -98,7 +93,7 @@ export class SidemenuPage implements OnInit {
         } else if (data.state === 'payment rejected') {
           this.presentToast('Cliente ha cancelado el servicio', 'danger');
         }
-      } else if (data.type === 'service request' && data.state === 'service canceled by time out') {
+      } else if (data.type === 'service request' && data.state === 'service canceled by timeout') {
         this.paymentLoading?.dismiss();
         this.requestingServiceAlert?.dismiss();
         this.appState = 'ok'
