@@ -52,9 +52,7 @@ export class CreateAccountPage implements OnInit {
       password: ['', Validators.required],
       checkPassword: ['', Validators.required],
       image_ext: ['png'],
-      image: [''],
-      checkedTerms: [false, Validators.required],
-      checkedContact: [false, Validators.required],
+      image: ['']
     })
   }
 
