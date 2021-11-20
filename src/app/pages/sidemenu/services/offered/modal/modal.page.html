@@ -91,7 +91,7 @@
           <ion-img src="../../../../../../assets/images/place_1.svg"></ion-img>
         </ion-col>
         <ion-col size="12">
-          <h3 class="ion-text-center">Seleccione el la(s) comuna(s) o región(es) donde ofrecer el servicio</h3>
+          <h3 class="ion-text-center">Seleccione la región y comunas donde ofrecer el servicio</h3>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -105,7 +105,7 @@
         </ion-col>
         <ion-col size="12">
           <ion-item class="ion-margin-vertical">
-            <ion-label position="floating">Comuna(s) (opcional)</ion-label>
+            <ion-label position="floating">Comunas (opcional)</ion-label>
             <ion-select multiple formControlName="districts" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
               <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
             </ion-select>
@@ -125,7 +125,7 @@
           <ion-img src="../../../../../../assets/images/calendar.svg"></ion-img>
         </ion-col>
         <ion-col size="12">
-          <h3 class="ion-text-center">Seleccione el(los) día(s) entre los que ofrecer el servicio</h3>
+          <h3 class="ion-text-center">Seleccione los días en los que ofrecer el servicio</h3>
         </ion-col>
       </ion-row>
       <ion-row>

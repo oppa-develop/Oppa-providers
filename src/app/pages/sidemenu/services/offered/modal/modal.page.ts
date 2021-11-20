@@ -109,7 +109,7 @@ export class ModalPage implements OnInit {
       category_id: [null, Validators.required],
       super_category: [null, Validators.required],
       region: [null, Validators.required],
-      districts: [null, Validators.required],
+      districts: [null],
       start: [null, Validators.required],
       end: [null, Validators.required],
       workable: [null, Validators.required],
