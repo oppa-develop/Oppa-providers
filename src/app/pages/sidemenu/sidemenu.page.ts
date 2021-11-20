@@ -1,16 +1,15 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
-import { Service } from 'src/app/models/service';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { WebsocketService } from 'src/app/providers/websocket/websocket.service';
 import { environment } from 'src/environments/environment';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
-import * as dayjs from 'dayjs';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { Plugins, LocalNotificationEnabledResult, LocalNotificationActionPerformed, LocalNotification, Device } from '@capacitor/core';
+const { LocalNotifications } = Plugins;
 
 @Component({
   selector: 'app-sidemenu',
@@ -34,6 +33,7 @@ export class SidemenuPage implements OnInit {
   appState: string = 'ok'
   requestingServiceAlert
   paymentLoading
+  globalData: any
 
   constructor(
     private auth: AuthService,
@@ -44,12 +44,12 @@ export class SidemenuPage implements OnInit {
     private loadingController: LoadingController,
     private backgroundMode: BackgroundMode,
     public router: Router,
-    private localNotifications: LocalNotifications,
     private androidPermissions: AndroidPermissions
   ) { }
 
   ngOnInit() {
-
+    this.user = this.auth.userData();
+    
     // verificamos que la aplicación tenga permisos para usar gps
     this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.ACCESS_FINE_LOCATION).then(
       result => console.log('Has permission?',result.hasPermission),
@@ -65,10 +65,16 @@ export class SidemenuPage implements OnInit {
       result => console.log('Has permission?',result.hasPermission),
       err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
     );
+    // verificamos que la aplicación tenga permisos para usar notificaciones
+    LocalNotifications.requestPermission().then()
+
+    // si se preciona una notificación, hacemos el proceso agendamiento de servicio
+    LocalNotifications.addListener('localNotificationActionPerformed', (notification: LocalNotificationActionPerformed) => {
+      this.showClientRequest(this.globalData)
+    });
 
     this.backgroundMode.enable();
     this.backgroundMode.overrideBackButton();
-    this.user = this.auth.userData();
     if (localStorage.getItem('darkMode') === 'on') {
       document.body.setAttribute('data-theme', 'dark');
       this.darkMode = true
@@ -129,11 +135,13 @@ export class SidemenuPage implements OnInit {
 
   async showClientRequest(data) {
     this.appState = 'busy'
-    this.localNotifications.schedule({
-      id: 1,
-      title: 'Nueva solicitud de servicio',
-      text: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${data.message.hour}, en ${data.message.address.district}.`,
-      launch: true
+    this.globalData = data
+    await LocalNotifications.schedule({
+      notifications: [{
+        id: 1,
+        title: 'Nueva solicitud de servicio',
+        body: `${data.message.receptor.firstname} ${data.message.receptor.lastname} solicita el servicio ${data.message.service.title}, el día ${this.dateFormat.transform(data.message.date, 'fullDate')}, a las ${data.message.hour}, en ${data.message.address.district}.`
+      }]
     });
     this.requestingServiceAlert = await this.alertController.create({
       backdropDismiss: false,
