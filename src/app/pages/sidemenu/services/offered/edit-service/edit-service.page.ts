@@ -92,9 +92,13 @@ export class EditServicePage implements OnInit {
       days += day
     });
     this.editServiceForm.value.workable = days
-    console.log(this.editServiceForm.value);
-    if (this.editServiceForm.value.start !== null) this.editServiceForm.value.start = dayjs(this.editServiceForm.value.start).format('HH:mm')
-    if (this.editServiceForm.value.end !== null) this.editServiceForm.value.end = dayjs(this.editServiceForm.value.end).format('HH:mm')
+    this.editServiceForm.value.start = this.editServiceForm.value.start.split(':')
+    this.editServiceForm.value.start.pop()
+    this.editServiceForm.value.start = this.editServiceForm.value.start.join(':')
+    
+    this.editServiceForm.value.end = this.editServiceForm.value.end.split(':')
+    this.editServiceForm.value.end.pop()
+    this.editServiceForm.value.end = this.editServiceForm.value.end.join(':')
 
     this.api.editOfferedService(this.editServiceForm.value).toPromise()
       .then((res: any) => {
