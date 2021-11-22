@@ -4,6 +4,7 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { ApiService } from 'src/app/providers/api/api.service';
 import { LocationService } from 'src/app/providers/location/location.service';
 import { environment } from 'src/environments/environment';
+import * as dayjs from 'dayjs'
 
 @Component({
   selector: 'app-edit-service',
@@ -92,6 +93,9 @@ export class EditServicePage implements OnInit {
     });
     this.editServiceForm.value.workable = days
     console.log(this.editServiceForm.value);
+    if (this.editServiceForm.value.start !== null) this.editServiceForm.value.start = dayjs(this.editServiceForm.value.start).format('HH:mm')
+    if (this.editServiceForm.value.end !== null) this.editServiceForm.value.end = dayjs(this.editServiceForm.value.end).format('HH:mm')
+
     this.api.editOfferedService(this.editServiceForm.value).toPromise()
       .then((res: any) => {
         this.closeModal(true)

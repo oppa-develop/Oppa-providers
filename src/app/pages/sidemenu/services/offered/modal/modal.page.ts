@@ -8,6 +8,7 @@ import { ApiService } from 'src/app/providers/api/api.service';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { LocationService } from 'src/app/providers/location/location.service';
 import { environment } from 'src/environments/environment';
+import * as dayjs from 'dayjs'
 
 // animaciones
 import { slideInLeft, slideInRight, slideOutRight, slideOutLeft } from 'ng-animate'
@@ -88,6 +89,9 @@ export class ModalPage implements OnInit {
     this.newServiceForm.value.price = this.selectedService.price
     this.newServiceForm.value.category_id = this.selectedService.categories_category_id
     this.newServiceForm.value.super_category = this.selectedService.super_category
+    if (this.newServiceForm.value.start !== null) this.newServiceForm.value.start = dayjs(this.newServiceForm.value.start).format('HH:mm')
+    if (this.newServiceForm.value.end !== null) this.newServiceForm.value.end = dayjs(this.newServiceForm.value.end).format('HH:mm')
+
     this.dataToCheck = this.newServiceForm.value;
   }
 
@@ -126,6 +130,7 @@ export class ModalPage implements OnInit {
   }
 
   offerNewService() {
+    
     this.api.offerNewService(this.dataToCheck).toPromise()
       .then((res: any) => {
         this.presentToast('Servicio creado', 'success');
