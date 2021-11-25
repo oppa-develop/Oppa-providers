@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Service } from 'src/app/models/service';
 import { ApiService } from 'src/app/providers/api/api.service';
 import * as dayjs from 'dayjs'
+import { AuthService } from 'src/app/providers/auth/auth.service';
+import { User } from 'src/app/models/user';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-bills',
@@ -11,14 +13,19 @@ import * as dayjs from 'dayjs'
 })
 export class BillsPage implements OnInit {
 
-  $services: Observable<Service[]>
+  $payments: Observable<any[]>
   today = dayjs()
+  user: User
+  apiUrl: string = environment.HOST + '/'
+
   constructor(
-    private api: ApiService
+    private api: ApiService,
+    private auth: AuthService
   ) { }
 
   ngOnInit() {
-    this.$services = this.api.getBillsFromDate(this.today.subtract(2, 'months').format('DD-MM-YYYY'))
+    this.user = this.auth.userData()
+    this.$payments = this.api.getPayments(this.user.provider_id)
   }
 
 }

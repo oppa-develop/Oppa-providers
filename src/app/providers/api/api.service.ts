@@ -115,51 +115,8 @@ export class ApiService {
     ])
   }
 
-  getBillsFromDate(date: string): Observable<Service[]> {
-    return of([
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        payment: {
-          date: faker.date.past(),
-          price: 5000,
-          state: 'paid'
-        }
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        payment: {
-          date: faker.date.past(),
-          price: 5000,
-          state: 'pending'
-        }
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        payment: {
-          date: faker.date.past(),
-          price: 5000,
-          state: 'paid'
-        }
-      },
-    ])
+  getPayments(provider_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/payments/${provider_id}`)
   }
 
   getServicesByDate(provider_id: number, date: string): Observable<any[]> {

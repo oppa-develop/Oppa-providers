@@ -90,14 +90,12 @@ export class ModalPage implements OnInit {
     this.newServiceForm.value.category_id = this.selectedService.categories_category_id
     this.newServiceForm.value.super_category = this.selectedService.super_category
     if (this.newServiceForm.value.start !== null) {
-      this.newServiceForm.value.start = this.newServiceForm.value.start.split(':')
-      this.newServiceForm.value.start.pop()
-      this.newServiceForm.value.start = this.newServiceForm.value.start.join(':')
+      this.newServiceForm.value.start = this.newServiceForm.value.start.split('T')[1].split(':');
+      this.newServiceForm.value.start = this.newServiceForm.value.start[0] + ':' + this.newServiceForm.value.start[1];
     }
     if (this.newServiceForm.value.end !== null) {
-      this.newServiceForm.value.end = this.newServiceForm.value.end.split(':')
-      this.newServiceForm.value.end.pop()
-      this.newServiceForm.value.end = this.newServiceForm.value.end.join(':')
+      this.newServiceForm.value.end = this.newServiceForm.value.end.split('T')[1].split(':');
+      this.newServiceForm.value.end = this.newServiceForm.value.end[0] + ':' + this.newServiceForm.value.end[1];
     }
 
     this.dataToCheck = this.newServiceForm.value;
