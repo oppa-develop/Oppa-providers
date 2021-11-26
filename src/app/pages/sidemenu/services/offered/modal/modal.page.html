@@ -20,7 +20,7 @@
 
     <!-- choose a service to provide -->
     <div [@onChargeFirst] *ngIf="steps === 1">
-      <ion-grid *ngIf="$permitedServices | loading | async as permitedServices">
+      <ion-grid class="grid-100vh" *ngIf="$permitedServices | loading | async as permitedServices">
         <ng-template [ngIf]="permitedServices.value?.services.length">
           <ion-row>
             <h3>Paso 1: seleccione el nuevo servicio</h3>
@@ -54,7 +54,7 @@
     </div>
 
     <!-- choose a gender to provide the service -->
-    <ion-grid [@onCharge] *ngIf="steps === 2">
+    <ion-grid [@onCharge] class="grid-100vh" *ngIf="steps === 2">
       <ion-row>
         <h3>Paso 2:</h3>
       </ion-row>
@@ -78,11 +78,10 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-button expand="block" (click)="next()">siguiente</ion-button>
     </ion-grid>
 
     <!-- choose a place to provide the service -->
-    <ion-grid [@onCharge] *ngIf="steps === 3">
+    <ion-grid [@onCharge] class="grid-100vh" *ngIf="steps === 3">
       <ion-row>
         <h3>Paso 3:</h3>
       </ion-row>
@@ -105,18 +104,18 @@
         </ion-col>
         <ion-col size="12">
           <ion-item class="ion-margin-vertical">
-            <ion-label position="floating">Comunas (opcional)</ion-label>
-            <ion-select multiple formControlName="districts" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+            <ion-label position="floating">Comunas (*)</ion-label>
+            <ion-select (ionChange)="selectAllDistricts()" multiple formControlName="districts" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+              <ion-select-option>Todas las comunas</ion-select-option>
               <ion-select-option *ngFor="let district of districts">{{ district.nombre }}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-button expand="block" (click)="next()">siguiente</ion-button>
     </ion-grid>
 
     <!-- choose the workable days to provide the service -->
-    <ion-grid [@onCharge] *ngIf="steps === 4">
+    <ion-grid [@onCharge] class="grid-100vh" *ngIf="steps === 4">
       <ion-row>
         <h3>Paso 4:</h3>
       </ion-row>
@@ -132,7 +131,8 @@
         <ion-col size="12">
           <ion-item class="ion-margin-vertical">
             <ion-label position="floating">Días trabajables</ion-label>
-            <ion-select multiple formControlName="workable" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+            <ion-select (ionChange)="selectAllWorkableDays()" multiple formControlName="workable" placeholder="Seleccionar" class="ion-no-padding" cancelText="cancelar" okText="aceptar">
+              <ion-select-option>Todos los días</ion-select-option>
               <ion-select-option value="l">Lunes</ion-select-option>
               <ion-select-option value="m">Martes</ion-select-option>
               <ion-select-option value="x">Miércoles</ion-select-option>
@@ -144,11 +144,10 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-button expand="block" (click)="next()">siguiente</ion-button>
     </ion-grid>
 
     <!-- choose the time between to provide the service -->
-    <ion-grid [@onCharge] *ngIf="steps === 5">
+    <ion-grid [@onCharge] class="grid-100vh" *ngIf="steps === 5">
       <ion-row>
         <h3>Paso 5:</h3>
       </ion-row>
@@ -184,11 +183,10 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-button expand="block" (click)="next()">siguiente</ion-button>
     </ion-grid>
 
     <!-- check data before send -->
-    <ion-grid [@onCharge] *ngIf="steps === 6">
+    <ion-grid [@onCharge] class="grid-100vh" *ngIf="steps === 6">
       <ion-row>
         <ion-col class="ion-no-padding" size="12">
           <h3>Confirmar datos:</h3>
@@ -213,7 +211,7 @@
                   </ion-col>
                   <ion-col size="6">
                     <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
-                    <ion-label *ngIf="dataToCheck.workable?.length == 7">Todos los días</ion-label>
+                    <ion-label *ngIf="dataToCheck.workable?.length == 7 || dataToCheck.workable === 'Todos los días'">Todos los días</ion-label>
                     <ion-label *ngIf="!(dataToCheck.workable?.length == 5 && dataToCheck.workable?.includes('l') && dataToCheck.workable?.includes('m') && dataToCheck.workable?.includes('x') && dataToCheck.workable?.includes('j') && dataToCheck.workable?.includes('v')) && dataToCheck.workable?.length < 7 && (!dataToCheck.workable?.includes('s') || !dataToCheck.workable?.includes('d'))">
                       Días: 
                       {{ (dataToCheck.workable?.includes('l')) ? 'l':null }}
@@ -234,10 +232,16 @@
                     <div>Region:</div>
                     <div class="ion-margin-bottom">{{ dataToCheck.region }}</div>
                   </ion-col>
-                  <ion-col class="col-padding" size="5" *ngIf="dataToCheck.districts?.length">
+                  <ion-col class="col-padding" size="5" *ngIf="dataToCheck.districts !== 'Todas las comunas' && dataToCheck.districts?.length">
                     <div>{{ (dataToCheck.districts.length > 1) ? 'Comunas:' : 'Comuna:' }}</div>
                     <ul class="ion-no-margin ion-margin-bottom">
                       <li *ngFor="let district of dataToCheck.districts">{{ district }}</li>
+                    </ul>
+                  </ion-col>
+                  <ion-col class="col-padding" size="5" *ngIf="dataToCheck.districts === 'Todas las comunas'">
+                    <div>Comunas:</div>
+                    <ul class="ion-no-margin ion-margin-bottom">
+                      <li>Todas las comunas</li>
                     </ul>
                   </ion-col>
                   <ion-col size="1">
@@ -251,12 +255,16 @@
             </ion-card-header>
           </ion-card>
         </ion-col>
-        <ion-col size="12" class="ion-no-padding ion-padding-top ion-no-margin">
-          <ion-button class="ion-no-margin" expand="block" color="primary" (click)="offerNewService()">Aceptar</ion-button>
-        </ion-col>
       </ion-row>
     </ion-grid>
 
   </form>
 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button *ngIf="steps !== 6 && steps !== 1" class="ion-padding-horizontal" expand="block" (click)="next()">siguiente</ion-button>
+    <ion-button *ngIf="steps === 6" class="ion-padding-horizontal" expand="block" color="primary" (click)="offerNewService()">Aceptar</ion-button>
+  </ion-toolbar>
+</ion-footer>

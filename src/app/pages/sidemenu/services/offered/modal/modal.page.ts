@@ -39,6 +39,7 @@ export class ModalPage implements OnInit {
   selectedService: Service
   dataToCheck: any
   steps: number = 1
+  disableDistrict: boolean = false
 
   constructor(
     private modalController: ModalController,
@@ -137,14 +138,26 @@ export class ModalPage implements OnInit {
 
   offerNewService() {
 
-    this.api.offerNewService(this.dataToCheck).toPromise()
+    if (this.dataToCheck.districts.includes('Todas las comunas')) this.dataToCheck.districts = this.districts.map((district: any) => district.nombre)
+    if (this.dataToCheck.workable.includes('Todos los días')) this.dataToCheck.workable = ['l', 'm', 'x', 'j', 'v', 's', 'd']
+
+    console.table(this.dataToCheck)
+    /* this.api.offerNewService(this.dataToCheck).toPromise()
       .then((res: any) => {
         this.presentToast('Servicio creado', 'success');
         this.closeModal(true);
       })
       .catch(err => {
         this.presentToast('No se ha podido crear el servicio', 'danger');
-      });
+      }); */
+  }
+
+  selectAllDistricts() {
+    if (this.newServiceForm.value.districts.includes('Todas las comunas')) this.newServiceForm.controls.districts.setValue('Todas las comunas')
+  }
+
+  selectAllWorkableDays() {
+    if (this.newServiceForm.value.workable.includes('Todos los días')) this.newServiceForm.controls.workable.setValue('Todos los días')
   }
 
   async presentToast(message: string, color: string) {
