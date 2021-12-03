@@ -234,7 +234,7 @@
                   </ion-col>
                   <ion-col class="col-padding" size="5" *ngIf="dataToCheck.districts !== 'Todas las comunas' && dataToCheck.districts?.length">
                     <div>{{ (dataToCheck.districts.length > 1) ? 'Comunas:' : 'Comuna:' }}</div>
-                    <ul class="ion-no-margin ion-margin-bottom">
+                    <ul class="ion-no-margin ion-margin-bottom comunas">
                       <li *ngFor="let district of dataToCheck.districts">{{ district }}</li>
                     </ul>
                   </ion-col>

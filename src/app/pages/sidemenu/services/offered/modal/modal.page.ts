@@ -141,15 +141,14 @@ export class ModalPage implements OnInit {
     if (this.dataToCheck.districts.includes('Todas las comunas')) this.dataToCheck.districts = this.districts.map((district: any) => district.nombre)
     if (this.dataToCheck.workable.includes('Todos los días')) this.dataToCheck.workable = ['l', 'm', 'x', 'j', 'v', 's', 'd']
 
-    console.table(this.dataToCheck)
-    /* this.api.offerNewService(this.dataToCheck).toPromise()
+    this.api.offerNewService(this.dataToCheck).toPromise()
       .then((res: any) => {
         this.presentToast('Servicio creado', 'success');
         this.closeModal(true);
       })
       .catch(err => {
         this.presentToast('No se ha podido crear el servicio', 'danger');
-      }); */
+      });
   }
 
   selectAllDistricts() {

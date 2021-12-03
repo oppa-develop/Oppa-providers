@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/Camera/ngx';
 import { ActionSheetController, LoadingController, ToastController } from '@ionic/angular';
 import { ApiService } from 'src/app/providers/api/api.service';
-import { AuthService } from 'src/app/providers/auth/auth.service';
 
 @Component({
   selector: 'app-create-account',
@@ -30,7 +29,6 @@ export class CreateAccountPage implements OnInit {
     private api: ApiService,
     private loadingController: LoadingController,
     private toastCtrl: ToastController,
-    private auth: AuthService,
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     public router: Router // para enviar al usuario a otra vista
   ) { }
@@ -137,6 +135,7 @@ export class CreateAccountPage implements OnInit {
         .then(userData => {
           loading.dismiss()
           this.ngZone.run(() => {
+            this.presentToast('Cuenta creada correctamente', 'success');
             this.router.navigate(['/login']);
             loading.dismiss()
           }, err => {
