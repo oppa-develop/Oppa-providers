@@ -61,12 +61,12 @@ export class CreateAccountPage implements OnInit {
       this.confirm_password.setErrors({ mismatch: true });
     }
   }
-  
+
   // getting the form control elements
   get password(): AbstractControl {
     return this.createAccountForm.controls['password'];
   }
-  
+
   get confirm_password(): AbstractControl {
     return this.createAccountForm.controls['checkPassword'];
   }
@@ -84,21 +84,21 @@ export class CreateAccountPage implements OnInit {
       // imageData is either a base64 encoded string or a file URI
       this.createAccountForm.value.image = imageData;
       this.user_img = imageData;
-      switch(imageData.charAt(0)) {
+      switch (imageData.charAt(0)) {
         case '/':
           this.createAccountForm.value.image_ext = 'jpg'
-        break
+          break
         case 'i':
           this.createAccountForm.value.image_ext = 'png'
-        break
+          break
         case 'R':
           this.createAccountForm.value.image_ext = 'gif'
-        break
+          break
       }
     })
-    .catch(err => {
-      console.log(err);
-    });
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   async selectImage() {
@@ -126,7 +126,7 @@ export class CreateAccountPage implements OnInit {
   }
 
   async createAccount() {
-    if(this.createAccountForm.valid){
+    if (this.createAccountForm.valid) {
       const loading = await this.loadingController.create({
         message: 'Creando usuario...'
       });
@@ -150,7 +150,14 @@ export class CreateAccountPage implements OnInit {
         })
         .catch(err => {
           loading.dismiss()
-          console.log(err);
+          if (err.error.message === 'Duplicate entry') {
+            this.presentToast('El RUT y/o EMAIL ya está registrado', 'danger');
+          } else if (err.error.message === 'Elders can not have another role') {
+            this.presentToast('Usuarios apadrinados no pueden ser proveedores', 'danger');
+          } else {
+            this.presentToast('No se ha podido crear la cuenta', 'danger');
+          }
+          console.log(err.error.message);
         });
     }
   }
