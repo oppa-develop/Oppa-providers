@@ -87,6 +87,10 @@ export class EditServicePage implements OnInit {
   }
 
   editService() {
+
+    if (this.editServiceForm.value.districts.includes('Todas las comunas')) this.editServiceForm.value.districts = this.districts.map((district: any) => district.nombre)
+    if (this.editServiceForm.value.workable.includes('Todos los días')) this.editServiceForm.value.workable = ['l', 'm', 'x', 'j', 'v', 's', 'd']
+    
     let days = ''
     this.editServiceForm.value.workable.forEach(day => {
       days += day
@@ -121,6 +125,14 @@ export class EditServicePage implements OnInit {
       })
   }
 
+  selectAllDistricts() {
+    if (this.editServiceForm.value.districts.includes('Todas las comunas')) this.editServiceForm.controls.districts.setValue('Todas las comunas')
+  }
+
+  selectAllWorkableDays() {
+    if (this.editServiceForm.value.workable.includes('Todos los días')) this.editServiceForm.controls.workable.setValue('Todos los días')
+  }
+
   async presentToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({
       message,
@@ -128,10 +140,6 @@ export class EditServicePage implements OnInit {
       color
     });
     toast.present();
-  }
-
-  prueba() {
-    console.log('districts:', this.editServiceForm.value.districts);
   }
 
 }
