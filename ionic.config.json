@@ -1,7 +1,8 @@
 {
   "name": "oppa-providers",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }
