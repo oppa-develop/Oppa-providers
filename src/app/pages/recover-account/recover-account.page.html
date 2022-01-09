@@ -13,14 +13,15 @@
     <ion-row>
       <ion-col>
         <form [formGroup]="recoverAccountForm" (ngSubmit)="getCode()" ngNativeValidate>
-          <h4>Ingresa tu email y recibirás un código para recuperar tu cuenta:</h4>
+          <h4>Ingresa tu rut y recibirás un código en tu email registrado para recuperar tu cuenta:</h4>
           <ion-list>
             <ion-item>
-              <ion-icon slot="start" name="mail-outline"></ion-icon>
-              <ion-label position="floating">Email</ion-label>
-              <ion-input formControlName="email" type="email" required></ion-input>
+              <ion-icon slot="start" src="../../../assets/icons/id-card-outline.svg"></ion-icon>
+              <ion-label position="floating">Rut</ion-label>
+              <ion-input formControlName="rut" maxlength="12" [value]="recoverAccountForm.get('rut').value | rutParse" type="text" required></ion-input>
             </ion-item>
           </ion-list>
+          <ion-button fill="outline" class="bottom-btn-2" expand="block" color="secondary" (click)="step = 2">Ya tengo un código</ion-button>
           <ion-button type="submit" class="bottom-btn" expand="block" color="primary">Enviar</ion-button>
         </form>
       </ion-col>

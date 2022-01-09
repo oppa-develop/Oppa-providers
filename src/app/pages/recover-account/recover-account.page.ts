@@ -30,7 +30,7 @@ export class RecoverAccountPage implements OnInit {
 
   createRecoverAccountForm() {
     return this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      rut: ['', [Validators.required, Validators.email]],
     })
   }
 
@@ -44,14 +44,14 @@ export class RecoverAccountPage implements OnInit {
 
   getCode() {
     this.step = 2
-    /* this.api.getCode(this.recoverAccountForm.value.rut).toPromise()
+    this.api.getCode(this.recoverAccountForm.value.rut).toPromise()
       .then((res: any) => {
         this.step = 2
       })
       .catch(err => {
         this.step = 1
         this.presentToast('Error al solicitar código. Intente nuevamente.', 'danger')
-      }) */
+      })
   }
 
   sendNewPass() {

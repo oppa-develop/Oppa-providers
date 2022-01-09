@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { RecoverAccountPageRoutingModule } from './recover-account-routing.module';
 
 import { RecoverAccountPage } from './recover-account.page';
+import { RutParsePipe } from 'src/app/pipes/rut-parser/rut-parser.pipe';
 
 @NgModule({
   imports: [
@@ -16,6 +17,6 @@ import { RecoverAccountPage } from './recover-account.page';
     RecoverAccountPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [RecoverAccountPage]
+  declarations: [RecoverAccountPage, RutParsePipe]
 })
 export class RecoverAccountPageModule {}
