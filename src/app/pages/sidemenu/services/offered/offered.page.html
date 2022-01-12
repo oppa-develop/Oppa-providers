@@ -89,7 +89,8 @@
                   <ion-col size="6">
                     <ion-icon [ngClass]="{'stopped': providedService.state == 'stopped'}" size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
                     <ion-label *ngIf="providedService.workable.length == 7">Todos los días</ion-label>
-                    <ion-label *ngIf="!(providedService.workable.length == 5 && providedService.workable.includes('l') && providedService.workable.includes('m') && providedService.workable.includes('x') && providedService.workable.includes('j') && providedService.workable.includes('v')) && providedService.workable.length < 7 && (!providedService.workable.includes('s') || !providedService.workable.includes('d'))">
+                    <!-- fallo al mostrar los días -->
+                    <ion-label *ngIf="providedService.workable.length !== 7 && providedService.workable !== 'sd' && !providedService.workable !== 'lmxjv'">
                       Días: 
                       {{ (providedService.workable.includes('l')) ? 'L':null }}
                       {{ (providedService.workable.includes('m')) ? 'M':null }}
@@ -99,8 +100,8 @@
                       {{ (providedService.workable.includes('s')) ? 'S':null }}
                       {{ (providedService.workable.includes('d')) ? 'D':null }}
                     </ion-label>
-                    <ion-label *ngIf="providedService.workable.length == 2 && providedService.workable.includes('s') && providedService.workable.includes('d')">Fines de Semana</ion-label>
-                    <ion-label *ngIf="providedService.workable.length == 5 && providedService.workable.includes('l') && providedService.workable.includes('m') && providedService.workable.includes('x') && providedService.workable.includes('j') && providedService.workable.includes('v')">Durante la Semana</ion-label>
+                    <ion-label *ngIf="providedService.workable ==='sd'">Fines de Semana</ion-label>
+                    <ion-label *ngIf="providedService.workable ==='lmxjv'">Durante la Semana</ion-label>
                   </ion-col>
                   <ion-col size="1">
                     <ion-icon [ngClass]="{'stopped': providedService.state == 'stopped'}" size="large" class="ion-padding-end" color="primary" name="location-outline"></ion-icon> 

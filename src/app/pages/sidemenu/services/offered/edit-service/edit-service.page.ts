@@ -110,6 +110,7 @@ export class EditServicePage implements OnInit {
         this.presentToast('Servicio actualizado correctamente', 'success')
       })
       .catch(err => {
+        this.editServiceForm.value.workable = days.split('')
         this.presentToast('No se han podido actualizar los datos del servicio', 'danger')
       })
   }
@@ -126,7 +127,7 @@ export class EditServicePage implements OnInit {
   }
 
   selectAllDistricts() {
-    if (this.editServiceForm.value.districts.includes('Todas las comunas')) this.editServiceForm.controls.districts.setValue('Todas las comunas')
+    if (this.editServiceForm.value.districts && this.editServiceForm.value.districts.includes('Todas las comunas')) this.editServiceForm.controls.districts.setValue('Todas las comunas')
   }
 
   selectAllWorkableDays() {
