@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class LocationService {
 
-  baseUrl: string = 'http://apis.modernizacion.cl/dpa'
+  baseUrl: string = 'https://apis.digital.gob.cl/dpa'
 
   constructor(
     private http: HttpClient

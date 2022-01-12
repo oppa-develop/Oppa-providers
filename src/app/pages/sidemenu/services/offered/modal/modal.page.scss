@@ -9,11 +9,19 @@ ul {
   padding-left: 26px;
 }
 
-.col-padding{
+.col-padding {
   padding-left: 20px;
   padding-top: 8px;
 }
 
-.swiper-slide{
+.swiper-slide {
   text-align: left !important;
+}
+
+ion-slide > ion-grid {
+  padding: 0;
+}
+
+.grid-100vh {
+  height: calc(100vh - 130px);
 }

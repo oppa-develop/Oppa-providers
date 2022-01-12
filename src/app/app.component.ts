@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { IonRouterOutlet, Platform } from '@ionic/angular';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { Autostart } from '@ionic-native/autostart/ngx';
+import { Router } from '@angular/router';
+
+import { Plugins } from '@capacitor/core';
+const { SplashScreen } = Plugins; 
 
 @Component({
   selector: 'app-root',
@@ -11,18 +15,32 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 })
 export class AppComponent {
 
+  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private screenOrientation: ScreenOrientation,
+    public router: Router,
+    private autostart: Autostart
   ) {
-    this.initializeApp();
+    this.setPortrait();
+    this.autostart.enable();
+
+    // cargamos el darkMode según lo guardado en el localStorage
+    if (localStorage.getItem('darkMode') === 'on') {
+      document.body.setAttribute('data-theme', 'dark');
+      // this.darkMode = true
+    } else {
+      document.body.setAttribute('data-theme', 'light');
+      // this.darkMode = false
+    }
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
+  // set orientation to portrait
+  setPortrait() {
+    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+  }
+
+  ionViewDidEnter() {
+    SplashScreen.hide();
   }
 }

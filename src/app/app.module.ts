@@ -17,7 +17,17 @@ import { DatePipe, registerLocaleData } from '@angular/common'
 import { ApiService } from './providers/api/api.service';
 import { LocationService } from './providers/location/location.service';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
+import { WebsocketService } from './providers/websocket/websocket.service';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { Camera } from '@ionic-native/Camera/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { BrowserTab } from '@ionic-native/browser-tab/ngx';
 registerLocaleData(es)
+
+// animaciones
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Autostart } from '@ionic-native/autostart/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,12 +38,16 @@ registerLocaleData(es)
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    HttpClientJsonpModule
+    HttpClientJsonpModule,
+    BrowserAnimationsModule
   ],
   providers: [
+    Autostart,
+    ScreenOrientation,
     StatusBar,
     SplashScreen,
     DatePipe,
+    Camera,
     { 
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy,
@@ -43,7 +57,11 @@ registerLocaleData(es)
       useValue: "es-ES"
     },
     ApiService,
-    LocationService
+    LocationService,
+    WebsocketService,
+    LocalNotifications,
+    AndroidPermissions,
+    BrowserTab
   ],
   bootstrap: [AppComponent]
 })

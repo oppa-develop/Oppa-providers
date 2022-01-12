@@ -54,3 +54,12 @@ th {
 td.monthview-selected {
   background-color: var(--ion-color-primary) !important;
 }
+
+.text-shadow {
+  text-shadow: 2px 2px 4px #000;
+}
+
+ul.comunas {
+  height: 80px;
+  overflow: scroll;
+}

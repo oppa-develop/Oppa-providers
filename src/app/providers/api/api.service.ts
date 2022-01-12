@@ -7,32 +7,25 @@ import { User } from 'src/app/models/user';
 import * as faker from 'faker/locale/es_MX'
 import * as timeago from 'timeago.js';
 import { delay } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { serialize } from 'object-to-formdata';
+import { Message } from 'src/app/models/message';
+import { Record } from 'src/app/models/record';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  constructor() { }
+  private apiUrl: string = environment.HOST + '/api'
+
+  constructor(
+    private http: HttpClient
+  ) { }
 
   login(email: string, password: string): Observable<User> {
-    return of({
-      firstname: faker.name.firstName(),
-      lastname: faker.name.lastName(),
-      email: faker.internet.exampleEmail(),
-      birthdate: faker.date.past(20),
-      avatar: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-      role: 'apoderado',
-      credit: parseInt(faker.finance.amount()) * 100,
-      accountType: 'companion',
-      token: faker.random.alphaNumeric(18),
-      location: {
-        street: 'Av. Recoleta #2121',
-        other: 'Dpto. 605B',
-        district: 'Recoleta',
-        region: 'Metropolitana de Santiago'
-      }
-    })
+    return this.http.post<User>(this.apiUrl + '/auth/login-provider', { email, password });
   }
 
   getServices(): Observable<Service[]> {
@@ -52,141 +45,20 @@ export class ApiService {
     ])
   }
 
-  getProvidedServices(): Observable<any[]> {
-    return of([
-      {
-        workable: ['L','M','X','J','V','S','D'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        location: {
-          districts: ['Recoleta', 'Conchalí', 'Independencia']
-        }
-      },
-      {
-        workable: ['L','M','X','J','V'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `realizar trámite`,
-          img_url: `../../../../assets/images/1789259.jpg`,
-          price: 9990,
-        },
-        location: {
-          regions: ['Metropolitana de Santiago']
-        }
-      },
-      {
-        workable: ['L','M','X','D'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `cuidado`,
-          img_url: `../../../../assets/images/pexels-andrea-piacquadio-3768131.jpg`,
-          price: 11990,
-        },
-        location: {
-          districts: ['Recoleta', 'Conchalí', 'Independencia']
-        }
-      },
-      {
-        workable: ['S','V'],
-        times: [faker.time.recent(), faker.time.recent()],
-        service: {
-          name: `compras`,
-          img_url: `../../../../assets/images/pexels-gustavo-fring-4173326.jpg`,
-          price: 14990,
-        },
-        location: {
-          regions: ['Magallanes']
-        }
-      }
-    ])
+  getProvidedServices(provider_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/services/offered/provider/${provider_id}`)
   }
 
-  getHistoryOfServices(): Observable<any[]> {
-    return of([
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'cancelado'
-      },
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'En curso'
-      },
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'Terminado'
-      },
-      {
-        elder: {
-          firstname: faker.name.firstName(),
-          lastname: faker.name.lastName(),
-          img_url: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`
-        },
-        datetime: faker.date.future(),
-        start: faker.date.future(),
-        end: faker.date.future(),
-        service: {
-          name: `peluquería`,
-          img_url: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-          price: 9990,
-        },
-        state: 'Cancelado'
-      },
-    ])
+  getHistoryOfServices(provider_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/services/history/provider/${provider_id}`);
   }
 
-  getMessages(): Observable<MessageList[]> {
-    return of([
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) },
-      { name: faker.name.findName(), img: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`, service: faker.name.jobTitle(), lastMsg: faker.lorem.sentence(), lastMsgAgo: timeago.format(faker.date.recent()) }
-    ])
+  getChatList(user_id: number): Observable<MessageList[]> {
+    return this.http.get<MessageList[]>(`${this.apiUrl}/chats/${user_id}`)
+  }
+
+  getChatMessages(chat_id: number): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.apiUrl}/chats/${chat_id}/messages`)
   }
 
   getServicesHistory(): Observable<Service[]> {
@@ -243,157 +115,17 @@ export class ApiService {
     ])
   }
 
-  getBillsFromDate(date: string): Observable<Service[]> {
-    return of([
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        payment: {
-          date: faker.date.past(),
-          price: 5000,
-          state: 'paid'
-        }
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        payment: {
-          date: faker.date.past(),
-          price: 5000,
-          state: 'pending'
-        }
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        payment: {
-          date: faker.date.past(),
-          price: 5000,
-          state: 'paid'
-        }
-      },
-    ])
+  getPayments(provider_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/payments/${provider_id}`)
   }
 
-  getServicesHistoryByDate(date: string): Observable<Service[]> {
-    return of([
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio de acompañamiento`,
-        name: `realizar trámite`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/1789259.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `podología`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`14990`),
-        img: `../../../../assets/images/pexels-stephanie-allen-4085445.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio de acompañamiento`,
-        name: `cobro`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`14990`),
-        img: `../../../../assets/images/pexels-eduardo-soares-5497951.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `peluquería`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/pexels-nick-demou-1319460.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio de acompañamiento`,
-        name: `realizar trámite`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`9990`),
-        img: `../../../../assets/images/1789259.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio a Domicilio`,
-        name: `podología`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`14990`),
-        img: `../../../../assets/images/pexels-stephanie-allen-4085445.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-      {
-        id: parseInt(faker.random.uuid()),
-        date,
-        type: `Servicio de acompañamiento`,
-        name: `cobro`,
-        description: faker.lorem.paragraph(),
-        price: parseInt(`14990`),
-        img: `../../../../assets/images/pexels-eduardo-soares-5497951.jpg`,
-        serverName: faker.name.findName(),
-        serverImg: `https://loremflickr.com/320/240/selfie?lock=${faker.random.number()}`,
-        serverRating: faker.random.number(5)
-      },
-
-    ])
+  getServicesByDate(provider_id: number, date: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/services/provider/${provider_id}/date/${date}`)
   }
 
-  getPermitedServices(): Observable<Service[]> {
-    return of([
+  getPermitedServices(provider_id: number): Observable<Service[]> {
+    return this.http.get<Service[]>(`${this.apiUrl}/services/permitted/provider/${provider_id}`)
+    /* return of([
       {
         id: parseInt(faker.random.uuid()),
         type: 'Servicio de acompañamiento',
@@ -418,7 +150,83 @@ export class ApiService {
         price: parseInt('9990'),
         img: '../../../../assets/images/pexels-nick-demou-1319460.jpg',
       }
-    ])
+    ]) */
+  }
+
+  changeServiceOfferedState(offeredService): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/services/offered/change-state`, offeredService);
+  }
+
+  changeServiceScheduledState(scheduledService): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/services/scheduled/change-state`, scheduledService);
+  }
+
+  offerNewService(offerNewService): Observable<any> {
+    let workable = ''
+    for (let days of offerNewService.workable) {
+      workable += days
+    }
+    offerNewService.workable = workable
+    offerNewService.state = 'active'
+    console.log(offerNewService);
+    return this.http.post(`${this.apiUrl}/services/provide-service`, offerNewService);
+  }
+
+  deleteService(provider_id, provider_has_services_id): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/services/offered/provider/${provider_id}/delete/${provider_has_services_id}`);
+  }
+
+  createAccount(newAccount): Observable<any> {
+    console.log(newAccount);
+    delete newAccount['checkPassword']
+    if (newAccount.image) {
+      newAccount.image = this.base64toBlob(newAccount.image, 'image/' + newAccount.image_ext);
+    }
+    let formData = serialize(newAccount);
+    console.log(formData);
+    return this.http.post<any>(`${this.apiUrl}/users/new-provider`, formData);
+  }
+
+  private base64toBlob(base64Data: string, contentType: string) {
+    contentType = contentType || '';
+    let sliceSize = 1024;
+    let byteCharacters = atob(base64Data);
+    let bytesLength = byteCharacters.length;
+    let slicesCount = Math.ceil(bytesLength / sliceSize);
+    let byteArrays = new Array(slicesCount);
+
+    for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        let begin = sliceIndex * sliceSize;
+        let end = Math.min(begin + sliceSize, bytesLength);
+
+        let bytes = new Array(end - begin);
+        for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+            bytes[i] = byteCharacters[offset].charCodeAt(0);
+        }
+        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
+  }
+
+  editOfferedService(service) {
+    return this.http.put(`${this.apiUrl}/services/offered/edit`, service)
+  }
+  
+  editUser(userData) {
+    console.log(userData)
+    return this.http.patch(`${this.apiUrl}/users/edit`, userData)
+  }
+
+  createRecord(record: Record): Observable<Record> {
+    return this.http.post<Record>(`${this.apiUrl}/records/new-record`, record)
+  }
+
+  getCode(rut: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/recover-account`, {rut})
+  }
+
+  changePass(data: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/users/change-password`, data)
   }
 
 }

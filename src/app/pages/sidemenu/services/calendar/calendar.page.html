@@ -1,17 +1,15 @@
 <ion-header>
   <ion-toolbar color="secondary">
-    <ion-title>Próximos Servicios</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="closeModal()">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
-      </ion-button>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-title>Próximos Servicios</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-card>
-  <ion-text color="primary">
-    <h3 class="ion-text-center">{{ calendar.title | date:'MMM - yyyy' | titlecase }}</h3>
+  <ion-text color="dark">
+    <h3 class="ion-text-center">{{ calendar.title | date: 'longDate' }}</h3>
   </ion-text>
   <calendar
   [eventSource]="eventSource"
@@ -112,23 +110,34 @@
 
   <!-- list of next services -->
   <ng-template [ngIf]="nextServices.value">
-    <ion-item *ngFor="let service of nextServices.value">
+    <ion-item button (click)="presentActionSheet(service)" *ngFor="let service of nextServices.value.services">
       <ion-thumbnail slot="start">
-        <img [src]="service.img">
+        <img [src]="apiUrl + service.img_url">
       </ion-thumbnail>
       <ion-grid>
         <ion-row>
           <ion-col size="12">
-            <h3 class="ion-no-margin">{{ service.name | titlecase }}</h3>
+            <h3 class="ion-no-margin">{{ service.title }}</h3>
           </ion-col>
           <ion-col size="12">
-            <h6 class="ion-no-margin">{{ service.type }}</h6>
+            <h6 class="ion-no-margin">{{ service.client.firstname + ' ' + service.client.lastname }}</h6>
+          </ion-col>
+          <ion-col size="12">
+            <h6 *ngIf="service.address.other" class="ion-no-margin">{{ service.address.street + ', ' + service.address.other + ', ' + service.address.district + ', región ' + service.address.region + '.' }}</h6>
+            <h6 *ngIf="!service.address.other" class="ion-no-margin">{{ service.address.street + ', ' + service.address.district + ', región ' + service.address.region + '.' }}</h6>
           </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-note><strong>{{ service.date }}</strong></ion-note>
-      <ion-icon size=large name="calendar-outline"></ion-icon>
+      <ion-chip>{{ service.state | titlecase }}</ion-chip>
+      <ion-icon size=large name="time-outline"></ion-icon>
+      <ion-note><strong>{{ service.start }} hrs</strong></ion-note>
     </ion-item>
+  </ng-template>
+
+  <!-- list of next services empty -->
+  <ng-template [ngIf]="nextServices.value?.services.length == 0">
+    <ion-img src="../../../../../assets/images/no-data.svg"></ion-img>
+    <h1 class="ion-text-center">Sin Servicios<br>agendados este día</h1>
   </ng-template>
 
   <!-- error on get nextServices -->

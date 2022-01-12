@@ -9,7 +9,62 @@ ul {
   padding-left: 26px;
 }
 
-.col-padding{
+.col-padding {
   padding-left: 20px;
   padding-top: 8px;
+}
+
+ion-toggle {
+  padding: 8px 0px;
+}
+
+ion-img.stopped {
+  filter: grayscale(100%);
+}
+
+ion-button button, ion-icon, ion-img.stopped, .stopped-btn {
+  transition: 500ms;
+}
+
+ion-button.stopped, ion-icon.stopped {
+  --ion-color-base: grey !important;
+  --ion-color-base-rgb: grey !important;
+  --ion-color-contrast: white !important;
+  --ion-color-contrast-rgb: grey !important;
+  --ion-color-shade: grey !important;
+  --ion-color-tint: grey !important;
+}
+
+.stopped-btn {
+  border: 5px solid red;
+  background-color: rgba(0,0,0,0.5);
+  width: 60%;
+  font-size: 3rem;
+  text-align: center;
+  border-radius: 10px;
+  color: white;
+  position: absolute;
+  z-index: 99;
+  transform: rotate(-30deg);
+  margin: 80px;
+  top: 70px;
+  opacity: 0;
+}
+
+.stopped-btn.visible{
+  opacity: 100%;
+}
+
+.not-services {
+  width: 70%;
+  height: auto;
+  margin: 0 auto;
+  margin-top: 150px;
+}
+
+.arrow {
+  height: 190px;
+  position: fixed;
+  bottom: 30px;
+  right: 80px;
 }

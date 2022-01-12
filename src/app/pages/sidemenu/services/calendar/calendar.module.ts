@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ModalPageRoutingModule } from './modal-routing.module';
+import { CalendarPageRoutingModule } from './calendar-routing.module';
 
-import { ModalPage } from './modal.page';
+import { CalendarPage } from './calendar.page';
 import { LoadingPipe } from 'src/app/pipes/loading/loading.pipe';
 import { NgCalendarModule } from 'ionic2-calendar';
 
@@ -15,9 +15,10 @@ import { NgCalendarModule } from 'ionic2-calendar';
     CommonModule,
     FormsModule,
     IonicModule,
-    ModalPageRoutingModule,
-    NgCalendarModule
+    CalendarPageRoutingModule,
+    NgCalendarModule,
+    ReactiveFormsModule
   ],
-  declarations: [ModalPage, LoadingPipe]
+  declarations: [CalendarPage, LoadingPipe]
 })
-export class ModalPageModule {}
+export class CalendarPageModule {}
