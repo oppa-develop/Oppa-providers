@@ -155,12 +155,13 @@ export class SidemenuPage implements OnInit {
             this.paymentLoading = await this.loadingController.create({
               message: 'Esperando pago del usuario Oppa...'
             });
+
             await this.paymentLoading.present();
+            
           }
         }
       ]
     });
-
     await this.requestingServiceAlert.present();
   }
 
