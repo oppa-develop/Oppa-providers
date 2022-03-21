@@ -1,6 +1,6 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 
-import { IonRouterOutlet, Platform } from '@ionic/angular';
+import { AlertController, IonRouterOutlet, Platform } from '@ionic/angular';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Autostart } from '@ionic-native/autostart/ngx';
 import { Router } from '@angular/router';
@@ -20,10 +20,12 @@ export class AppComponent {
     private platform: Platform,
     private screenOrientation: ScreenOrientation,
     public router: Router,
+    private alertController: AlertController,
     private autostart: Autostart
   ) {
     this.setPortrait();
     this.autostart.enable();
+    this.backButtonEvent();
 
     // cargamos el darkMode según lo guardado en el localStorage
     if (localStorage.getItem('darkMode') === 'on') {
@@ -33,6 +35,41 @@ export class AppComponent {
       document.body.setAttribute('data-theme', 'light');
       // this.darkMode = false
     }
+  }
+
+  async presentAlert() {
+    localStorage.setItem('createElderAccountAlert', 'done')
+    const alert = await this.alertController.create({
+      backdropDismiss: true,
+      header: 'Desea salir de la aplicación?',
+      buttons: [{
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('no cerrar app');
+        }
+      }, {
+        text: 'Salir',
+        handler: async () => {
+          console.log('cerrando app');
+          navigator['app'].exitApp();
+        }
+      }]
+    })
+
+    await alert.present();
+  }
+
+  backButtonEvent() {
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.routerOutlets.forEach((outlet: IonRouterOutlet) => {
+        if (outlet?.canGoBack() && (this.router.url !== '/sidemenu/services')) {
+          outlet.pop();
+        } else {
+          this.presentAlert();
+        }
+      });
+    });
   }
 
   // set orientation to portrait

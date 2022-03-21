@@ -46,7 +46,7 @@ export class CreateAccountPage implements OnInit {
       rut: ['', Validators.required],
       phone: ['', Validators.required],
       email: ['', [Validators.email, Validators.required]],
-      password: ['', Validators.required],
+      password: ['', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(90),  Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,90}$')])],
       checkPassword: ['', Validators.required],
       image_ext: ['png'],
       image: ['']

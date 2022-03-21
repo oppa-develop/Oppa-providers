@@ -112,7 +112,8 @@
           </ion-avatar>
           <ion-label>
             <h2 slot="start">{{ chat.title }}</h2>
-            <p slot="end">{{ chat.receptor_name }}</p>
+            <p slot="end"> Contratado el: {{ chat.created_at | date: 'mediumDate': 'UTC' }}</p>
+            <p slot="end"> Cliente: {{ chat.receptor_name }}</p>
             <p>{{ chat.last_msg?.text }}</p>
             <p class="timeago">{{ chat.last_msg?.created_at | date: 'dd/MM/yyyy' }}</p>
           </ion-label>

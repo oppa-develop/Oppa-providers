@@ -86,7 +86,7 @@
                   </ion-col>
                   <ion-col>
                     <ion-icon size="large" class="ion-padding-end" color="primary" name="calendar-outline"></ion-icon> 
-                    <ion-label>{{ providedService.date | date: 'mediumDate' }}</ion-label>
+                    <ion-label>{{ providedService.date | date: 'mediumDate': 'UTC' }}</ion-label>
                   </ion-col>
                 </ion-row>
                 <ion-row class="ion-no-padding">
