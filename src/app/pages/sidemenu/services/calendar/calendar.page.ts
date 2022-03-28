@@ -122,6 +122,7 @@ export class CalendarPage implements OnInit {
           text: 'Aceptar',
           handler: () => {
             console.log('Confirma termino de servicio', { scheduled_services_id: service.scheduled_services_id, state: 'terminado' });
+            this.api.changeStateToInactiveChat(service.scheduled_services_id).toPromise()
             this.api.changeServiceScheduledState({
               scheduled_services_id: service.scheduled_services_id,
               state: 'terminado'
@@ -133,6 +134,7 @@ export class CalendarPage implements OnInit {
               .catch(err => {
                 this.presentToast('No se ha podido terminar el servicio. Intente nuevamente', 'danger')
               })
+            
           }
         }
       ]

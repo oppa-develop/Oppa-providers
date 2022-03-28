@@ -89,7 +89,7 @@ export class SidemenuPage implements OnInit {
         this.paymentLoading.dismiss();
         this.appState = 'ok'
         if (data.state === 'payment accepted') {
-          this.presentToast('El cliente ha pagdo el servicio', 'success');
+          this.presentToast('El cliente ha pagado el servicio', 'success');
         } else if (data.state === 'payment rejected') {
           this.presentToast('Cliente ha cancelado el servicio', 'danger');
         }

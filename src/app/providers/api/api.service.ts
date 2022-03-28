@@ -229,5 +229,9 @@ export class ApiService {
     return this.http.patch(`${this.apiUrl}/users/change-password`, data)
   }
 
+  changeStateToInactiveChat(scheduled_services_id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/chats/update-to-inactive-chat-by-scheduled-service-id/${scheduled_services_id}`, {scheduled_services_id})
+  }
+
 }
 
