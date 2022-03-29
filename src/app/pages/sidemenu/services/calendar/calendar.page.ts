@@ -122,6 +122,7 @@ export class CalendarPage implements OnInit {
           text: 'Aceptar',
           handler: () => {
             console.log('Confirma termino de servicio', { scheduled_services_id: service.scheduled_services_id, state: 'terminado' });
+            console.log(service.scheduled_services_id)
             this.api.changeStateToInactiveChat(service.scheduled_services_id).toPromise()
             this.api.changeServiceScheduledState({
               scheduled_services_id: service.scheduled_services_id,

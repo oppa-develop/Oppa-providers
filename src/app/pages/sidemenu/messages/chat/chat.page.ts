@@ -23,6 +23,7 @@ export class ChatPage implements OnInit {
   wsConnectionState: string;
   @ViewChild('content') private content: any;
   @Input() public chat: MessageList
+  
 
   constructor(
     protected ws: WebsocketService,
@@ -30,6 +31,7 @@ export class ChatPage implements OnInit {
     private formBuilder: FormBuilder,
     private auth: AuthService,
     private api: ApiService
+    
   ) { }
 
   ngOnInit() {

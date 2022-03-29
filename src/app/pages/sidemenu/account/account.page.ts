@@ -61,7 +61,7 @@ export class AccountPage implements OnInit {
       gender: [this.user.gender, Validators.required],
       birthdate: [this.dateFormat.transform(this.user.birthdate, 'dd-MM-yyyy'), Validators.required],
       phone: [this.user.phone, Validators.required],
-      image_ext: [''],
+      image_ext: [null],
       image: [null]
     })
   }

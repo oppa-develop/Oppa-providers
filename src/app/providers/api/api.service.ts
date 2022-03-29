@@ -212,9 +212,12 @@ export class ApiService {
     return this.http.put(`${this.apiUrl}/services/offered/edit`, service)
   }
   
-  editUser(userData) {
-    console.log(userData)
-    return this.http.patch(`${this.apiUrl}/users/edit`, userData)
+  editUser(userData): Observable<any> {
+    if (userData.image) {
+      userData.image = this.base64toBlob(userData.image, 'image/' + userData.image_ext);
+    }
+    let formData = serialize(userData);
+    return this.http.patch(`${this.apiUrl}/users/edit`, formData)
   }
 
   createRecord(record: Record): Observable<Record> {
