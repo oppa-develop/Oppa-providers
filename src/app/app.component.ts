@@ -21,7 +21,7 @@ export class AppComponent {
     private screenOrientation: ScreenOrientation,
     public router: Router,
     private alertController: AlertController,
-    private autostart: Autostart
+    private autostart: Autostart,
   ) {
     this.setPortrait();
     this.autostart.enable();
