@@ -44,6 +44,7 @@
               <ion-label position="floating">Contraseña</ion-label>
               <ion-input formControlName="password" type="password" required (keyup)="onPasswordChange()"></ion-input>
             </ion-item>
+            <span  *ngIf="changePassForm.controls.password.touched && !changePassForm.controls.password.valid" class="pass-not-match red-text"><strong>La contraseña debe tener al menos 8 caracteres con un número, una mayúscula y una minúscula.</strong></span>
             <ion-item>
               <ion-icon slot="start" name="lock-open-outline"></ion-icon>
               <ion-label position="floating">Verifique Contraseña</ion-label>
