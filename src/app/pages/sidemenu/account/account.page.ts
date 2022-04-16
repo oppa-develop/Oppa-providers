@@ -125,6 +125,7 @@ export class AccountPage implements OnInit {
         this.user = res.user;
         this.auth.setUserData(this.user);
         this.presentToast('Datos actualizados.', 'light')
+        location.reload()
       })
   }
 
